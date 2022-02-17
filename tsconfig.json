@@ -1,0 +1,33 @@
+{
+  "exclude": ["node_modules/**", "package", "test"],
+  "include": ["src/**/*.ts", "types/*"],
+  "typeAcquisition": {
+    "enable": true
+  },
+  "compilerOptions": {
+    "incremental": true,
+    "declaration": true,
+    "outDir": "package",
+    "target": "ES6",
+    "removeComments": true,
+    "lib": ["es2020", "dom", "dom.iterable"],
+    "module": "ES6",
+    "alwaysStrict": true,
+    "allowUmdGlobalAccess": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "preserveSymlinks": true,
+    "skipDefaultLibCheck": false,
+    "moduleResolution": "node",
+    "noEmitOnError": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "pretty": true,
+    "rootDir": "src",
+    "typeRoots": ["node_modules/@types", "types/*"],
+    "declarationDir": "package/@types",
+    "baseUrl": "."
+  }
+}

@@ -1,0 +1,15 @@
+# DIRECTORIES -----------------------
+dist
+public
+package
+!src/public
+node_modules
+versions
+demo
+
+# FILES -----------------------------
+.env
+.fauna
+
+# Local Netlify folder
+.netlify

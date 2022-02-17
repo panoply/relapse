@@ -1,0 +1,86 @@
+{
+  "name": "@panoply/accordion",
+  "description": "Simple a11y accordion inspired from Handorgel",
+  "version": "0.1.0",
+  "homepage": "https://github.com/panoply/accordion",
+  "author": {
+    "name": "Nikolas Savvidis",
+    "url": "https://github.com/panoply"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/panoply/accordion.git"
+  },
+  "bugs": {
+    "url": "https://github.com/panoply/accordion/issues"
+  },
+  "license": "ISC",
+  "type": "module",
+  "types": "./types/accordion.d.ts",
+  "module": "./package/accordion.esm.js",
+  "exports": {
+    ".": {
+      "import": "./package/accordion.esm.js",
+      "require": "./package/accordion.umd.js"
+    }
+  },
+  "keywords": [
+    "accordion",
+    "component",
+    "collapse",
+    "toggle"
+  ],
+  "prettier": "@sissel/prettier-config",
+  "eslintConfig": {
+    "ignorePatterns": [
+      "package",
+      "types"
+    ],
+    "extends": "@sissel/eslint-config",
+    "rules": {
+      "multiline-ternary": "off"
+    }
+  },
+  "scripts": {
+    "dev": "rollup -c -w",
+    "build": "rollup -c --environment prod",
+    "sync": "./bin/sync",
+    "types": "tsc --noEmit --emitDeclarationOnly false",
+    "test-watch": "node test/theme-watch.js",
+    "test-download": "node test/theme-download.js",
+    "test-upload": "node test/theme-upload.js"
+  },
+  "browserslist": [
+    "defaults",
+    "Chrome >= 78",
+    "Firefox >= 78",
+    "Safari >= 10",
+    "Edge >= 18",
+    "IE >= 11",
+    "Opera >= 73",
+    "ChromeAndroid >= 75",
+    "ios_saf >= 9",
+    "Android >= 4",
+    "not dead"
+  ],
+  "dependencies": {
+    "ev-emitter": "^2.1.2"
+  },
+  "devDependencies": {
+    "@sissel/eslint-config": "^1.0.0",
+    "@sissel/prettier-config": "^1.0.0",
+    "@sissel/rollup-config": "^1.0.1",
+    "ava": "^4.0.1",
+    "browserslist": "^4.19.1",
+    "esbuild": "^0.14.22",
+    "eslint": "^8.9.0",
+    "esm": "^3.2.25",
+    "prettier": "^2.5.1",
+    "rollup": "^2.67.2",
+    "type-fest": "^2.9.0",
+    "typescript": "^4.5.5"
+  },
+  "optionalDependencies": {
+    "postcss": "^8.4.6"
+  }
+}
