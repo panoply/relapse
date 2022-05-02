@@ -2,41 +2,41 @@ declare interface IOptions {
   /**
    * Whether multiple folds can be opened at once
    */
-  multiselect: boolean;
+  multiselect?: boolean;
   /**
    * Whether the folds are collapsible
    */
-  collapsible: boolean;
+  collapsible?: boolean;
 
   /**
    * Whether ARIA attributes are enabled
    */
-  ariaEnabled: boolean;
+  ariaEnabled?: boolean;
 
   /**
    * Whether W3C keyboard shortcuts are enabled
    */
-  keyboard: boolean;
+  keyboard?: boolean;
 
   /**
    * Whether to loop header focus. Sets focus back
    * to first/last header when end/start reached.
    */
-  carouselFocus: boolean;
+  carouselFocus?: boolean;
 
   /**
    * attribute for the header or content to open folds at initialization
    */
-  initialOpenAttr: string;
+  initialOpenAttr?: string;
 
   /**
    * Whether to use transition at initial open
    */
-  initialOpen: boolean;
+  initialOpen?: boolean;
   /**
    * Delay used to show initial transition
    */
-  initialOpenDelay: number;
+  initialOpenDelay?: number;
 }
 
 declare interface IFolds {
@@ -147,3 +147,5 @@ export class IAccordion {
 }
 
 export class Accordion extends IAccordion {}
+
+export function accordion(element: Element, options?: IOptions): Accordion

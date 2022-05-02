@@ -1,7 +1,7 @@
 {
   "name": "@panoply/accordion",
   "description": "Simple a11y accordion inspired from Handorgel",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "homepage": "https://github.com/panoply/accordion",
   "author": {
     "name": "Nikolas Savvidis",
