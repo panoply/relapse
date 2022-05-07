@@ -1,542 +1,465 @@
-/* eslint-disable no-use-before-define */
+import { right, down, locked } from './icons';
+import { IScope, IFold, IOptions } from 'types';
 
-import EventEmitter from 'ev-emitter';
-import { MergeExclusive } from 'type-fest';
+declare global {
+  // eslint-disable-next-line no-unused-vars
+  interface Window { accordion: { [id: string]: IScope } }
+}
 
+/**
+ * Event Emitter
+ *
+ * The emitted events for the accordion.
+ */
+const $events = (events: IScope['events']) => ({
 
-class Folds {
+  emit: (name: string, scope: IScope, ...args: any[]) => {
 
-  static instances = {};
+    const event = events[name] || [];
+    const length = event.length;
 
-  private accordion: MergeExclusive<Accordion, Element>;
-  private opts: Accordion['options'];
+    for (let i = 0; i < length; i++) event[i].apply(scope, args);
 
-  public id: string;
-  public header: MergeExclusive<MergeExclusive<EventEmitter, { fold?: Folds }>, HTMLElement>;
-  public button: HTMLButtonElement;
-  public content: MergeExclusive<{ fold?: Folds }, HTMLElement>;
-  public focused: boolean;
-  public expanded: boolean;
-  public disabled: boolean;
-  public listen: Partial<[
-    buttonFocus: ['focus', Folds['button'], EventListenerOrEventListenerObject],
-    buttonBlur: ['blur', Folds['button'], EventListenerOrEventListenerObject],
-    buttonClick: ['click', Folds['button'], EventListenerOrEventListenerObject],
-    buttonKeydown: ['keydown', Folds['button'], EventListenerOrEventListenerObject],
-    contentKeydown: ['keydown', Folds['content'], EventListenerOrEventListenerObject],
-    contentTransition: ['transitionend', Folds['content'], EventListenerOrEventListenerObject ]
-  ]>;
+  },
 
-  aria = {
-    button: {
-      'aria-controls': () => 'c' + this.id,
-      'aria-expanded': () => this.expanded ? 'true' : 'false',
-      'aria-disabled': () => this.disabled ? 'true' : 'false'
-    },
-    content: {
-      role: () => 'region',
-      'aria-labelledby': () => 'h' + this.id
+  on: (name: string, callback: (folds?: IFold) => void) => {
+
+    if (!events[name]) events[name] = [];
+
+    events[name].push(callback);
+
+  },
+
+  off: (name: string, callback: () => void) => {
+
+    const live = [];
+    const event = events[name];
+
+    if (event && callback) {
+      let i = 0;
+      const len = event.length;
+      for (; i < len; i++) if (event[i] !== callback) live.push(event[i]);
+    }
+
+    if (live.length) {
+      event[name] = live;
+    } else {
+      delete event[name];
+    }
+  }
+});
+
+/**
+ * Accordion Folds
+ */
+const $folds = (scope: IScope, fold: IFold, event: ReturnType<typeof $events>): IFold => {
+
+  const config = scope.config;
+
+  if (config.aria) {
+    fold.button.setAttribute('aria-controls', fold.content.id);
+    fold.button.setAttribute('aria-expanded', String(fold.opened));
+    fold.button.setAttribute('aria-disabled', String(fold.disabled));
+    fold.content.setAttribute('role', 'region');
+    fold.content.setAttribute('aria-labelledby', fold.button.id);
+  }
+
+  /**
+   * Fold Opened
+   *
+   * @private
+   */
+  const opened = () => {
+
+    fold.content.style.height = 'auto';
+    fold.content.classList.add('opened');
+    fold.button.classList.add('opened');
+
+    event.emit('opened', scope, fold);
+  };
+
+  /**
+   * Fold Closed
+   *
+   * @public
+   */
+  const closed = () => {
+
+    fold.button.classList.remove('open');
+    fold.content.classList.remove('open');
+
+    event.emit('closed', scope, fold);
+  };
+
+  /* -------------------------------------------- */
+  /* PUBLIC                                       */
+  /* -------------------------------------------- */
+
+  /**
+   * Enable Fold
+   *
+   * @private
+   */
+  fold.enable = () => {
+
+    const value = fold.disabled = false;
+    fold.button.classList.remove('disabled');
+    fold.content.classList.remove('disabled');
+
+    if (config.aria) fold.button.setAttribute('aria-disabled', String(value));
+  };
+
+  /**
+   * Disable Fold
+   *
+   * @private
+   */
+  fold.disable = () => {
+
+    const value = fold.disabled = true;
+    fold.content.classList.add('disable');
+    fold.button.classList.add('disable');
+
+    if (config.aria) fold.button.setAttribute('aria-disabled', String(value));
+  };
+
+  /**
+   * Fold Open
+   *
+   * @public
+   */
+  fold.open = (transition = true) => {
+
+    if (fold.opened) return;
+
+    event.emit('open', scope, fold);
+    const value = fold.opened = true;
+
+    if (!config.persist) fold.disable();
+    if (config.aria) fold.button.setAttribute('aria-expanded', String(value));
+
+    fold.button.classList.add('open');
+    fold.content.classList.add('open');
+
+    if (!transition) {
+      opened();
+    } else {
+      fold.content.style.height = `${fold.content.offsetHeight}px`; ;
     }
   };
 
-  constructor (
-    accordion: Folds['accordion'],
-    header: Folds['header'],
-    content: Folds['content']
-  ) {
+  /**
+   * Fold Close
+   *
+   * @public
+   */
+  fold.close = (transition = true) => {
 
-    if (header.fold) return;
+    if (!fold.opened) return;
 
-    this.accordion = accordion;
-    this.opts = this.accordion.options;
-    this.header = header;
-    if (this.opts.button) {
-      this.button = header.firstElementChild as HTMLButtonElement;
-    } else {
-      this.button = this.header.getElementsByTagName('button')[0];
-    }
-    this.content = content;
-    this.header.fold = this;
-    this.content.fold = this;
+    event.emit('close', scope, fold);
+    const value = fold.opened = false;
 
-    if (!Folds.instances?.[this.accordion.id]) Folds.instances[this.accordion.id] = 0;
+    if (!config.persist) fold.enable();
+    if (config.aria) fold.button.setAttribute('aria-expanded', String(value));
 
-    this.id = `${this.accordion.id}f${++Folds.instances[this.accordion.id]}`;
-    this.header.setAttribute('id', this.id + 'h');
-    this.content.setAttribute('id', this.id + 'c');
-    this.focused = false;
-    this.expanded = false;
-    this.disabled = false;
-    this.listen = [];
-
-    this.bind();
-    this.init();
-    this.initOpen();
-    this.initFocus();
-  }
-
-  open (transition = true) {
-
-    if (this.expanded) return;
-
-    this.accordion.emitEvent('accordion:open', [ this ]);
-    this.expanded = true;
-
-    if (!this.opts.collapsible) this.disable();
-
-    this.updateAria('button', 'aria-expanded');
-
-    this.header.classList.add('open');
-    this.content.classList.add('open');
+    fold.button.classList.remove('opened');
+    fold.content.classList.remove('opened');
 
     if (!transition) {
-      this.opened();
+      closed();
     } else {
-      const { offsetHeight } = this.content.firstElementChild as HTMLElement;
-      this.content.style.height = `${offsetHeight}px`;
+      fold.content.style.height = `${fold.content.offsetHeight}px`;
+      requestAnimationFrame(() => { fold.content.style.height = '0px'; });
     }
-  }
+  };
 
-  close (transition = true) {
+  /**
+   * Toggle Fold
+   *
+   * @public
+   */
+  fold.toggle = (transition = true) => {
 
-    if (!this.expanded) return;
+    return fold.opened ? fold.close(transition) : fold.open(transition);
 
-    this.accordion.emitEvent('accordion:close', [ this ]);
-    this.expanded = false;
+  };
 
-    if (!this.opts.collapsible) this.enable();
+  /**
+   * Focus Button
+   *
+   * @public
+   */
+  fold.focus = () => fold.button.focus();
 
-    this.updateAria('button', 'aria-expanded');
-    this.header.classList.remove('opened');
-    this.content.classList.remove('opened');
+  /**
+   * Blur Button
+   *
+   * @public
+   */
+  fold.blur = () => fold.button.blur();
 
-    if (!transition) {
-      this.closed();
-    } else {
-      const { offsetHeight } = this.content.firstElementChild as HTMLElement;
-      this.content.style.height = `${offsetHeight}px`;
-      requestAnimationFrame(() => { this.content.style.height = '0px'; });
+  /* -------------------------------------------- */
+  /* LISTENERS                                    */
+  /* -------------------------------------------- */
+
+  const $transition = (event: TransitionEvent) => {
+    if (event.target === event.currentTarget && event.propertyName === 'height') {
+      fold.opened ? opened() : closed();
     }
-  }
+  };
 
-  disable () {
+  const $focus = () => {
+    fold.focused = true;
+    fold.button.classList.add('focus');
+    fold.content.classList.add('focus');
+    event.emit('focus', scope, fold);
+  };
 
-    this.disabled = true;
-    this.updateAria('button', 'aria-disabled');
-    this.header.classList.add('disabled');
-    this.content.classList.add('disabled');
+  const $blur = () => {
+    fold.focused = false;
+    fold.button.classList.remove('focus');
+    fold.content.classList.remove('focus');
+    event.emit('blur', scope, fold);
+  };
 
-  }
+  const $click = () => {
+    fold.focus();
+    if (fold.disabled) return;
+    fold.toggle();
+  };
 
-  enable () {
+  const $buttonkey = (event: KeyboardEvent) => {
 
-    this.disabled = false;
-    this.updateAria('button', 'aria-disabled');
-    this.header.classList.remove('disabled');
-    this.content.classList.remove('disabled');
+    if (!config.keyboard) return;
 
-  }
-
-  focus () {
-
-    this.button.focus();
-
-  }
-
-  blur () {
-
-    this.button.blur();
-
-  }
-
-  toggle (transition = true) {
-
-    if (this.expanded) {
-      this.close(transition);
-    } else {
-      this.open(transition);
-    }
-
-  }
-
-  destroy () {
-
-    this.unbind();
-    this.clean();
-    this.header.classList.remove('open');
-    this.header.classList.remove('opened');
-    this.header.classList.remove('focus');
-    this.content.classList.remove('open');
-    this.content.classList.remove('open');
-    this.content.classList.remove('focus');
-    this.content.style.height = '0px'; // hide content
-    this.header.fold = null;
-    this.content.fold = null;
-    this.header.removeAttribute('id');
-    this.content.removeAttribute('id');
-    this.accordion = null;
-
-  }
-
-  private opened () {
-    this.content.style.height = 'auto';
-    this.header.classList.add('opened');
-    this.content.classList.add('opened');
-    this.accordion.emitEvent('accordion:opened', [ this ]);
-  }
-
-  private closed () {
-    this.header.classList.remove('open');
-    this.content.classList.remove('open');
-    this.accordion.emitEvent('accordion:closed', [ this ]);
-  }
-
-  private initOpen () {
-    if (
-      this.header.getAttribute(this.opts.initialOpenAttr) !== null ||
-      this.content.getAttribute(this.opts.initialOpenAttr) !== null
-    ) {
-      if (this.opts.initialOpen) {
-        setTimeout(() => { this.open(); }, this.opts.initialOpenDelay);
-      } else {
-        this.open(false);
-      }
-    }
-  }
-
-  private initFocus () {
-
-    if (this.button.getAttribute('autofocus') === null) return;
-    this.onFocus();
-
-  }
-
-  private init () {
-    this.updateAria('button');
-    this.updateAria('content');
-  }
-
-  private clean () {
-
-    this.updateAria('button', null, true);
-    this.updateAria('content', null, true);
-
-  }
-
-  private updateAria (element: string, property = null, remove = false) {
-
-    if (!this.opts.ariaEnabled) return;
-
-    if (property) {
-
-      this[element].setAttribute(property, this.aria[element][property]());
-
-    } else {
-
-      for (const property in this.aria[element]) {
-        if (!this.aria?.[property]) continue;
-        if (remove) {
-          this[element].removeAttribute(property);
-        } else {
-          this[element].setAttribute(property, this.aria[element][property]());
-        }
-      }
-    }
-  }
-
-  private transition (e: TransitionEvent) {
-
-    if (e.target === e.currentTarget && e.propertyName === 'height') {
-      if (this.expanded) {
-        this.opened();
-      } else {
-        this.closed();
-      }
-    }
-
-  }
-
-  private onFocus () {
-    this.focused = true;
-    this.header.classList.add('focus');
-    this.content.classList.add('focus');
-    this.accordion.emitEvent('accordion:focus', [ this ]);
-  }
-
-  private onBlur () {
-    this.focused = false;
-    this.header.classList.remove('focus');
-    this.content.classList.remove('focus');
-    this.accordion.emitEvent('accordion:blur', [ this ]);
-  }
-
-  private onClick (event: Event) {
-
-    // ensure focus is on button (click is not seting focus on firefox mac)
-    this.focus();
-
-    if (this.disabled) return;
-
-    this.toggle();
-
-  }
-
-  private onKeydown (e: KeyboardEvent) {
-
-    if (!this.opts.keyboard) return;
-
+    const { which } = event;
     let action = null;
 
-    switch (e.which) {
-      case 40: action = 'next'; break; // Arrow Down
-      case 38: action = 'prev'; break; // Arrow Up
-      case 36: action = 'first'; break; // Home
-      case 35: action = 'last'; break; // End
-      case 34: if (e.ctrlKey) action = 'next'; break; // Page down
-      case 33: if (e.ctrlKey) action = 'prev'; break; // Page Up
-    }
+    if (which === 40) action = 'next'; // Arrow Down
+    else if (which === 38) action = 'prev'; // Arrow Up
+    else if (which === 36) action = 'first'; // Home
+    else if (which === 35) action = 'last';  // End
+    else if (which === 34 && event.ctrlKey) action = 'next'; // Page down
+    else if (which === 33 && event.ctrlKey) action = 'prev';  // Page Up
+    else return;
 
     if (action) {
-      e.preventDefault();
-      this.accordion.focus(action);
+      event.preventDefault();
+      scope.focus(action);
     }
 
-  }
+  };
 
-  private onContentKey (e: KeyboardEvent) {
+  const $contentkey = (event: KeyboardEvent) => {
 
-    if (!this.opts.keyboard || !e.ctrlKey) return;
+    if (!config.keyboard || !event.ctrlKey) return;
 
-    let action = null;
-
-    switch (e.which) {
-      case 34: action = 'next'; break; // Page down
-      case 33: action = 'prev'; break; // Page Up
-    }
+    const action = event.which === 34 ? 'next' : event.which === 33 ? 'prev' : null;
 
     if (action) {
-      e.preventDefault();
-      this.accordion.focus(action);
+      event.preventDefault();
+      scope.focus(action);
     }
-  }
+  };
 
-  private bind () {
+  fold.button.addEventListener('focus', $focus);
+  fold.button.addEventListener('blur', $blur);
+  fold.button.addEventListener('click', $click);
+  fold.button.addEventListener('keydown', $buttonkey);
+  fold.content.addEventListener('keydown', $contentkey);
+  fold.content.addEventListener('transitionend', $transition);
 
-    this.listen = [
-      [ 'focus', this.button, this.onFocus.bind(this) ],
-      [ 'blur', this.button, this.onBlur.bind(this) ],
-      [ 'click', this.button, this.onClick.bind(this) ],
-      [ 'keydown', this.button, this.onKeydown.bind(this) ],
-      [ 'keydown', this.content, this.onContentKey.bind(this) ],
-      [ 'transitionend', this.content, this.transition.bind(this) ]
-    ];
+  /* -------------------------------------------- */
+  /* DESTROY                                      */
+  /* -------------------------------------------- */
 
-    for (const [ event, element, callback ] of this.listen) {
-      element.addEventListener(event, callback);
+  /**
+   * Destory Fold
+   *
+   * @public
+   */
+  fold.destroy = () => {
+
+    fold.button.removeEventListener('focus', $focus);
+    fold.button.removeEventListener('blur', $blur);
+    fold.button.removeEventListener('click', $click);
+    fold.button.removeEventListener('keydown', $buttonkey);
+    fold.content.removeEventListener('keydown', $contentkey);
+    fold.content.removeEventListener('transitionend', $transition);
+
+    if (config.aria) {
+      fold.button.removeAttribute('aria-controls');
+      fold.button.removeAttribute('aria-expanded');
+      fold.button.removeAttribute('aria-disabled');
+      fold.content.removeAttribute('role');
+      fold.content.removeAttribute('aria-labelledby');
     }
-  }
 
-  private unbind () {
+    fold.button.classList.remove('open', 'opened', 'focus');
+    fold.content.classList.remove('open', 'opened', 'focus');
+    fold.content.style.height = '0px';
+    fold.button.removeAttribute('id');
+    fold.content.removeAttribute('id');
+  };
 
-    for (const [ event, element, callback ] of this.listen) {
-      element.removeEventListener(event, callback);
-    }
-  }
+  /* -------------------------------------------- */
+  /* RETURN FOLD                                  */
+  /* -------------------------------------------- */
+
+  return fold;
 
 };
 
 /**
- * Accordion
+ * Settings Config
  *
- * Uses the following id combinator
- *
- * a = 'accordion'
- * f = 'fold number'
- * h = 'header'
- * c = 'content'
- *
- * eg: a1f1c is accordion with id 1, fold number 1 content target
+ * Merges user settings with defaults
  */
-export class Accordion extends EventEmitter {
+const $config = (options?: IOptions) => {
 
-  static instances = 0;
+  const config: IOptions = Object.create(null);
 
-  options: {
-    /**
-     * Whether W3C keyboard shortcuts are enabled
-     */
-    keyboard: boolean,
-    button: boolean,
-    /**
-     * Whether multiple folds can be opened at once
-     */
-    multiselect: boolean,
-    /**
-     * Whether ARIA attributes are enabled
-     */
-    ariaEnabled: boolean,
-    /**
-     * Whether the folds are collapsible
-     */
-    collapsible: boolean,
-    /**
-     * Whether to loop header focus. Sets focus back to
-     * first/last header when end/start reached.
-     */
-    carouselFocus: boolean,
-    /**
-     * Attribute for the header or content to open
-     * folds at initialization
-     */
-    initialOpenAttr: string,
-    /**
-     * Whether to use transition at initial open
-     */
-    initialOpen: boolean,
-    /**
-     * Delay used to show initial transition
-     */
-    initialOpenDelay: number,
-  } = {
-      keyboard: true,
-      button: false,
-      multiselect: true,
-      ariaEnabled: true,
-      collapsible: true,
-      carouselFocus: true,
-      initialOpen: true,
-      initialOpenDelay: 200,
-      initialOpenAttr: 'data-open'
-    };
+  config.initial = 0;
+  config.preserve = false;
+  config.persist = true;
+  config.multiple = false;
+  config.keyboard = true;
+  config.aria = true;
+  config.icons = Object.create(null);
+  config.icons.opened = down;
+  config.icons.closed = right;
+  config.icons.locked = locked;
 
-  id: string;
-  folds: Folds[];
-  element: MergeExclusive<{ fold?: Folds; accordion?: Accordion; }, HTMLElement>;
-  active: Function;
-
-  constructor (element: Element, options: Partial<Accordion['options']> = {}) {
-
-    super();
-
-    this.element = element as Accordion['element'];
-    this.element.accordion = this;
-    this.id = `a${++Accordion.instances}`;
-    this.element.setAttribute('id', this.id);
-    this.options = Object.assign(this.options, options);
-    this.folds = [];
-    this.bind();
-    this.init();
-    this.update();
-
+  if (options.icons) {
+    Object.assign(config.icons, options.icons);
+    delete options.icons;
   }
 
-  update () {
+  Object.assign<IOptions, IOptions>(config, options);
 
-    this.folds = [];
+  return config;
 
-    const children = this.element.children;
-    const length = children.length;
+};
 
-    for (let i = 0; i < length; i = i + 2) {
+export const accordion = (selector: string | Element, options?: IOptions) => {
 
-      const header = children[i] as Folds['header'];
-      const content = children[i + 1] as Folds['content'];
+  if (!('accordion' in window)) window.accordion = Object.create(null);
 
-      // get fold instance if there is already one
-      let fold: Folds = header.fold;
+  const scope: IScope = Object.create(null);
 
-      // create new one when header and content exist
-      if (!fold && header && content) fold = new Folds(this, header, content);
-      if (fold) this.folds.push(fold);
+  scope.folds = [];
+  scope.events = Object.create(null);
+  scope.id = `A${Object.keys(window.accordion).length}`;
+  scope.element = typeof selector === 'string' ? document.body.querySelector(selector) : selector;
+  scope.config = $config(options);
+  const event = $events(scope.events);
 
-    }
-  }
+  /**
+   * Accordion Events
+   */
+  scope.on = event.on;
 
-  focus (target: string) {
+  /**
+   * Accordion Focus
+   */
+  scope.focus = (target: 'prev' | 'next' | 'last' | 'first') => {
 
     let focused = null;
-    const folds = this.folds.length;
+    const folds = scope.folds.length;
 
-    for (let i = 0; i < folds && focused === null; i++) {
-      if (this.folds[i].focused) focused = i;
-    }
+    for (let i = 0; i < folds && focused === null; i++) if (folds[i].focused) focused = i;
 
     if ((target === 'prev' || target === 'next') && focused === null) {
       target = target === 'prev' ? 'last' : 'first';
     }
 
     if (target === 'prev' && focused === 0) {
-      if (!this.options.carouselFocus) return;
+      if (!scope.config.persist) return;
       target = 'last';
     }
 
     if (target === 'next' && focused === folds - 1) {
-      if (!this.options.carouselFocus) return;
+      if (!scope.config.persist) return;
       target = 'first';
     }
 
-    switch (target) {
-      case 'prev': this.folds[--focused].focus(); break;
-      case 'next': this.folds[++focused].focus(); break;
-      case 'last': this.folds[folds - 1].focus(); break;
-      case 'first': default: this.folds[0].focus();
+    if(target === 'prev') folds[--focused].focus();
+    else if (target === 'next') folds[++focused].focus();
+    else if (target === 'last') folds[folds - 1].focus();
+    else if (target === 'first') folds[folds - 1].focus();
+    else folds[0].focus();
+
+  };
+
+  if (scope.config.aria) {
+    scope.element.setAttribute('aria-multiselectable', String(scope.config.multiple));
+  }
+
+  const children = scope.element.children;
+  const length = children.length;
+
+  for (let i = 0; i < length; i = i + 2) {
+
+    let child = children[i] as HTMLElement;
+    let sibling = children[i + 1];
+    let button: Element;
+    let content: Element;
+
+    if (child.nodeName === 'A' || child.nodeName === 'BUTTON') {
+      button = child;
+    } else {
+      child = child.firstElementChild as HTMLElement;
+      sibling = child.nextElementSibling;
+      if (child.nodeName === 'A' || child.nodeName === 'BUTTON') {
+        button = child;
+      } else {
+        throw new TypeError('Wrapped fold buttons must be either <a> or <button> elements');
+      }
     }
 
-  }
-
-  destroy () {
-
-    this.emitEvent('destroy');
-    this.element.removeAttribute('id');
-
-    for (const fold of this.folds) fold.destroy();
-
-    this.unbind();
-    this.clean();
-    this.element.accordion = null;
-    this.emitEvent('destroyed');
-
-  }
-
-  private handleFoldOpen (openFold: Folds) {
-
-    if (this.options.multiselect) return;
-    for (const fold of this.folds) if (openFold !== fold) fold.close();
-
-  }
-
-  private init () {
-
-    if (!this.options.ariaEnabled) return;
-    if (this.options.multiselect) {
-      this.element.setAttribute('aria-multiselectable', 'true');
+    if (sibling.nodeName === 'A' || sibling.nodeName === 'BUTTON') {
+      throw new TypeError('Content fold cannot be <a> or <button> element');
+    } else {
+      content = sibling;
     }
 
+    if (button && content) {
+
+      const fold: IScope['folds'][number] = Object.create(null);
+
+      fold.button = button as any;
+      fold.content = content as any; ;
+      fold.number = scope.folds.length;
+      fold.id = `${scope.element.id}F${fold.number}`;
+      fold.button.id = `B${fold.id}`;
+      fold.content.id = `C${fold.id}`;
+
+      scope.folds.push($folds(scope, fold, event));
+
+    }
   }
 
-  private clean () {
+  /**
+   * Destory
+   *
+   * Teardown the accordion
+   */
+  scope.destroy = () => {
 
-    this.element.removeAttribute('aria-multiselectable');
+    for (const fold of scope.folds) fold.destroy();
 
-  }
+    scope.element.removeAttribute('aria-multiselectable');
+    scope.element.removeAttribute('id');
+    event.emit('destroy', scope);
 
-  private bind () {
+    delete window.accordion[scope.id];
 
-    this.active = this.handleFoldOpen.bind(this);
-    this.on('accordion:open', this.active);
+  };
 
-  }
+  const id = scope.element.hasAttribute('id') ? scope.element.id : scope.id;
+  window.accordion[id] = scope;
 
-  private unbind () {
+  return scope;
 
-    this.off('accordion:open', this.active);
-
-  }
-
-}
-
-export function accordion (element: Element, options: Partial<Accordion['options']> = {}) {
-
-  return new Accordion(element, options);
-
-}
+};

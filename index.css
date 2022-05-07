@@ -1,0 +1,69 @@
+.accordion {
+  display: block;
+  width: 100%;
+}
+.accordion-header {
+  display: block;
+  margin: 0;
+}
+.accordion-header.bd-bottom {
+  border-bottom: 1px solid transparent;
+}
+.accordion-header .icon-chevron-down {
+  visibility: hidden;
+}
+.accordion-header .icon-chevron-right {
+  visibility: visible;
+}
+.accordion-header.open.bd-bottom {
+  border-bottom: none;
+}
+.accordion-header.open .icon-chevron-down {
+  visibility: visible;
+}
+.accordion-header.open .icon-chevron-right {
+  visibility: hidden;
+}
+.accordion-header.focus > .accordion-button {
+  outline: none;
+}
+.accordion-button {
+  display: block;
+  width: 100%;
+  margin: 0;
+  color: #000000;
+  font-size: 15px;
+  text-align: left;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+}
+.accordion-button::-moz-focus-inner {
+  border: 0;
+}
+.accordion-content {
+  display: none;
+  height: 0;
+  overflow: hidden;
+  color: #000000;
+  background-color: #ffffff;
+  border-top: 1px solid transparent;
+  transform: translateY(-100%);
+  transition: 0.1s linear 0.1s;
+}
+.accordion-content.open {
+  display: block;
+  transform: translateY(0);
+  transition: 0.1s linear;
+}
+.accordion-content.opened {
+  overflow: visible;
+}
+.accordion-content.opened > .accordion-inner {
+  opacity: 1;
+  transition: opacity 0.145s linear;
+}
+.accordion-inner {
+  opacity: 0;
+  transition: opacity 0.1s linear;
+}

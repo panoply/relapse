@@ -1,0 +1,114 @@
+
+
+// GLOBALS
+$accordion-bg: #ffffff;
+
+// BORDER STYLES
+$accordion-border-color: transparent !default;
+$accordion-border-width: 1px !default;
+
+// HEADER STYLES
+$accordion-header-button-bg: #000000 !default;
+$accordion-header-button-bg-open: #333333 !default;
+$accordion-header-button-bg-focus: #999999 !default;
+$accordion-header-button-font-color: #000000 !default;
+$accordion-header-button-font-size: 15px !default;
+
+// CONTENT STYLE
+$accordion-content-bg: #ffffff !default;
+$accordion-content-font-color: #000000!default;
+
+// TRANSITIONS
+$accordion-transition-button: background-color 0.2s linear !default;
+$accordion-transition-content-outer: height 0.1s linear 0.1s !default;
+$accordion-transition-content-outer-open: height 0.1s linear !default;
+$accordion-transition-content-inner: opacity 0.1s linear;
+$accordion-transition-content-inner-open: opacity 0.3s linear !default;
+
+.accordion {
+  display: block;
+  width: 100%;
+
+  &-header {
+    display: block;
+    margin: 0;
+
+    &.bd-bottom {
+      border-bottom: 1px solid transparent;
+    }
+
+    .icon-chevron-down {
+      visibility: hidden;
+    }
+
+    .icon-chevron-right {
+      visibility: visible;
+    }
+
+    &.open {
+      &.bd-bottom {
+        border-bottom: none;
+      }
+
+      .icon-chevron-down {
+        visibility: visible;
+      }
+
+      .icon-chevron-right {
+        visibility: hidden;
+      }
+    }
+
+    &.focus > .accordion-button {
+      outline: none;
+    }
+  }
+
+  &-button {
+    display: block;
+    width: 100%;
+    margin: 0;
+    color: $accordion-header-button-font-color;
+    font-size: $accordion-header-button-font-size;
+    text-align: left;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+
+
+    &::-moz-focus-inner {
+      border: 0;
+    }
+  }
+
+  &-content {
+    display: none;
+    height: 0;
+    overflow: hidden;
+    color: $accordion-content-font-color;
+    background-color: $accordion-content-bg;
+    border-top: 1px solid transparent;
+    transform: translateY(-100%);
+    transition: 0.1s linear 0.1s;
+
+    &.open {
+      display: block;
+      transform: translateY(0);
+      transition: 0.1s linear;
+    }
+
+    &.opened {
+      overflow: visible;
+
+      > .accordion-inner {
+        opacity: 1;
+        transition: opacity 0.145s linear;
+      }
+    }
+  }
+
+  &-inner {
+    opacity: 0;
+    transition: opacity 0.1s linear;
+  }
+}

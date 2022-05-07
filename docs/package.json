@@ -1,0 +1,55 @@
+{
+  "name": "accordion-docs",
+  "private": true,
+  "description": "Documentation and example for @panoply/accordion",
+  "version": "0.2.0",
+  "homepage": "https://github.com/panoply/accordion",
+  "author": {
+    "name": "Nikolas Savvidis",
+    "url": "https://github.com/panoply"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/panoply/accordion.git"
+  },
+  "bugs": {
+    "url": "https://github.com/panoply/accordion/issues"
+  },
+  "license": "ISC",
+  "type": "module",
+  "types": "./index.d.ts",
+  "module": "./index.esm.js",
+  "exports": {
+    ".": {
+      "import": "./index.esm.js",
+      "require": "./index.umd.js"
+    }
+  },
+  "keywords": [
+    "accordion",
+    "component",
+    "collapse",
+    "toggle"
+  ],
+  "scripts": {
+    "dev": "esbuild src/index.ts --outfile=index.js --format=esm --bundle --watch",
+    "build": "esbuild src/index.ts --outfile=index.js --format=esm --bundle --mangle-props=^[$] --minify"
+  },
+  "browserslist": [
+    "defaults",
+    "Chrome >= 78",
+    "Firefox >= 78",
+    "Safari >= 10",
+    "Edge >= 18",
+    "IE >= 11",
+    "Opera >= 73",
+    "ChromeAndroid >= 75",
+    "ios_saf >= 9",
+    "Android >= 4",
+    "not dead"
+  ],
+  "devDependencies": {},
+  "optionalDependencies": {
+    "postcss": "^8.4.13"
+  }
+}
