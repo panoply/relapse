@@ -2,7 +2,7 @@ import { accordion } from 'relapse';
 
 const c = accordion(document.querySelector('#accordion'), {
   duration: 300,
-  multiple: true
+  multiple: false
 });
 
 // c.folds[0].disable(3);

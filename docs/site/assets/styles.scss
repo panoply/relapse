@@ -27,7 +27,7 @@ $blue: #03b5d2;
 body {
   display: flex;
   min-height: 100vh;
-  margin: 0;
+  margin: 50px;
   padding: 50px;
   color: $gray;
   font-family: Hind, sans-serif;
@@ -41,6 +41,9 @@ body {
 }
 
 .accordion {
+  position: relative;
+  border: 1px solid $lightgray;
+
   button {
     position: relative;
     display: block;
@@ -58,17 +61,6 @@ body {
     &[aria-expanded="true"] {
       color: $blue;
       border-bottom: 1px solid $blue;
-
-
-      + .accordion-content {
-        will-change: opacity;
-      }
-
-      .icon {
-        &::after {
-          width: 0;
-        }
-      }
     }
 
 
@@ -76,30 +68,14 @@ body {
     &:focus {
       color: $blue;
       cursor: pointer;
-
-      &::after {
-        color: $blue;
-        border: 1px solid $blue;
-        cursor: pointer;
-      }
-    }
-
-    .accordion-title {
-      padding: 1em 1.5em 1em 0;
     }
   }
 
 
-  .accordion-content {
+  section {
     height: 0;
     overflow: hidden;
     opacity: 0;
-    will-change: opacity;
-
-    p {
-      margin: 2em 0;
-      font-weight: 300;
-      font-size: 1rem;
-    }
+    will-change: opacity, height;
   }
 }
