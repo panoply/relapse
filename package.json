@@ -1,26 +1,26 @@
 {
-  "name": "@panoply/accordion",
-  "description": "Simple a11y accordion inspired from Handorgel",
-  "version": "0.2.0",
-  "homepage": "https://github.com/panoply/accordion",
+  "name": "relapse",
+  "description": "A lightweight ESM (vanilla) toggle library for creating dynamic collapsible components.",
+  "version": "0.0.1",
+  "homepage": "https://github.com/panoply/relapse",
   "author": {
     "name": "Nikolas Savvidis",
     "url": "https://github.com/panoply"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/panoply/accordion.git"
+    "url": "git://github.com/panoply/relapse.git"
   },
   "bugs": {
-    "url": "https://github.com/panoply/accordion/issues"
+    "url": "https://github.com/panoply/relapse/issues"
   },
   "license": "ISC",
   "type": "module",
   "types": "./index.d.ts",
-  "module": "./index.min.js",
+  "module": "./index.js",
   "exports": {
     ".": {
-      "import": "./index.min.js"
+      "import": "./index.js"
     }
   },
   "files": [
@@ -30,12 +30,12 @@
     "./index.css"
   ],
   "keywords": [
+    "dropdown",
     "accordion",
-    "component",
     "collapse",
     "toggle",
     "a11y",
-    "dropdown"
+    "component"
   ],
   "prettier": "@sissel/prettier-config",
   "eslintConfig": {

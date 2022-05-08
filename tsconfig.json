@@ -26,11 +26,11 @@
     "noUnusedParameters": true,
     "pretty": true,
     "rootDir": "src",
-    "typeRoots": ["node_modules/@types", "index.d.ts"],
+    "typeRoots": ["node_modules/@types", "src/index.d.ts"],
     "declarationDir": "package/@types",
     "baseUrl": ".",
     "paths": {
-      "types": ["./index.d.ts"]
+      "types": ["src/index.d.ts"]
     }
   }
 }

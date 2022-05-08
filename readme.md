@@ -1,6 +1,6 @@
-# @panoply/accordion
+# Relapse | rĭ-lăps′
 
-A lightweight (1.6kb gzip) [a11y](https://www.a11yproject.com/) accordion. Written in TypeScript and distributed in ES6, this silky smooth collapsible component is dependency free, vanilla and flaunts an extensive API.
+An [A11y](https://www.a11yproject.com/) compliant, lightweight (1.7kb gzip) and dependency free toggle library for collapsible accordions. Written in TypeScript and distributed in ES6 this tiny little module flaunts an extensive API, uses [rAF](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame) powered transitions and requires minimal markup.
 
 ### Example
 
@@ -9,35 +9,32 @@ Visit the docs and example: **[https://panoply.github.io/accordion](https://pano
 ### Key Features
 
 - Minimal markup (2 element node tree).
-- Accessibility support, Aria + Keyboard
-- Event dispatching and global context
-- Functional, no classes or prototype.
+- Silky smooth rAF powered transitions.
+- Accessibility support, Aria + Keyboard.
+- Functional and pure, no classes or prototype.
+- Event dispatching with global context access
 
 ### Installation
 
 The module is shipped for ESM consumption in the Browser.
 
 ```bash
-pnpm add @panoply/accordion
+pnpm add relapse
 ```
 
 # Usage
 
-The module provides both named and default import options.
+The module uses a default export:
 
 ```js
-import accordion from '@panoply/accordion';
+import relapse from 'relapse';
 
-accordion('#accordion', {
+relapse('#accordion', {
+  duration: 175,
   persist: true,
   multiple: false,
-  aria: true,
-  keyboard: true,
-  icons: {
-    opened: '<path d="M9 18l6-6-6-6"/>',
-    closed: '<path d="M6 9l6 6 6-6"/>',
-    locked: null
-  }
+  preserve: false,
+  keyboard: true
 });
 ```
 
@@ -124,35 +121,27 @@ $accordion-transition-opacity:    0.3s;
 
 ### `keyboard`
 
-### `aria`
-
-### `icons`
+### `duration`
 
 # Instance
 
-An accordion will return the below instance. Each accordion is accessible via `window.accordion` as a object list where the accordion `id` is used as property, when no `id` is defined on a accordion one is generated.
+Relapse will maintain active instances in global scope. Each accordion is accessible via `window.relapse` which uses a `Map` store, who's keys will reference the element `id` or when no `id` is defined one is generated.
 
 ```ts
 interface Accordion {
   on: (event: string, callback: (this: Accordion, fold?: IFold) => void) => void;
   off: (event: string, callback: Function) => void);
-  focus: (target: 'prev' | 'next' | 'last' | 'first') => void;
   destroy: () => void;
   id: string;
   element: Element;
+  focused: number;
   events: { [name: string]: Function[] };
   config: {
-    initial: number | string;
     persist: boolean;
     multiple: boolean;
     preserve: boolean;
     keyboard: boolean;
-    aria: boolean;
-    icons: {
-      closed: string;
-      opened: string;
-      locked: string;
-    }
+    duration: number;
   };
   folds: Array<{
     id: string;
@@ -162,13 +151,10 @@ interface Accordion {
     expanded: boolean;
     focused: boolean;
     disabled: boolean;
-    enable: () => void;
-    disable: () => void;
     focus: () => void;
-    blur: () => void;
-    toggle: (transition?: boolean) => void;
-    open: (transition?: boolean) => void;
-    close: (transition?: boolean) => void;
+    toggle: (index?: number) => void;
+    open: (index?: number) => void;
+    close: (index?: number) => void;
     destroy: () => void;
   }>;
 }
@@ -179,29 +165,20 @@ interface Accordion {
 Events will be dispatched at different points of a collapse. The toggled fold is passed in the listeners arguments and you can access the accordions instance via the `this` context.
 
 ```js
-import accordion from '@panoply/accordion';
+import accordion from 'relapse';
 
 // Accordion Instance
 //
-const event = accordion('#accordion');
-
-// fold is about to be opened.
-event.on('open', function (this: IAccordion, fold?: IFold) {});
-
-// fold has opened
-event.on('opened', function (this: IAccordion, fold?: IFold) {});
-
-// fold is about to close
-event.on('close', function (this: IAccordion, fold?: IFold) {});
-
-// fold has closed
-event.on('closed', function (this: IAccordion, fold?: IFold) {});
+const event = relapse('#accordion');
 
 // toggle button has been focused.
 event.on('focus', function (this: IAccordion, fold?: IFold) {});
 
-// toggle button has lost focus.
-event.on('blur', function (this: IAccordion, fold?: IFold) {});
+// fold is about to be opened.
+event.on('open', function (this: IAccordion, fold?: IFold) {});
+
+// fold is about to close
+event.on('close', function (this: IAccordion, fold?: IFold) {});
 
 // accordion has been destroyed.
 event.on('destroy', function (this: IAccordion) {});
@@ -210,33 +187,29 @@ event.on('destroy', function (this: IAccordion) {});
 # Methods
 
 ```typescript
-import accordion from '@panoply/accordion';
+import relapse from 'relapse';
 
-const instance = accordion('#accordion');
+const accordion = relapse('#accordion');
 
-instance.focus('next');
+accordion.focus('next');
 
-instance.destroy();
+accordion.destroy();
 ```
 
 ### Folds
 
 ```js
-import accordion from '@panoply/accordion';
+import relapse from 'relapse';
 
-const instance = accordion('#accordion');
+const accordion = relapse('#accordion');
 
-instance.folds[0].open((transition = true));
+accordion.folds[0].open(index?: number);
 
-instance.folds[0].close((transition = true));
+accordion.folds[0].close(index?: number);
 
-instance.folds[0].toggle((transition = true));
+accordion.folds[0].toggle();
 
-instance.folds[0].disable();
-
-instance.folds[0].enable();
-
-instance.folds[0].destroy();
+accordion.folds[0].destroy();
 ```
 
 # Changelog
