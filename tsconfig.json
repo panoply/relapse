@@ -1,6 +1,6 @@
 {
   "exclude": ["node_modules/**", "package", "test"],
-  "include": ["src/**/*.ts", "types/*"],
+  "include": ["src/**/*.ts", "types/*", "accordion.d.ts"],
   "typeAcquisition": {
     "enable": true
   },
@@ -26,8 +26,11 @@
     "noUnusedParameters": true,
     "pretty": true,
     "rootDir": "src",
-    "typeRoots": ["node_modules/@types", "types/*"],
+    "typeRoots": ["node_modules/@types", "src/index.d.ts"],
     "declarationDir": "package/@types",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "types": ["src/index.d.ts"]
+    }
   }
 }

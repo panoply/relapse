@@ -1,0 +1,42 @@
+$lightgray: lightgray;
+$pink: hotpink;
+
+.accordion {
+  position: relative;
+  border: 1px solid $lightgray;
+
+  button {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 1em 0;
+    color: $text;
+    font-weight: 400;
+    font-size: 1.15rem;
+    text-align: left;
+    background: none;
+    border: none;
+    border-bottom: 1px solid $lightgray;
+    outline: none;
+
+    &[aria-expanded="true"] {
+      color: $pink;
+      border-bottom: 1px solid $pink;
+    }
+
+
+    &:hover,
+    &:focus {
+      color: $pink;
+      cursor: pointer;
+    }
+  }
+
+
+  .accordion-content {
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    will-change: opacity, height;
+  }
+}

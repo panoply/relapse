@@ -1,40 +1,48 @@
 {
-  "name": "@panoply/accordion",
-  "description": "Simple a11y accordion inspired from Handorgel",
-  "version": "0.2.0",
-  "homepage": "https://github.com/panoply/accordion",
+  "name": "relapse",
+  "description": "A lightweight ESM (vanilla) toggle library for creating dynamic collapsible components.",
+  "version": "0.0.2",
+  "homepage": "https://github.com/panoply/relapse",
   "author": {
     "name": "Nikolas Savvidis",
     "url": "https://github.com/panoply"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/panoply/accordion.git"
+    "url": "git://github.com/panoply/relapse.git"
   },
   "bugs": {
-    "url": "https://github.com/panoply/accordion/issues"
+    "url": "https://github.com/panoply/relapse/issues"
   },
   "license": "ISC",
   "type": "module",
-  "types": "./types/accordion.d.ts",
-  "module": "./package/accordion.esm.js",
+  "types": "./index.d.ts",
+  "module": "./index.js",
   "exports": {
     ".": {
-      "import": "./package/accordion.esm.js",
-      "require": "./package/accordion.umd.js"
+      "import": "./index.js"
     }
   },
+  "files": [
+    "./index.d.ts",
+    "./index.min.js",
+    "./index.scss",
+    "./index.css"
+  ],
   "keywords": [
+    "dropdown",
     "accordion",
-    "component",
     "collapse",
-    "toggle"
+    "toggle",
+    "a11y",
+    "component"
   ],
   "prettier": "@sissel/prettier-config",
   "eslintConfig": {
     "ignorePatterns": [
       "package",
-      "types"
+      "types",
+      "index.js"
     ],
     "extends": "@sissel/eslint-config",
     "rules": {
@@ -42,13 +50,9 @@
     }
   },
   "scripts": {
-    "dev": "rollup -c -w",
-    "build": "rollup -c --environment prod",
-    "sync": "./bin/sync",
-    "types": "tsc --noEmit --emitDeclarationOnly false",
-    "test-watch": "node test/theme-watch.js",
-    "test-download": "node test/theme-download.js",
-    "test-upload": "node test/theme-upload.js"
+    "dev": "esbuild src/index.ts --outfile=index.js --format=esm --bundle --watch",
+    "build": "esbuild src/index.ts --outfile=index.js --format=esm --bundle --mangle-props=^[$] --minify",
+    "gzs": "gzip-size index.js --include-original"
   },
   "browserslist": [
     "defaults",
@@ -63,24 +67,17 @@
     "Android >= 4",
     "not dead"
   ],
-  "dependencies": {
-    "ev-emitter": "^2.1.2"
-  },
   "devDependencies": {
-    "@sissel/eslint-config": "^1.0.0",
-    "@sissel/prettier-config": "^1.0.0",
-    "@sissel/rollup-config": "^1.0.1",
-    "ava": "^4.0.1",
-    "browserslist": "^4.19.1",
-    "esbuild": "^0.14.22",
-    "eslint": "^8.9.0",
-    "esm": "^3.2.25",
-    "prettier": "^2.5.1",
-    "rollup": "^2.67.2",
-    "type-fest": "^2.9.0",
-    "typescript": "^4.5.5"
+    "@sissel/eslint-config": "^1.1.0",
+    "@sissel/prettier-config": "^1.1.0",
+    "browserslist": "^4.20.3",
+    "esbuild": "^0.14.38",
+    "eslint": "^8.14.0",
+    "gzip-size-cli": "^5.1.0",
+    "prettier": "^2.6.2",
+    "typescript": "^4.6.4"
   },
   "optionalDependencies": {
-    "postcss": "^8.4.6"
+    "postcss": "^8.4.13"
   }
 }

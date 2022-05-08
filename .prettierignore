@@ -6,3 +6,4 @@ package
 *.js
 *.ts
 *.mjs
+*.html

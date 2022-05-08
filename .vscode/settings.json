@@ -1,3 +1,12 @@
 {
-  "eslint.packageManager": "pnpm"
+  "npm.packageManager": "pnpm",
+  "eslint.packageManager": "pnpm",
+  "stylelint.validate": ["scss", "sass", "less", "postcss"],
+  "stylelint.packageManager": "pnpm",
+  "stylelint.enable": true,
+  "scss.validate": false, // important to disable vscode validation
+  "scss.scannerExclude": ["**/.git", "**/node_modules"],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.stylelint": true
+  }
 }
