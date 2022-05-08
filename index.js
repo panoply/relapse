@@ -1,1 +1,285 @@
-var y=o=>({emit:(i,e,a)=>{let c=o[i]||[],l=c.length,b=null;for(let d=0;d<l;d++){let n=c[d].apply(e,[a]);b===null&&n===!1&&(b=!0)}return b},on:(i,e)=>{o[i]||(o[i]=[]),o[i].push(e)},off:(i,e)=>{let a=[],c=o[i];if(c&&e){let l=0,b=c.length;for(;l<b;l++)c[l]!==e&&a.push(c[l])}a.length?c[i]=a:delete c[i]}});var x=o=>{let i=Object.create(null);return i.preserve=!1,i.persist=!0,i.multiple=!1,i.keyboard=!0,i.duration=175,i.fade=!0,i.schema="data-accordion",Object.assign(i,o),i},$=(o,i)=>e=>{let{config:a}=o,{duration:c}=a,l=n=>{o.collapsing=!0;let{content:t,button:r}=n,{scrollHeight:m,style:u}=t,s=performance.now(),f=1;requestAnimationFrame(function p(g){let A=Math.min((g-s)/c,1),h;f>=0&&(u.opacity=`${f-=.007}`),A<1?(u.height=`${m-A*m}px`,h=requestAnimationFrame(p)):A>=1&&(u.height="0",u.opacity="0",n.expanded=!1,o.collapsing=!1,t.classList.remove("expanded"),r.classList.remove("expanded"),r.ariaDisabled="false",cancelAnimationFrame(h))})},b=n=>{o.collapsing=!0;let{scrollHeight:t,style:r}=n,m=performance.now(),u=0;requestAnimationFrame(function s(f){let p=Math.min((f-m)/c,1),g;u<=1&&(r.opacity=`${u+=.03}`),p<1?(r.height=`${p*t}px`,g=requestAnimationFrame(s)):p>=1&&(r.height="auto",r.opacity="1",o.collapsing=!1,cancelAnimationFrame(g))})},d=n=>{if(typeof n!="number")return o.active!==e.number&&(o.active=e.number),e;if(o.folds[n])return o.active=e.number,o.folds[n];throw new TypeError(`No fold exists at index: ${n}`)};e.button.ariaExpanded=`${e.expanded}`,e.button.ariaDisabled=`${e.disabled}`,e.button.setAttribute("aria-controls",e.id),e.content.setAttribute("aria-labelledby",e.button.id),e.content.setAttribute("role","region"),e.focus=()=>{e.button.classList.add("focused"),e.content.classList.add("focused"),o.active=e.number,i.emit("focus",o,e)},e.blur=()=>{e.button.classList.remove("focused"),e.content.classList.remove("focused")},e.enable=n=>{let t=d(n);t.disabled&&(t.disabled=!1,t.button.ariaDisabled="false",t.button.classList.remove("disabled"))},e.disable=n=>{let t=d(n);t.disabled||(t.expanded?a.persist&&(t.disabled=!0,t.button.ariaDisabled="true"):(t.close(),t.disabled=!0,t.button.ariaDisabled="true",t.button.classList.add("disabled")))},e.close=n=>{let t=d(n);if(a.multiple&&!t.expanded)l(t);else for(let r of o.folds)if(r.expanded){if(a.persist&&r.number===t.number)break;l(r),t=r;break}t.enable(),i.emit("collapse",o,t)},e.open=n=>{let t=d(n);t.expanded||t.disabled||(t.close(),b(t.content),t.expanded=!0,t.button.ariaDisabled="true",t.button.classList.add("expanded"),t.content.classList.add("expanded"),t.disable(),i.emit("expand",o,t))},e.toggle=()=>{if(!o.collapsing&&!i.emit("toggle",o,e))return e.expanded?e.close():e.open()},e.destroy=(n=!1)=>{n&&(e.button.removeAttribute("aria-expanded"),e.button.removeAttribute("aria-disabled"),e.button.removeAttribute("aria-controls"),e.content.removeAttribute("aria-labelledby"),e.content.removeAttribute("role")),e.button.removeEventListener("click",e.toggle),e.button.removeEventListener("focus",e.focus),e.button.removeEventListener("blur",e.blur)},e.button.addEventListener("click",e.toggle),e.button.addEventListener("focus",e.focus),e.button.addEventListener("blur",e.blur),o.folds.push(e)},v=(o,i)=>{window.relapse instanceof Map||(window.relapse=new Map);let e=Object.create(null);e.folds=[],e.events=Object.create(null),e.config=x(i),e.id=`A${window.relapse.size}`,e.element=typeof o=="string"?document.body.querySelector(o):o,e.element.ariaMultiSelectable=`${e.config.multiple}`,e.collapsing=!1;let a=e.element.children,c=a.length,l=y(e.events),b=$(e,l);for(let n=0;n<c;n=n+2){let t=a[n],r=a[n+1],m,u;if(t.nodeName==="A"||t.nodeName==="BUTTON")m=t;else throw new TypeError("Buttons must be either <a> or <button> elements");if(r.nodeName==="A"||r.nodeName==="BUTTON")throw new TypeError("Content fold cannot be <a> or <button> element");u=r;let s=Object.create(null);s.button=m,s.content=u,s.number=e.folds.length,s.id=`${e.id}F${s.number}`,s.button.id=`B${s.id}`,s.content.id=`C${s.id}`,s.disabled=m.classList.contains("disabled")||u.classList.contains("disabled"),s.expanded=m.classList.contains("expanded")||u.classList.contains("expanded"),b(s)}let d=(n,t)=>{if(console.log(n),typeof n=="number")return e.folds[n][t]();if(typeof n=="string"){for(let r of e.folds)if(r.button.dataset[`${e.config.schema}-fold`]===n)return r[t]()}throw new TypeError(`Fold does not exist for "${n}"`)};return e.on=l.on,e.off=l.off,e.collapse=n=>d(n,"close"),e.expand=n=>d(n,"open"),e.destroy=(n=!1)=>{for(let t of e.folds)t.destroy();e.element.removeAttribute("aria-multiselectable"),e.element.removeAttribute("id"),l.emit("destroy",e),window.relapse.delete(e.id)},window.relapse.set(e.id,e),e};var F={accordion:v};export{v as accordion,F as default};
+// src/lib/events.ts
+var $events = (events) => ({
+  emit: (name, scope, fold) => {
+    const event = events[name] || [];
+    const length = event.length;
+    let prevent = null;
+    for (let i = 0; i < length; i++) {
+      const returns = event[i].apply(scope, [fold]);
+      if (prevent === null && returns === false)
+        prevent = true;
+    }
+    return prevent;
+  },
+  on: (name, callback) => {
+    if (!events[name])
+      events[name] = [];
+    events[name].push(callback);
+  },
+  off: (name, callback) => {
+    const live = [];
+    const event = events[name];
+    if (event && callback) {
+      let i = 0;
+      const len = event.length;
+      for (; i < len; i++)
+        if (event[i] !== callback)
+          live.push(event[i]);
+    }
+    if (live.length) {
+      event[name] = live;
+    } else {
+      delete event[name];
+    }
+  }
+});
+
+// src/lib/accordion.ts
+var $defaults = (options) => {
+  const config = /* @__PURE__ */ Object.create(null);
+  config.preserve = false;
+  config.persist = true;
+  config.multiple = false;
+  config.keyboard = true;
+  config.duration = 175;
+  config.fade = true;
+  config.schema = "data-accordion";
+  Object.assign(config, options);
+  return config;
+};
+var $folds = (scope, event) => (fold) => {
+  const { config } = scope;
+  const { duration } = config;
+  const $collapse = (focus) => {
+    scope.collapsing = true;
+    const { content, button } = focus;
+    const { scrollHeight, style } = content;
+    const start = performance.now();
+    let opacity = 1;
+    requestAnimationFrame(function $animate(time) {
+      const progress = Math.min((time - start) / duration, 1);
+      let raf;
+      if (opacity >= 0)
+        style.opacity = `${opacity -= 7e-3}`;
+      if (progress < 1) {
+        style.height = `${scrollHeight - progress * scrollHeight}px`;
+        raf = requestAnimationFrame($animate);
+      } else if (progress >= 1) {
+        style.height = "0";
+        style.opacity = "0";
+        focus.expanded = false;
+        scope.collapsing = false;
+        content.classList.remove("expanded");
+        button.classList.remove("expanded");
+        button.ariaDisabled = "false";
+        cancelAnimationFrame(raf);
+      }
+    });
+  };
+  const $expand = (focus) => {
+    scope.collapsing = true;
+    const { scrollHeight, style } = focus;
+    const start = performance.now();
+    let opacity = 0;
+    requestAnimationFrame(function $animate(time) {
+      const progress = Math.min((time - start) / duration, 1);
+      let raf;
+      if (opacity <= 1)
+        style.opacity = `${opacity += 0.03}`;
+      if (progress < 1) {
+        style.height = `${progress * scrollHeight}px`;
+        raf = requestAnimationFrame($animate);
+      } else if (progress >= 1) {
+        style.height = "auto";
+        style.opacity = "1";
+        scope.collapsing = false;
+        cancelAnimationFrame(raf);
+      }
+    });
+  };
+  const $active = (index) => {
+    if (typeof index !== "number") {
+      if (scope.active !== fold.number)
+        scope.active = fold.number;
+      return fold;
+    }
+    if (scope.folds[index]) {
+      scope.active = fold.number;
+      return scope.folds[index];
+    } else {
+      throw new TypeError(`No fold exists at index: ${index}`);
+    }
+  };
+  fold.button.ariaExpanded = `${fold.expanded}`;
+  fold.button.ariaDisabled = `${fold.disabled}`;
+  fold.button.setAttribute("aria-controls", fold.id);
+  fold.content.setAttribute("aria-labelledby", fold.button.id);
+  fold.content.setAttribute("role", "region");
+  fold.focus = () => {
+    fold.button.classList.add("focused");
+    fold.content.classList.add("focused");
+    scope.active = fold.number;
+    event.emit("focus", scope, fold);
+  };
+  fold.blur = () => {
+    fold.button.classList.remove("focused");
+    fold.content.classList.remove("focused");
+  };
+  fold.enable = (index) => {
+    const focus = $active(index);
+    if (focus.disabled) {
+      focus.disabled = false;
+      focus.button.ariaDisabled = "false";
+      focus.button.classList.remove("disabled");
+    }
+  };
+  fold.disable = (index) => {
+    const focus = $active(index);
+    if (!focus.disabled) {
+      if (focus.expanded) {
+        if (config.persist) {
+          focus.disabled = true;
+          focus.button.ariaDisabled = "true";
+        }
+      } else {
+        focus.close();
+        focus.disabled = true;
+        focus.button.ariaDisabled = "true";
+        focus.button.classList.add("disabled");
+      }
+    }
+  };
+  fold.close = (index) => {
+    let focus = $active(index);
+    if (config.multiple && !focus.expanded) {
+      $collapse(focus);
+    } else {
+      for (const f of scope.folds) {
+        if (f.expanded) {
+          if (config.persist && f.number === focus.number)
+            break;
+          $collapse(f);
+          focus = f;
+          break;
+        }
+      }
+    }
+    focus.enable();
+    event.emit("collapse", scope, focus);
+  };
+  fold.open = (index) => {
+    const focus = $active(index);
+    if (focus.expanded || focus.disabled)
+      return;
+    focus.close();
+    $expand(focus.content);
+    focus.expanded = true;
+    focus.button.ariaDisabled = "true";
+    focus.button.classList.add("expanded");
+    focus.content.classList.add("expanded");
+    focus.disable();
+    event.emit("expand", scope, focus);
+  };
+  fold.toggle = () => {
+    if (scope.collapsing)
+      return;
+    if (event.emit("toggle", scope, fold))
+      return;
+    return fold.expanded ? fold.close() : fold.open();
+  };
+  fold.destroy = (aria = false) => {
+    if (aria) {
+      fold.button.removeAttribute("aria-expanded");
+      fold.button.removeAttribute("aria-disabled");
+      fold.button.removeAttribute("aria-controls");
+      fold.content.removeAttribute("aria-labelledby");
+      fold.content.removeAttribute("role");
+    }
+    fold.button.removeEventListener("click", fold.toggle);
+    fold.button.removeEventListener("focus", fold.focus);
+    fold.button.removeEventListener("blur", fold.blur);
+  };
+  fold.button.addEventListener("click", fold.toggle);
+  fold.button.addEventListener("focus", fold.focus);
+  fold.button.addEventListener("blur", fold.blur);
+  scope.folds.push(fold);
+};
+var accordion = (selector, options) => {
+  if (!(window.relapse instanceof Map))
+    window.relapse = /* @__PURE__ */ new Map();
+  const scope = /* @__PURE__ */ Object.create(null);
+  scope.folds = [];
+  scope.events = /* @__PURE__ */ Object.create(null);
+  scope.config = $defaults(options);
+  scope.id = `A${window.relapse.size}`;
+  scope.element = typeof selector === "string" ? document.body.querySelector(selector) : selector;
+  scope.element.ariaMultiSelectable = `${scope.config.multiple}`;
+  scope.collapsing = false;
+  const children = scope.element.children;
+  const length = children.length;
+  const event = $events(scope.events);
+  const folds = $folds(scope, event);
+  for (let i = 0; i < length; i = i + 2) {
+    const child = children[i];
+    const sibling = children[i + 1];
+    let button;
+    let content;
+    if (child.nodeName === "A" || child.nodeName === "BUTTON") {
+      button = child;
+    } else {
+      throw new TypeError("Buttons must be either <a> or <button> elements");
+    }
+    if (sibling.nodeName === "A" || sibling.nodeName === "BUTTON") {
+      throw new TypeError("Content fold cannot be <a> or <button> element");
+    } else {
+      content = sibling;
+    }
+    const fold = /* @__PURE__ */ Object.create(null);
+    fold.button = button;
+    fold.content = content;
+    ;
+    fold.number = scope.folds.length;
+    fold.id = `${scope.id}F${fold.number}`;
+    fold.button.id = `B${fold.id}`;
+    fold.content.id = `C${fold.id}`;
+    fold.disabled = button.classList.contains("disabled") || content.classList.contains("disabled");
+    fold.expanded = button.classList.contains("expanded") || content.classList.contains("expanded");
+    folds(fold);
+  }
+  const $find = (fold, method) => {
+    console.log(fold);
+    if (typeof fold === "number") {
+      return scope.folds[fold][method]();
+    } else if (typeof fold === "string") {
+      for (const f of scope.folds) {
+        if (f.button.dataset[`${scope.config.schema}-fold`] === fold) {
+          return f[method]();
+        }
+      }
+    }
+    throw new TypeError(`Fold does not exist for "${fold}"`);
+  };
+  scope.on = event.on;
+  scope.off = event.off;
+  scope.collapse = (fold) => $find(fold, "close");
+  scope.expand = (fold) => $find(fold, "open");
+  scope.destroy = (reset = false) => {
+    for (const fold of scope.folds)
+      fold.destroy();
+    scope.element.removeAttribute("aria-multiselectable");
+    scope.element.removeAttribute("id");
+    event.emit("destroy", scope);
+    window.relapse.delete(scope.id);
+  };
+  window.relapse.set(scope.id, scope);
+  return scope;
+};
+
+// src/index.ts
+var src_default = {
+  accordion
+};
+export {
+  accordion,
+  src_default as default
+};
