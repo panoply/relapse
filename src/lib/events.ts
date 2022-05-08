@@ -1,4 +1,4 @@
-import { IAccordion } from 'types';
+import { IAccordion } from '../types';
 
 /**
  * Event Emitter

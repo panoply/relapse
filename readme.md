@@ -1,10 +1,12 @@
 # Relapse | rĭ-lăps′
 
+## NOT STABLE YET
+
 An [A11y](https://www.a11yproject.com/) compliant, lightweight (1.7kb gzip) and dependency free toggle library for collapsible accordions. Written in TypeScript and distributed in ES6 this tiny little module flaunts an extensive API, uses [rAF](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame) powered transitions and requires minimal markup.
 
 ### Example
 
-Visit the docs and example: **[https://panoply.github.io/accordion](https://panoply.github.io/accordion)**
+TODO
 
 ### Key Features
 
@@ -31,6 +33,7 @@ import relapse from 'relapse';
 
 relapse('#accordion', {
   duration: 175,
+  fade: true,
   persist: true,
   multiple: false,
   preserve: false,
@@ -80,27 +83,49 @@ The module requires some basic stylings. Simplest is CSS defaults, but for the a
 
 <!-- prettier-ignore -->
 ```scss
-// BASE STYLE
-$accordion-bg-color:              #ffffff;
-$accordion-border-color:          transparent;
-$accordion-border-width:          1px;
+$lightgray: lightgray;
+$pink: hotpink;
 
-// BUTTON STYLES
-$accordion-btn-bg-color:          #000000;
-$accordion-btn-bg-focus:          #999999;
-$accordion-btn-font-color:        #000000;
-$accordion-btn-border-color:      #ffffff;
-$accordion-btn-disabled:          0.5;
+.accordion {
+  position: relative;
+  border: 1px solid $lightgray;
 
-// CONTENT STYLE
-$accordion-fold-bg-color:         #ffffff;
-$accordion-fold-font-color:       #000000;
-$accordion-fold-border-color:     #ffffff;
+  button {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 1em 0;
+    color: $text;
+    font-weight: 400;
+    font-size: 1.15rem;
+    text-align: left;
+    background: none;
+    border: none;
+    border-bottom: 1px solid $lightgray;
+    outline: none;
 
-// TRANSITION ANIMATION
-$accordion-transition-animate:    linear;
-$accordion-transition-height:     0.1s;
-$accordion-transition-opacity:    0.3s;
+    &[aria-expanded="true"] {
+      color: $pink;
+      border-bottom: 1px solid $pink;
+    }
+
+
+    &:hover,
+    &:focus {
+      color: $pink;
+      cursor: pointer;
+    }
+  }
+
+
+  .accordion-content {
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    will-change: opacity, height;
+  }
+}
+
 ```
 
 ### CSS
@@ -131,17 +156,21 @@ Relapse will maintain active instances in global scope. Each accordion is access
 interface Accordion {
   on: (event: string, callback: (this: Accordion, fold?: IFold) => void) => void;
   off: (event: string, callback: Function) => void);
+  expand: (fold: number | string) => void);
+  collapse: (fold: number | string) => void);
   destroy: () => void;
   id: string;
   element: Element;
-  focused: number;
-  events: { [name: string]: Function[] };
+  active: number;
+  collapsing: boolean;
+  events: { [name: string]: Array<(fold?: Fold) => void> };
   config: {
     persist: boolean;
     multiple: boolean;
     preserve: boolean;
     keyboard: boolean;
     duration: number;
+    fade: boolean;
   };
   folds: Array<{
     id: string;
@@ -152,10 +181,13 @@ interface Accordion {
     focused: boolean;
     disabled: boolean;
     focus: () => void;
-    toggle: (index?: number) => void;
+    blur: () => void;
+    enable: () => void;
+    disable: () => void;
+    toggle: () => void;
     open: (index?: number) => void;
     close: (index?: number) => void;
-    destroy: () => void;
+    destroy: (remove?: boolean) => void;
   }>;
 }
 ```
@@ -174,11 +206,14 @@ const event = relapse('#accordion');
 // toggle button has been focused.
 event.on('focus', function (this: IAccordion, fold?: IFold) {});
 
-// fold is about to be opened.
-event.on('open', function (this: IAccordion, fold?: IFold) {});
+// toggle button has been clicked
+event.on('toggle', function (this: IAccordion, fold?: IFold) {});
 
-// fold is about to close
-event.on('close', function (this: IAccordion, fold?: IFold) {});
+// fold has been opened
+event.on('expand', function (this: IAccordion, fold?: IFold) {});
+
+// fold has been closed
+event.on('collapse', function (this: IAccordion, fold?: IFold) {});
 
 // accordion has been destroyed.
 event.on('destroy', function (this: IAccordion) {});
@@ -191,7 +226,9 @@ import relapse from 'relapse';
 
 const accordion = relapse('#accordion');
 
-accordion.focus('next');
+accordion.expand(fold: number | string);
+
+accordion.collapse(fold: number | string);
 
 accordion.destroy();
 ```
@@ -207,7 +244,15 @@ accordion.folds[0].open(index?: number);
 
 accordion.folds[0].close(index?: number);
 
+accordion.folds[0].blur();
+
+accordion.folds[0].focus();
+
 accordion.folds[0].toggle();
+
+accordion.folds[0].enable();
+
+accordion.folds[0].disable();
 
 accordion.folds[0].destroy();
 ```
