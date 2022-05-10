@@ -1,19 +1,67 @@
-/* stylelint-disable-next-line max-line-length */
-$accordion-icon-opened: "%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='inherit' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18l6-6-6-6'/%3E%3C/svg%3E%0Aff" !default;
+/* -------------------------------------------- */
+/* RELAPSE ACCORDION                            */
+/* -------------------------------------------- */
 
-/* stylelint-disable-next-line max-line-length */
-$accordion-icon-closed: "%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='inherit' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E%0Aff" !default;
+$accordion-border-width: 1px !default;
+$accordion-border-color: #e5e5e5 !default;
+$accordion-expanded-color: #03b5d2 !default;
+$accordion-disabled-opacity: 0.5 !default;
 
-$accordion-border: 1px solid hotpink !default;
-$accordion-btn-bg: transparent !default;
 
-@import url("https://fonts.googleapis.com/css?family=Hind:300,400&display=swap");
+.accordion {
+  position: relative;
+  border: 1px solid $accordion-border-color;
 
-$bg: #fff;
-$text: #7288a2;
-$gray: #4d5974;
-$lightgray: #e5e5e5;
-$blue: #03b5d2;
+  section {
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    will-change: opacity, height;
+
+    > p {
+      padding: 0 25px;
+    }
+  }
+
+  a,
+  button {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 25px;
+    text-align: left;
+    background: none;
+    border: none;
+    border-bottom: $accordion-border-width solid $accordion-border-color;
+    outline: none;
+
+
+    &[aria-expanded="false"][aria-disable="true"],
+    &[aria-expanded="false"].disabled {
+      opacity: $accordion-disabled-opacity;
+
+      &:focus {
+        color: inherit;
+        cursor: default;
+      }
+    }
+
+    &[aria-expanded="true"] {
+      color: $accordion-expanded-color;
+    }
+
+    &:hover,
+    &:focus {
+      color: $accordion-expanded-color;
+      cursor: pointer;
+    }
+  }
+}
+
+
+/* -------------------------------------------- */
+/* BODY STYLES                                  */
+/* -------------------------------------------- */
 
 * {
   box-sizing: border-box;
@@ -25,57 +73,24 @@ $blue: #03b5d2;
 }
 
 body {
-  display: flex;
-  min-height: 100vh;
+  min-height: 90vh;
   margin: 50px;
   padding: 50px;
-  color: $gray;
-  font-family: Hind, sans-serif;
-  background: $bg;
+  color: #111;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-.container {
-  width: 48rem;
+header {
+  display: block;
+  padding: 50px;
+  font-size: larger;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+main {
+  display: flex;
+  width: 350px;
   margin: 0 auto;
-  padding: 4rem;
 }
 
-.accordion {
-  position: relative;
-  border: 1px solid $lightgray;
-
-  button {
-    position: relative;
-    display: block;
-    width: 100%;
-    padding: 1em 0;
-    color: $text;
-    font-weight: 400;
-    font-size: 1.15rem;
-    text-align: left;
-    background: none;
-    border: none;
-    border-bottom: 1px solid $lightgray;
-    outline: none;
-
-    &[aria-expanded="true"] {
-      color: $blue;
-      border-bottom: 1px solid $blue;
-    }
-
-
-    &:hover,
-    &:focus {
-      color: $blue;
-      cursor: pointer;
-    }
-  }
-
-
-  section {
-    height: 0;
-    overflow: hidden;
-    opacity: 0;
-    will-change: opacity, height;
-  }
-}

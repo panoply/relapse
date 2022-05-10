@@ -39,16 +39,16 @@ export namespace IAccordion {
 
   export interface Options {
     /**
-     * The slide duration (ms) for the collapse animation.
-     * Set to `0` to disable transitions.
+     * The slide duration (ms) transition for the collapse
+     * animation. Set to `false` to disable transition or
+     * `true` to use the default (300ms).
      *
-     * @default 175
+     * @default 300
      */
-    duration?: number;
+    transition?: number | false;
     /**
      * Whether or not fold content should gently fade-in
-     * upon expanding. Uses the `duration` value to best
-     * calculate the opacity animation.
+     * upon expanding and gently fade out upon collapsing.
      *
      * @default true
      */
@@ -81,14 +81,6 @@ export namespace IAccordion {
      */
     preserve?: boolean;
     /**
-     * Whether W3C keyboard shortcuts are enabled. This is
-     * for accessibility, when `true` the folds can be expanded
-     * or collapsed using the keyboard.
-     *
-     * @default true
-     */
-    keyboard?: boolean;
-    /**
      * The data-attribute annotation schema. This allows you
      * to customise the attribute prefix key name. You can
      * optionally set this to `null` to omit prefixing.
@@ -112,11 +104,49 @@ export namespace IAccordion {
      *  data-persist="false">...</div>
      */
     schema?: null | `data-${string}`;
+    /**
+     * Custom class names
+     */
+    classes?: {
+      /**
+       * The opened class name which is added to buttons
+       * who's fold is expanded.
+       *
+       * @default 'opened'
+       */
+      opened?: string;
+      /**
+       * The expanded class name which is added to folds
+       * which have been expanded (opened).
+       *
+       * @default 'expanded'
+       */
+      expanded?: string;
+      /**
+       * The focused class name which are added to buttons
+       * which are in focus.
+       *
+       * @default 'focused'
+       */
+      focused?: string;
+      /**
+       * The disabled class names which are added to buttons
+       * which are disabled.
+       *
+       * @default 'disable'
+       */
+      disabled?: string;
+    }
   }
 
   export interface Fold {
     /**
-     * A unique string id for this fold.
+     * The fold id. This value will be used as the `key`
+     * reference for the fold. If the fold button or content
+     * element has an `id="*"` attribute then that value will be used.
+     *
+     * If both the button and fold element contain an `id` attribute
+     * then the `id` defined on the fold will be used.
      */
     id: string;
     /**
@@ -127,6 +157,28 @@ export namespace IAccordion {
      * The content fold element which is toggled.
      */
     content: HTMLElement;
+    /**
+     * The fold slide transition duration (ms) for the
+     * collapse/expand animation.
+     *
+     * This will default transition defined on configuration
+     * unless the fold toggle button or content element is using an
+     * `data-acccordion-transition="*"` attribute.
+     *
+     * @default 300
+     */
+    transition: number | boolean;
+    /**
+     * Whether or not this fold content should gently fade-in
+     * upon expanding.
+     *
+     * This will default to the `fade` value defined on configuration
+     * unless the fold toggle button or content element is using an
+     * `data-acccordion-fade="*"` attribute.
+     *
+     * @default 300
+     */
+    fade: boolean;
     /**
      * The zero based index reference for the fold.
      */
@@ -189,7 +241,10 @@ export namespace IAccordion {
 
   export interface Scope {
     /**
-     * The accordion internal id reference.
+     * The accordion id. This value will be used as the `key`
+     * reference for the accordion instance. If the accordion
+     * element has an `id="*"` attribute then this value will be
+     * used, otherwise one will be generated.
      */
     id: string;
     /**
@@ -205,7 +260,10 @@ export namespace IAccordion {
      */
     active: number;
     /**
-     * Whether or not a fold is collapsing
+     * Whether or not a fold is collapsing. When
+     * a fold is being toggled (ie: expanding/collapsing)
+     * then this value will have a `true` value, otherwise
+     * `false`
      */
     collapsing: boolean;
     /**
@@ -242,9 +300,10 @@ export namespace IAccordion {
      */
     collapse: (fold: string | number) => void;
     /**
-     * Destroy the accordion. You can optionally reset the
-     * expanded and collapsed folds by passing in `true`.
+     * Destroy the accordion. You optionally use this method
+     * to target a specific fold and inform on whether it should
+     * be removed or not.
      */
-    destroy: (reset?: boolean) => void;
+    destroy: (fold?: string | number, remove?: boolean) => void;
   }
 }

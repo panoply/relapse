@@ -1,42 +1,55 @@
-$lightgray: lightgray;
-$pink: hotpink;
+$accordion-border-width: 1px !default;
+$accordion-border-color: #e5e5e5 !default;
+$accordion-expanded-color: #03b5d2 !default;
+$accordion-disabled-opacity: 0.5 !default;
+
 
 .accordion {
   position: relative;
-  border: 1px solid $lightgray;
+  border: 1px solid $accordion-border-color;
 
-  button {
-    position: relative;
-    display: block;
-    width: 100%;
-    padding: 1em 0;
-    color: $text;
-    font-weight: 400;
-    font-size: 1.15rem;
-    text-align: left;
-    background: none;
-    border: none;
-    border-bottom: 1px solid $lightgray;
-    outline: none;
-
-    &[aria-expanded="true"] {
-      color: $pink;
-      border-bottom: 1px solid $pink;
-    }
-
-
-    &:hover,
-    &:focus {
-      color: $pink;
-      cursor: pointer;
-    }
-  }
-
-
-  .accordion-content {
+  section {
     height: 0;
     overflow: hidden;
     opacity: 0;
     will-change: opacity, height;
+
+    > p {
+      padding: 0 25px;
+    }
+  }
+
+  a,
+  button {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 25px;
+    text-align: left;
+    background: none;
+    border: none;
+    border-bottom: $accordion-border-width solid $accordion-border-color;
+    outline: none;
+
+
+    &[aria-expanded="false"][aria-disable="true"],
+    &[aria-expanded="false"].disabled {
+      opacity: $accordion-disabled-opacity;
+
+      &:focus {
+        color: inherit;
+        cursor: default;
+      }
+    }
+
+    &[aria-expanded="true"] {
+      color: $accordion-expanded-color;
+    }
+
+    &:hover,
+    &:focus {
+      color: $accordion-expanded-color;
+      cursor: pointer;
+    }
   }
 }
