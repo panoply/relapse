@@ -327,7 +327,6 @@ export function accordion (selector: string | HTMLElement, options?: IAccordion.
   const attr = schema === null ? 'data' : schema;
   const attrfade = `${attr}-fade`;
   const attrtran = `${attr}-transition`;
-  const prevent = `${attr}-prevent`;
 
   for (let i = 0; i < length; i = i + 2) {
 
