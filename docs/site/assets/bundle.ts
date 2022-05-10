@@ -1,7 +1,7 @@
 import { accordion } from 'relapse';
 
 const c = accordion(document.querySelector('#accordion'), {
-  duration: 300,
+  transition: 300,
   multiple: false
 });
 
@@ -9,7 +9,7 @@ const c = accordion(document.querySelector('#accordion'), {
 
 c.on('toggle', function (fold) {
 
-  // if (fold.number === 4) fold.enable(3);
+  // if (fold.number === 1) fold.destroy();
 
 });
 

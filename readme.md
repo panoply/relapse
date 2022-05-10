@@ -1,8 +1,6 @@
-# Relapse | rĭ-lăps′
+# Relapse
 
-## NOT STABLE YET
-
-An [A11y](https://www.a11yproject.com/) compliant, lightweight (1.7kb gzip) and dependency free toggle library for collapsible accordions. Written in TypeScript and distributed in ES6 this tiny little module flaunts an extensive API, uses [rAF](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame) powered transitions and requires minimal markup.
+An [A11y](https://www.a11yproject.com/) compliant, lightweight (2.1kb gzip) and dependency free toggle library for collapsible accordions. Written in TypeScript and distributed in ES6 this tiny little module flaunts an extensive API, uses [rAF](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame) powered transitions and requires minimal markup.
 
 ### Example
 
@@ -12,7 +10,7 @@ TODO
 
 - Minimal markup (2 element node tree).
 - Silky smooth rAF powered transitions.
-- Accessibility support, Aria + Keyboard.
+- Accessibility support
 - Functional and pure, no classes or prototype.
 - Event dispatching with global context access
 
@@ -32,12 +30,17 @@ The module uses a default export:
 import relapse from 'relapse';
 
 relapse('#accordion', {
-  duration: 175,
+  transition: 300,
   fade: true,
   persist: true,
   multiple: false,
-  preserve: false,
-  keyboard: true
+  schema: 'data-accordion'
+  classes: {
+    opened: 'opened',
+    focused: 'focused',
+    expanded: 'expanded',
+    disabled: 'disabled'
+  }
 });
 ```
 
@@ -79,104 +82,176 @@ The node tree is minimal and markup must adhere (use) the below structure. Accor
 
 The module requires some basic stylings. Simplest is CSS defaults, but for the adults there is a SASS version. The defaults apply styles according to hierarch and structure. Everything nested within an element using the class `accordion` will be styled without having to apply class names.
 
+### Class Names
+
+Relapse uses 4 specific class names on folds which can be used to infer the current state a fold exists. You can use these classes to add things like opened/closed icons and background colors.
+
+### `opened`
+
+Applied to the toggle button element when a fold is expanded.
+
+### `focused`
+
+Applied to the toggle button element when it has been focused
+
+### `expanded`
+
+Applied to the fold element when it is expanded
+
+### `disabled`
+
+Applied to the toggle button element when it is disabled.
+
 ### SASS
+
+This is a bare minimum starting point the styling the accordion.
 
 <!-- prettier-ignore -->
 ```scss
-$lightgray: lightgray;
-$pink: hotpink;
+$accordion-border-width: 1px !default;
+$accordion-border-color: #e5e5e5 !default;
+$accordion-expanded-color: #03b5d2 !default;
+$accordion-disabled-opacity: 0.5 !default;
+
 
 .accordion {
   position: relative;
-  border: 1px solid $lightgray;
+  border: 1px solid $accordion-border-color;
 
-  button {
-    position: relative;
-    display: block;
-    width: 100%;
-    padding: 1em 0;
-    color: $text;
-    font-weight: 400;
-    font-size: 1.15rem;
-    text-align: left;
-    background: none;
-    border: none;
-    border-bottom: 1px solid $lightgray;
-    outline: none;
-
-    &[aria-expanded="true"] {
-      color: $pink;
-      border-bottom: 1px solid $pink;
-    }
-
-
-    &:hover,
-    &:focus {
-      color: $pink;
-      cursor: pointer;
-    }
-  }
-
-
-  .accordion-content {
+  section {
     height: 0;
     overflow: hidden;
     opacity: 0;
     will-change: opacity, height;
   }
+
+  button {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 25px;
+    text-align: left;
+    background: none;
+    border: none;
+    border-bottom: $accordion-border-width solid $accordion-border-color;
+    outline: none;
+
+
+    &[aria-expanded="false"][aria-disable="true"],
+    &[aria-expanded="false"].disabled {
+      opacity: $accordion-disabled-opacity;
+
+      &:focus {
+        color: inherit;
+        cursor: default;
+      }
+    }
+
+    &[aria-expanded="true"] {
+      color: $accordion-expanded-color;
+    }
+
+    &:hover,
+    &:focus {
+      color: $accordion-expanded-color;
+      cursor: pointer;
+    }
+  }
 }
-
-```
-
-### CSS
-
-```css
-
 ```
 
 # Options
 
-### `collapse`
-
-### `toggled`
+The accordion provides the following options.
 
 ### `persist`
 
-### `preserve`
+Persist will persist a fold to be expanded at all times.
 
-### `keyboard`
+**Default:** `true`
 
-### `duration`
+### `multiple`
+
+Multiple allows for multiple folds to be opened.
+
+**Default:** `false`
+
+### `transition`
+
+The rAF transition (ms) for the collapse and expand animations
+
+**Default:** `300`
+
+### `fade`
+
+Whether or not the fold content should gently fade in and fade out between expands/collapse
+
+**Default:** `true`
+
+### `schema`
+
+Customize the attribute annotation data attribute.
+
+**Default:** `data-accordion`
+
+### `classes`
+
+Customize the class names that relapse applies
+
+**Default:** `data-accordion`
+
+# Option Attributes
+
+You may also prefer to pass options via data attributes on the element.
+
+- data-accordion-persist
+- data-accordion-multiple
+- data-accordion-transition
+- data-accordion-fade
+
+Buttons and folds also accept the following attribute options to be annotated on an individual basis.
+
+- data-accordion-transition
+- data-accordion-fade
 
 # Instance
 
-Relapse will maintain active instances in global scope. Each accordion is accessible via `window.relapse` which uses a `Map` store, who's keys will reference the element `id` or when no `id` is defined one is generated.
+Relapse will maintain active instances in global scope. Each accordion is accessible via `window.relapse` which uses a `Map` store who's keys will reference the element `id` (when no `id` is defined one is generated).
 
 ```ts
 interface Accordion {
-  on: (event: string, callback: (this: Accordion, fold?: IFold) => void) => void;
+  on: (event: string, callback: (this: Accordion, fold?: Fold) => void) => void;
   off: (event: string, callback: Function) => void);
   expand: (fold: number | string) => void);
   collapse: (fold: number | string) => void);
-  destroy: () => void;
+  destroy: (fold?: number | string, remove?: boolean) => void;
   id: string;
-  element: Element;
+  element: HTMLElement;
   active: number;
   collapsing: boolean;
-  events: { [name: string]: Array<(fold?: Fold) => void> };
+  events: {
+    [name: string]: Array<(this: Accordion, fold?: Fold) => void>
+  };
   config: {
+    duration: number;
     persist: boolean;
     multiple: boolean;
     preserve: boolean;
     keyboard: boolean;
-    duration: number;
     fade: boolean;
+    classes: {
+      expanded: string;
+      focused: string;
+      disabled: string;
+    }
   };
   folds: Array<{
     id: string;
-    button: HTMLElement;
+    button: HTMLButtonElement | HTMLElement;
     content: HTMLElement;
     number: number;
+    transition: number;
+    fade: boolean;
     expanded: boolean;
     focused: boolean;
     disabled: boolean;
