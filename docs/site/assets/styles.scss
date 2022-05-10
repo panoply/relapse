@@ -7,10 +7,15 @@ $accordion-border-color: #e5e5e5 !default;
 $accordion-expanded-color: #03b5d2 !default;
 $accordion-disabled-opacity: 0.5 !default;
 
+.b-0 {
+  border-right: none;
+  border-left: none;
+}
 
 .accordion {
   position: relative;
   border: 1px solid $accordion-border-color;
+  border-top: none;
 
   section {
     height: 0;
@@ -90,7 +95,7 @@ header {
 
 main {
   display: flex;
-  width: 350px;
+  width: 550px;
   margin: 0 auto;
 }
 

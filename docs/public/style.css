@@ -1,9 +1,15 @@
 /* -------------------------------------------- */
 /* RELAPSE ACCORDION                            */
 /* -------------------------------------------- */
+.b-0 {
+  border-right: none;
+  border-left: none;
+}
+
 .accordion {
   position: relative;
   border: 1px solid #e5e5e5;
+  border-top: none;
 }
 .accordion section {
   height: 0;
@@ -76,7 +82,7 @@ header {
 
 main {
   display: flex;
-  width: 350px;
+  width: 550px;
   margin: 0 auto;
 }
 
