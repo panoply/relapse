@@ -4,6 +4,7 @@ lib/
 docs/
 src/
 versions/
+.liquidrc
 .eslintrc
 .vscode/
 .prettierrc.js

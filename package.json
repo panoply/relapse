@@ -26,12 +26,6 @@
       "import": "./iife.js"
     }
   },
-  "files": [
-    "./index.js",
-    "./iife.js",
-    "./index.scss",
-    "./index.d.ts"
-  ],
   "keywords": [
     "dropdown",
     "accordion",
