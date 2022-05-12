@@ -30,7 +30,7 @@
     "declarationDir": "package/@types",
     "baseUrl": ".",
     "paths": {
-      "types": ["src/index.d.ts"]
+      "types": ["index.d.ts"]
     }
   }
 }

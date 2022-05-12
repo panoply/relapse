@@ -1,57 +1,71 @@
 /* -------------------------------------------- */
-/* RELAPSE ACCORDION                            */
+/* RELAPSE                                      */
 /* -------------------------------------------- */
-.b-0 {
-  border-right: none;
-  border-left: none;
-}
-
-.accordion {
-  position: relative;
-  border: 1px solid #e5e5e5;
-  border-top: none;
-}
-.accordion section {
-  height: 0;
-  overflow: hidden;
-  opacity: 0;
-  will-change: opacity, height;
-}
-.accordion section > p {
-  padding: 0 25px;
-}
-.accordion a,
-.accordion button {
+.relapse {
   position: relative;
   display: block;
   width: 100%;
-  padding: 25px;
-  text-align: left;
-  background: none;
-  border: none;
-  border-bottom: 1px solid #e5e5e5;
-  outline: none;
+  border: 1px solid #e5e5e5;
+  border-top: none;
 }
-.accordion a[aria-expanded=false][aria-disable=true], .accordion a[aria-expanded=false].disabled,
-.accordion button[aria-expanded=false][aria-disable=true],
-.accordion button[aria-expanded=false].disabled {
-  opacity: 0.5;
+.relapse-fold {
+  max-height: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden;
+  opacity: 0;
+  -webkit-transition: opacity 200ms linear, max-height 225ms ease-in-out;
+  transition: opacity 200ms linear, max-height 225ms ease-in-out;
+  will-change: opacity, max-height;
 }
-.accordion a[aria-expanded=false][aria-disable=true]:focus, .accordion a[aria-expanded=false].disabled:focus,
-.accordion button[aria-expanded=false][aria-disable=true]:focus,
-.accordion button[aria-expanded=false].disabled:focus {
+@media (prefers-reduced-motion: reduce) {
+  .relapse-fold {
+    -webkit-transition: none;
+    transition: none;
+  }
+}
+.relapse-fold > :first-child {
+  padding: 50px;
+}
+.relapse-fold.expanded {
+  max-height: auto;
+  visibility: visible;
+  opacity: 1;
+}
+.relapse-btn {
+  display: inherit;
+  width: 100%;
+  margin: 0;
+  padding: inherit;
   color: inherit;
-  cursor: default;
-}
-.accordion a[aria-expanded=true],
-.accordion button[aria-expanded=true] {
-  color: #03b5d2;
-}
-.accordion a:hover, .accordion a:focus,
-.accordion button:hover,
-.accordion button:focus {
-  color: #03b5d2;
+  font-size: inherit;
+  text-align: left;
+  background-color: inherit;
+  border: none;
+  border-top: 1px solid #e5e5e5;
+  border-radius: 0;
   cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.relapse-btn.initial {
+  color: inherit;
+  background-color: inherit;
+}
+.relapse-btn.initial + .relapse-fold {
+  max-height: unset;
+  visibility: visible;
+  opacity: 1;
+}
+.relapse-btn.opened {
+  color: inherit;
+  background-color: inherit;
+}
+.relapse-btn.focused {
+  background-color: inherit;
+  outline: none;
 }
 
 /* -------------------------------------------- */
@@ -81,8 +95,6 @@ header {
 }
 
 main {
-  display: flex;
-  width: 550px;
   margin: 0 auto;
 }
 

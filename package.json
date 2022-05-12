@@ -1,7 +1,7 @@
 {
   "name": "relapse",
   "description": "A lightweight ESM (vanilla) toggle library for creating dynamic collapsible components.",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "homepage": "https://github.com/panoply/relapse",
   "author": {
     "name": "Nikolas Savvidis",
@@ -14,20 +14,23 @@
   "bugs": {
     "url": "https://github.com/panoply/relapse/issues"
   },
-  "license": "ISC",
+  "license": "MIT",
   "type": "module",
   "types": "./index.d.ts",
   "module": "./index.js",
   "exports": {
     ".": {
       "import": "./index.js"
+    },
+    "./iife": {
+      "import": "./iife.js"
     }
   },
   "files": [
-    "./index.d.ts",
     "./index.js",
+    "./iife.js",
     "./index.scss",
-    "./src/types.d.ts"
+    "./index.d.ts"
   ],
   "keywords": [
     "dropdown",
@@ -42,7 +45,9 @@
     "ignorePatterns": [
       "package",
       "types",
-      "index.js"
+      "index.js",
+      "iife.js",
+      "docs/public"
     ],
     "extends": "@sissel/eslint-config",
     "rules": {
@@ -51,7 +56,9 @@
   },
   "scripts": {
     "dev": "esbuild src/index.ts --outfile=index.js --format=esm --bundle --watch",
-    "build": "esbuild src/index.ts --outfile=index.js --format=esm --bundle --mangle-props=^[$] --minify",
+    "build": "pnpm run esm && pnpm run iife",
+    "esm": "esbuild src/index.ts --outfile=index.js --format=esm --bundle --mangle-props=^[$] --minify",
+    "iife": "esbuild src/iife.ts --outfile=iife.js --format=iife --bundle --mangle-props=^[$] --minify",
     "gzs": "gzip-size index.js --include-original"
   },
   "browserslist": [

@@ -1,1 +1,305 @@
-var I=i=>({emit:(c,e,d)=>{let t=i[c]||[],f=t.length,p=null;for(let u=0;u<f;u++){let a=t[u].apply(e,[d]);p===null&&a===!1&&(p=!0)}return p},on:(c,e)=>{i[c]||(i[c]=[]),i[c].push(e)},off:(c,e)=>{let d=[],t=i[c];if(t&&e){let f=0,p=t.length;for(;f<p;f++)t[f]!==e&&d.push(t[f])}d.length?t[c]=d:delete t[c]}});function E(i,c){let{config:e}=i,{classes:d}=e;return t=>{let f=a=>{i.collapsing=!0;let{fade:n,transition:m}=a,{scrollHeight:h,style:b}=a.content,A=performance.now(),g=requestAnimationFrame(function l(s){let r=Math.min((s-A)/m,1);r<1?(n&&r>0&&(b.opacity=`${1-r}`),b.height=`${h-r*h}px`,g=requestAnimationFrame(l)):r>=1&&(b.height="0",n&&(b.opacity="0"),a.button.ariaDisabled="false",a.button.ariaExpanded="false",a.button.classList.remove(d.opened),a.content.classList.remove(d.expanded),a.expanded=!1,i.collapsing=!1,cancelAnimationFrame(g))})},p=a=>{i.collapsing=!0;let{fade:n,transition:m}=a,{scrollHeight:h,style:b}=a.content,A=performance.now();n||(b.opacity="1");let g=requestAnimationFrame(function l(s){let r=Math.min((s-A)/m,1);r<1?(n&&r>0&&(b.opacity=`${r}`),b.height=`${r*h}px`,g=requestAnimationFrame(l)):r>=1&&(n&&(b.opacity="1"),b.height="auto",i.collapsing=!1,cancelAnimationFrame(g))})},u=a=>{if(typeof a!="number")return i.active!==t.number&&(i.active=t.number),t;if(i.folds[a])return i.active=t.number,i.folds[a];throw new TypeError(`No fold exists at index: ${a}`)};t.focus=()=>{i.active=t.number,t.button.classList.add(d.focused),c.emit("focus",i,t)},t.blur=()=>t.button.classList.remove(d.focused),t.enable=a=>{let n=u(a);n.disabled&&(n.disabled=!1,n.button.ariaDisabled="false",n.button.classList.remove(d.disabled))},t.disable=a=>{let n=u(a);n.disabled||(n.expanded?e.persist&&(n.disabled=!0,n.button.ariaDisabled="true"):(n.close(),n.disabled=!0,n.button.ariaDisabled="true",n.button.classList.add(d.disabled)))},t.close=a=>{let n=u(a);if(e.multiple&&!n.expanded)f(n);else for(let m of i.folds)if(m.expanded){if(e.persist&&m.number===n.number)break;f(m),n=m;break}n.enable(),c.emit("collapse",i,n)},t.open=a=>{let n=u(a);n.expanded||n.disabled||(n.close(),p(n),n.expanded=!0,n.button.ariaDisabled="true",n.button.ariaExpanded="true",n.button.classList.add(d.opened),n.content.classList.add(d.expanded),n.disable(),c.emit("expand",i,n))},t.toggle=()=>{if(!i.collapsing&&!c.emit("toggle",i,t))return t.expanded?t.close():t.open()},t.destroy=(a=!1)=>{t.close(),t.button.removeEventListener("click",t.toggle),t.button.removeEventListener("focus",t.focus),t.button.removeEventListener("blur",t.blur),a&&(i.element.removeChild(t.content),i.element.removeChild(t.button))},t.button.addEventListener("click",t.toggle),t.button.addEventListener("focus",t.focus),t.button.addEventListener("blur",t.blur),i.folds.push(t)}}var v=i=>{let c=i.trim();if(!/true|false/.test(c))throw new TypeError(`Invalid value. Boolean expected, received: ${c}`);return c==="true"},x=i=>{let c=i.trim();if(/[-]?[0-9]/.test(c)){if(c.charCodeAt(0)===45)throw new TypeError(`Negative transition is not allowed: ${c}`);return Number(c)}return v(c)?300:0},O=(i,c)=>{let e=Object.create(null),d=Object.create(null);d.opened="opened",d.disabled="disable",d.expanded="expanded",d.focused="focused","classes"in i&&Object.assign(d,i.classes),e.classes=d,e.persist=!0,e.multiple=!1,e.fade=!0,e.schema="data-accordion",typeof i=="object"&&Object.assign(e,i);let t=/^(?:preserve|persist|multiple|keyboard|transition|fade)$/,f=e.schema===null?5:e.schema.length+1;for(let{nodeName:p,nodeValue:u}of c){let a=p.slice(f);t.test(a)&&(e[a]=a==="transition"?x(u):v(u))}return"transition"in e||(e.transition=300),e};function $(i,c){window.relapse instanceof Map||(window.relapse=new Map);let e=Object.create(null);if(e.folds=[],e.events=Object.create(null),e.element=typeof i=="string"?document.body.querySelector(i):i,e.id=e.element.id?e.element.id:`A${window.relapse.size}`,window.relapse.has(e.id))throw new TypeError(`An accordion using id ${e.id} alrerady exists`);e.config=O(c,e.element.attributes),e.element.ariaMultiSelectable=`${e.config.multiple}`,e.collapsing=!1;let d=e.element.children,t=d.length,f=I(e.events),p=E(e,f),{classes:u,schema:a,transition:n,fade:m}=e.config,h=a===null?"data":a,b=`${h}-fade`,A=`${h}-transition`;for(let l=0;l<t;l=l+2){let s=d[l],r=d[l+1],o=Object.create(null);o.number=e.folds.length;let w=s.classList.contains(u.opened),y=s.classList.contains(u.disabled),L=r.classList.contains(u.expanded);s.ariaExpanded==="true"||w||L?(w?s.ariaExpanded="true":s.classList.add(u.opened),L||r.classList.add(u.expanded),y||s.classList.add(u.disabled),s.ariaDisabled="true",o.expanded=!0,o.disabled=!0):s.ariaDisabled==="true"||y?(y?s.ariaDisabled="false":s.classList.add(u.disabled),r.classList.remove(u.expanded),s.classList.remove(u.opened),s.ariaExpanded="false",o.expanded=!1,o.disabled=!0):(o.expanded=!1,o.disabled=!1,s.ariaExpanded="false",s.ariaDisabled="false"),o.transition=n,o.fade=m,s.id&&(o.id=s.id),r.id&&(o.id=r.id),"id"in o||(o.id=`${e.id}F${o.number}`,s.id=`B${o.id}`,r.id=`C${o.id}`),s.hasAttribute(A)&&(o.transition=x(s.getAttribute(A))),r.hasAttribute(A)&&(o.transition=x(r.getAttribute(A))),s.hasAttribute(b)&&(o.fade=v(s.getAttribute(b))),r.hasAttribute(b)&&(o.fade=v(r.getAttribute(b))),o.fade||(r.style.opacity="1"),s.setAttribute("aria-controls",o.id),r.setAttribute("aria-labelledby",s.id),r.setAttribute("role","region"),o.button=s,o.content=r,p(o)}let g=(l,s,r=!1)=>{if(typeof s=="number")return l.charCodeAt(0)===100?e.folds[s][l](r):e.folds[s][l]();if(typeof s=="string"){for(let o of e.folds)if(o.button.dataset[`${e.config.schema}-fold`]===s)return l.charCodeAt(0)===100?o[l](r):o[l]()}throw new TypeError(`Fold does not exist: "${s}"`)};return e.on=f.on,e.off=f.off,e.collapse=l=>g("close",l),e.expand=l=>g("open",l),e.destroy=(l,s=!1)=>{if(typeof l=="undefined")for(let r of e.folds)r.destroy();else g("destroy",l,s);e.element.removeAttribute("aria-multiselectable"),f.emit("destroy",e),window.relapse.delete(e.id)},window.relapse.set(e.id,e),e}var T={accordion:$};export{$ as accordion,T as default};
+// src/index.ts
+function $events(events) {
+  const emit = (name, scope, fold) => {
+    const event = events[name] || [];
+    const length = event.length;
+    let prevent = null;
+    for (let i = 0; i < length; i++) {
+      const returns = event[i].apply(scope, [fold]);
+      if (prevent === null && returns === false)
+        prevent = true;
+    }
+    return prevent;
+  };
+  const on = (name, callback) => {
+    if (!events[name])
+      events[name] = [];
+    events[name].push(callback);
+  };
+  const off = (name, callback) => {
+    const live = [];
+    const event = events[name];
+    if (event && callback) {
+      let i = 0;
+      const len = event.length;
+      for (; i < len; i++)
+        if (event[i] !== callback)
+          live.push(event[i]);
+    }
+    if (live.length) {
+      event[name] = live;
+    } else {
+      delete event[name];
+    }
+  };
+  return { on, off, emit };
+}
+function $folds(scope, event) {
+  const { config } = scope;
+  const { classes } = config;
+  return (fold) => {
+    const $active = (index) => {
+      if (typeof index !== "number") {
+        if (scope.active !== fold.number)
+          scope.active = fold.number;
+        return fold;
+      }
+      if (scope.folds[index]) {
+        scope.active = fold.number;
+        return scope.folds[index];
+      } else {
+        throw new TypeError(`No fold exists at index: ${index}`);
+      }
+    };
+    const $collapse = (focus) => {
+      focus.button.ariaDisabled = "false";
+      focus.button.ariaExpanded = "false";
+      focus.button.classList.remove(classes.opened);
+      focus.content.classList.remove(classes.expanded);
+      focus.expanded = false;
+      focus.content.style.maxHeight = "0";
+    };
+    fold.open = (index) => {
+      const focus = $active(index);
+      if (focus.expanded || focus.disabled)
+        return;
+      focus.close();
+      focus.button.ariaDisabled = "true";
+      focus.button.ariaExpanded = "true";
+      focus.button.classList.add(classes.opened);
+      focus.content.classList.add(classes.expanded);
+      focus.content.style.maxHeight = `${focus.content.scrollHeight}px`;
+      focus.expanded = true;
+      focus.disable();
+      event.emit("expand", scope, focus);
+    };
+    fold.focus = () => {
+      scope.active = fold.number;
+      fold.button.classList.add(classes.focused);
+      event.emit("focus", scope, fold);
+    };
+    fold.blur = () => fold.button.classList.remove(classes.focused);
+    fold.enable = (index) => {
+      const focus = $active(index);
+      if (focus.disabled) {
+        focus.disabled = false;
+        focus.button.ariaDisabled = "false";
+        focus.button.classList.remove(classes.disabled);
+      }
+    };
+    fold.disable = (index) => {
+      const focus = $active(index);
+      if (!focus.disabled) {
+        if (focus.expanded) {
+          if (config.persist) {
+            focus.disabled = true;
+            focus.button.ariaDisabled = "true";
+          }
+        } else {
+          focus.close();
+          focus.disabled = true;
+          focus.button.ariaDisabled = "true";
+          focus.button.classList.add(classes.disabled);
+        }
+      }
+    };
+    fold.close = (index) => {
+      let focus = $active(index);
+      if (config.multiple && !focus.expanded) {
+        $collapse(focus);
+      } else {
+        for (const node of scope.folds) {
+          if (node.expanded) {
+            if (config.persist && node.number === focus.number)
+              break;
+            $collapse(node);
+            focus = node;
+            break;
+          }
+        }
+      }
+      focus.enable();
+      event.emit("collapse", scope, focus);
+    };
+    fold.toggle = () => {
+      if (event.emit("toggle", scope, fold))
+        return;
+      return fold.expanded ? fold.close() : fold.open();
+    };
+    fold.destroy = (remove = false) => {
+      fold.close();
+      fold.button.removeEventListener("click", fold.toggle);
+      fold.button.removeEventListener("focus", fold.focus);
+      fold.button.removeEventListener("blur", fold.blur);
+      if (remove) {
+        scope.element.removeChild(fold.content);
+        scope.element.removeChild(fold.button);
+      }
+    };
+    fold.button.addEventListener("click", fold.toggle);
+    fold.button.addEventListener("focus", fold.focus);
+    fold.button.addEventListener("blur", fold.blur);
+    scope.folds.push(fold);
+  };
+}
+var $boolean = (nodeValue) => {
+  const value = nodeValue.trim();
+  if (!/true|false/.test(value))
+    throw new TypeError(`Invalid value. Boolean expected, received: ${value}`);
+  return value === "true";
+};
+var $defaults = (options, attrs) => {
+  if (typeof options !== "object")
+    options = /* @__PURE__ */ Object.create(null);
+  const config = /* @__PURE__ */ Object.create(null);
+  const classes = /* @__PURE__ */ Object.create(null);
+  classes.initial = "initial";
+  classes.opened = "opened";
+  classes.disabled = "disabled";
+  classes.expanded = "expanded";
+  classes.focused = "focused";
+  if ("classes" in options)
+    Object.assign(classes, options.classes);
+  config.classes = classes;
+  config.persist = true;
+  config.multiple = false;
+  config.schema = "data-relapse";
+  if (typeof options === "object")
+    Object.assign(config, options);
+  const name = /^(?:persist|multiple)$/;
+  const slice = config.schema === null ? 5 : config.schema.length + 1;
+  for (const { nodeName, nodeValue } of attrs) {
+    const prop = nodeName.slice(slice);
+    if (name.test(prop))
+      config[prop] = $boolean(nodeValue);
+  }
+  return config;
+};
+function relapse(selector, options) {
+  if (!(window.relapse instanceof Map))
+    window.relapse = /* @__PURE__ */ new Map();
+  const scope = /* @__PURE__ */ Object.create(null);
+  scope.folds = [];
+  scope.events = /* @__PURE__ */ Object.create(null);
+  scope.element = typeof selector === "string" ? document.body.querySelector(selector) : selector;
+  scope.id = `A${window.relapse.size}`;
+  scope.config = $defaults(options, scope.element.attributes);
+  let key = scope.element.getAttribute("data-relapse");
+  const id = scope.element.getAttribute("id");
+  if (key === null && id === null) {
+    key = scope.id;
+  } else if (key !== null && id !== null) {
+    if (window.relapse.has(id) || window.relapse.has(key)) {
+      throw new TypeError(`An existing instance is using id "${key}"`);
+    }
+  } else if (key === null && id !== null)
+    key = id;
+  if (window.relapse.has(key)) {
+    throw new TypeError(`An existing instance is using id "${key}"`);
+  }
+  scope.element.ariaMultiSelectable = `${scope.config.multiple}`;
+  const children = scope.element.children;
+  const length = children.length;
+  const event = $events(scope.events);
+  const folds = $folds(scope, event);
+  const { classes } = scope.config;
+  for (let i = 0; i < length; i = i + 2) {
+    const button = children[i];
+    const content = children[i + 1];
+    const fold = /* @__PURE__ */ Object.create(null);
+    fold.number = scope.folds.length;
+    const isInitial = button.classList.contains(classes.initial);
+    const isOpened = button.classList.contains(classes.opened);
+    const isDisabled = button.classList.contains(classes.disabled);
+    const isExpanded = content.classList.contains(classes.expanded);
+    if (button.ariaExpanded === "true" || isOpened || isExpanded || isInitial) {
+      if (!isOpened)
+        button.classList.add(classes.opened);
+      else
+        button.ariaExpanded = "true";
+      if (!isExpanded)
+        content.classList.add(classes.expanded);
+      if (!isDisabled)
+        button.classList.add(classes.disabled);
+      if (!isInitial)
+        button.classList.remove(classes.initial);
+      button.ariaDisabled = "true";
+      fold.expanded = true;
+      fold.disabled = true;
+    } else if (button.ariaDisabled === "true" || isDisabled) {
+      if (!isDisabled)
+        button.classList.add(classes.disabled);
+      else
+        button.ariaDisabled = "false";
+      content.classList.remove(classes.expanded);
+      button.classList.remove(classes.opened);
+      button.ariaExpanded = "false";
+      fold.expanded = false;
+      fold.disabled = true;
+    } else {
+      fold.expanded = false;
+      fold.disabled = false;
+      button.ariaExpanded = "false";
+      button.ariaDisabled = "false";
+    }
+    if (button.id)
+      fold.id = button.id;
+    if (content.id)
+      fold.id = content.id;
+    if (!("id" in fold)) {
+      fold.id = `${scope.id}F${fold.number}`;
+      button.id = `B${fold.id}`;
+      content.id = `C${fold.id}`;
+    }
+    button.setAttribute("aria-controls", fold.id);
+    content.setAttribute("aria-labelledby", button.id);
+    content.setAttribute("role", "region");
+    fold.button = button;
+    fold.content = content;
+    folds(fold);
+  }
+  const $find = (method, fold, remove = false) => {
+    if (typeof fold === "number") {
+      return method.charCodeAt(0) === 100 ? scope.folds[fold][method](remove) : scope.folds[fold][method]();
+    } else if (typeof fold === "string") {
+      for (const f of scope.folds) {
+        if (f.button.dataset[`${scope.config.schema}-fold`] === fold) {
+          return method.charCodeAt(0) === 100 ? f[method](remove) : f[method]();
+        }
+      }
+    }
+    throw new TypeError(`Fold does not exist: "${fold}"`);
+  };
+  scope.on = event.on;
+  scope.off = event.off;
+  scope.collapse = (fold) => $find("close", fold);
+  scope.expand = (fold) => $find("open", fold);
+  scope.destroy = (fold, remove = false) => {
+    if (typeof fold === "undefined") {
+      for (const fold2 of scope.folds)
+        fold2.destroy();
+    } else {
+      $find("destroy", fold, remove);
+    }
+    scope.element.removeAttribute("aria-multiselectable");
+    event.emit("destroy", scope);
+    window.relapse.delete(key);
+  };
+  window.relapse.set(key, scope);
+  return scope;
+}
+relapse.get = (id) => id ? window.relapse.get(id) : window.relapse;
+relapse.load = () => {
+  if (document.readyState === "loading")
+    setTimeout(relapse.load, 50);
+  const elements = document.querySelectorAll("[data-relapse]");
+  for (const element of elements) {
+    if (element.getAttribute("data-relapse") !== "")
+      relapse(element);
+  }
+};
+var src_default = relapse;
+export {
+  $events,
+  src_default as default
+};

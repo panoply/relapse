@@ -1,68 +1,4 @@
-/* -------------------------------------------- */
-/* RELAPSE ACCORDION                            */
-/* -------------------------------------------- */
-
-$accordion-border-width: 1px !default;
-$accordion-border-color: #e5e5e5 !default;
-$accordion-expanded-color: #03b5d2 !default;
-$accordion-disabled-opacity: 0.5 !default;
-
-.b-0 {
-  border-right: none;
-  border-left: none;
-}
-
-.accordion {
-  position: relative;
-  border: 1px solid $accordion-border-color;
-  border-top: none;
-
-  section {
-    height: 0;
-    overflow: hidden;
-    opacity: 0;
-    will-change: opacity, height;
-
-    > p {
-      padding: 0 25px;
-    }
-  }
-
-  a,
-  button {
-    position: relative;
-    display: block;
-    width: 100%;
-    padding: 25px;
-    text-align: left;
-    background: none;
-    border: none;
-    border-bottom: $accordion-border-width solid $accordion-border-color;
-    outline: none;
-
-
-    &[aria-expanded="false"][aria-disable="true"],
-    &[aria-expanded="false"].disabled {
-      opacity: $accordion-disabled-opacity;
-
-      &:focus {
-        color: inherit;
-        cursor: default;
-      }
-    }
-
-    &[aria-expanded="true"] {
-      color: $accordion-expanded-color;
-    }
-
-    &:hover,
-    &:focus {
-      color: $accordion-expanded-color;
-      cursor: pointer;
-    }
-  }
-}
-
+@import "./relapse";
 
 /* -------------------------------------------- */
 /* BODY STYLES                                  */
@@ -94,8 +30,6 @@ header {
 }
 
 main {
-  display: flex;
-  width: 550px;
   margin: 0 auto;
 }
 
