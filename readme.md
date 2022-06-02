@@ -28,7 +28,7 @@ import relapse from 'relapse';
 relapse('#accordion', {
   persist: true,
   multiple: false,
-  schema: 'data-accordion'
+  schema: 'data-accordion',
   classes: {
     initial: 'initial',
     opened: 'opened',
