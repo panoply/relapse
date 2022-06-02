@@ -134,4 +134,5 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   relapse('#expanded');
+
 });

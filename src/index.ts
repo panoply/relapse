@@ -86,7 +86,7 @@ function $folds (scope: Scope, event: ReturnType<typeof $events>) {
     };
 
     /**
-     * Collapsing Element -Closes an open fold
+     * Collapsing Element - Closes an open fold
      */
     const $collapse = (focus: Fold) => {
 
@@ -106,7 +106,7 @@ function $folds (scope: Scope, event: ReturnType<typeof $events>) {
 
       const focus = $active(index);
 
-      if (focus.expanded || focus.disabled) return;
+      if (focus.expanded) return;
 
       focus.close();
 
@@ -118,8 +118,31 @@ function $folds (scope: Scope, event: ReturnType<typeof $events>) {
       focus.expanded = true;
 
       focus.disable();
-
+      scope.count = scope.folds.filter(({ expanded }) => expanded).length;
       event.emit('expand', scope, focus);
+
+    };
+
+    fold.close = (index?: number) => {
+
+      let focus = $active(index);
+
+      if (config.multiple) {
+        if (!config.persist || (config.persist && scope.count > 1)) $collapse(focus);
+      } else {
+        for (const node of scope.folds) {
+          if (node.expanded) {
+            if (config.persist && node.number === focus.number) break;
+            $collapse(node);
+            focus = node;
+            break;
+          }
+        }
+      }
+
+      focus.enable();
+      scope.count = scope.folds.filter(({ expanded }) => expanded).length;
+      event.emit('collapse', scope, focus);
 
     };
 
@@ -171,28 +194,6 @@ function $folds (scope: Scope, event: ReturnType<typeof $events>) {
           focus.button.classList.add(classes.disabled);
         }
       }
-    };
-
-    fold.close = (index?: number) => {
-
-      let focus = $active(index);
-
-      if (config.multiple && focus.expanded) {
-        $collapse(focus);
-      } else {
-        for (const node of scope.folds) {
-          if (node.expanded) {
-            if (config.persist && node.number === focus.number) break;
-            $collapse(node);
-            focus = node;
-            break;
-          }
-        }
-      }
-
-      focus.enable();
-      event.emit('collapse', scope, focus);
-
     };
 
     fold.toggle = () => {
@@ -281,14 +282,19 @@ const $defaults = (options: Options, attrs: NamedNodeMap): Options => {
 
 function relapse (selector: string | HTMLElement, options?: Options) {
 
+  const el: HTMLElement = typeof selector === 'string' ? document.body.querySelector(selector) : selector;
+
+  if (!el) return;
+
   if (!(window.relapse instanceof Map)) window.relapse = new Map();
 
   const scope: Scope = Object.create(null);
 
   scope.folds = [];
   scope.events = Object.create(null);
-  scope.element = typeof selector === 'string' ? document.body.querySelector(selector) : selector;
+  scope.element = el;
   scope.id = `A${window.relapse.size}`;
+  scope.count = 0;
 
   scope.config = $defaults(options, scope.element.attributes);
 
@@ -384,7 +390,10 @@ function relapse (selector: string | HTMLElement, options?: Options) {
     fold.button = button as any;
     fold.content = content as any;
 
-    if (fold.expanded) fold.content.style.maxHeight = `${fold.content.scrollHeight}px`;
+    if (fold.expanded) {
+      scope.count = scope.count + 1;
+      fold.content.style.maxHeight = `${fold.content.scrollHeight}px`;
+    }
 
     folds(fold);
   }
@@ -392,9 +401,7 @@ function relapse (selector: string | HTMLElement, options?: Options) {
   const $find = (method: 'open' | 'close' | 'destroy', fold: string | number, remove = false) => {
 
     if (typeof fold === 'number') {
-      return method.charCodeAt(0) === 100
-        ? scope.folds[fold][method](remove as never)
-        : scope.folds[fold][method]();
+      return method.charCodeAt(0) === 100 ? scope.folds[fold][method](remove as never) : scope.folds[fold][method]();
     } else if (typeof fold === 'string') {
       for (const f of scope.folds) {
         if (f.button.dataset[`${scope.config.schema}-fold`] === fold) {

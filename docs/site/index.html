@@ -17,7 +17,7 @@
 
     {% include 'triggers.html' %}
 
-    <main class="container">
+    <main class="container d-none">
       {% include 'default.html' %}
     </main>
 
@@ -25,8 +25,16 @@
       Relapse Expanded Example
     </header>
 
-    <main class="container">
+    <main class="container d-none">
       {% include 'expanded.html' %}
+    </main>
+
+    <header>
+      Relapse Multiple Example
+    </header>
+
+    <main class="container">
+      {% include 'multiple.html' %}
     </main>
 
     {{ content }}

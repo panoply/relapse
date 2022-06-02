@@ -1,7 +1,7 @@
 {
   "name": "relapse",
   "description": "A lightweight ESM (vanilla) toggle library for creating dynamic collapsible components.",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "homepage": "https://github.com/panoply/relapse",
   "author": {
     "name": "Nikolas Savvidis",
@@ -21,11 +21,14 @@
   "exports": {
     ".": {
       "import": "./index.js"
-    },
-    "./iife": {
-      "import": "./iife.js"
     }
   },
+  "files": [
+    "./iife.js",
+    "./index.scss",
+    "./index.d.ts",
+    "./pnpm-lock.yaml"
+  ],
   "keywords": [
     "dropdown",
     "accordion",

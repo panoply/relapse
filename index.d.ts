@@ -211,8 +211,11 @@ export declare interface Scope {
    */
   active: number;
   /**
-   * The list of folds contained within this
-   * accordion.
+   * The number of collapsed folds, ie: the open count
+   */
+  count: number;
+  /**
+   * The list of folds contained within this accordion.
    */
   folds: Fold[]
   /**
