@@ -24,11 +24,10 @@
     }
   },
   "files": [
-    "./iife.js",
-    "./index.js",
-    "./index.scss",
-    "./index.d.ts",
-    "./pnpm-lock.yaml"
+    "iife.js",
+    "index.js",
+    "index.scss",
+    "index.d.ts"
   ],
   "keywords": [
     "dropdown",
