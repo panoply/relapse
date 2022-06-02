@@ -19,6 +19,8 @@ $relapse-transition-timing: ease-in-out !default;
 
   &-fold {
     max-height: 0;
+    margin: 0 !important;
+    padding: 0 !important;
     overflow: hidden;
     opacity: 0;
     -webkit-transition: opacity $relapse-transition-opacity linear,
@@ -61,15 +63,15 @@ $relapse-transition-timing: ease-in-out !default;
     -ms-user-select: none;
     user-select: none;
 
-    &.initial + .relapse-fold {
-      max-height: unset;
-      visibility: visible;
-      opacity: 1;
-    }
-
     &.initial {
       color: inherit;
       background-color: inherit;
+
+      + .relapse-fold {
+        max-height: unset;
+        visibility: visible;
+        opacity: 1;
+      }
     }
 
     &.opened {
