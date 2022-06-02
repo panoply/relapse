@@ -1,3 +1,5 @@
+/* eslint-disable array-bracket-spacing */
+
 const highlight = require('@11ty/eleventy-plugin-syntaxhighlight');
 const htmlmin = require('@sardine/eleventy-plugin-tinyhtml');
 const md = require('markdown-it');

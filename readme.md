@@ -1,15 +1,11 @@
 # Relapse
 
-An [A11y](https://www.a11yproject.com/) compliant, lightweight (2.1kb gzip) and dependency free toggle library for collapsible accordions. Written in TypeScript and distributed in ES6 this tiny little module flaunts an extensive API, uses [rAF](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame) powered transitions and requires minimal markup.
-
-### Example
-
-TODO
+An [A11y](https://www.a11yproject.com/) compliant, lightweight (1.8kb gzip) and dependency free toggle library for collapsible accordions. Written in TypeScript and distributed in ES6 this tiny little module flaunts an extensive API.
 
 ### Key Features
 
 - Minimal markup (2 element node tree).
-- Silky smooth rAF powered transitions.
+- Silky smooth transitions.
 - Accessibility support
 - Functional and pure, no classes or prototype.
 - Event dispatching with global context access
@@ -30,12 +26,11 @@ The module uses a default export:
 import relapse from 'relapse';
 
 relapse('#accordion', {
-  transition: 300,
-  fade: true,
   persist: true,
   multiple: false,
   schema: 'data-accordion'
   classes: {
+    initial: 'initial',
     opened: 'opened',
     focused: 'focused',
     expanded: 'expanded',
@@ -46,34 +41,32 @@ relapse('#accordion', {
 
 ### Markup
 
-The node tree is minimal and markup must adhere (use) the below structure. Accordion toggles can either be a `<button>` or `<a>` element, however the accordion collapsible (fold) cannot be a `<button>` or `<a>` element.
+The node tree is minimal and markup must adhere (use) the below structure. By default, no padding or margin is applied to the fold elements, you should avoid applying
 
 <!-- prettier-ignore -->
 ```html
-<div class="accordion">
+<div class="relapse">
 
   <!-- PANEL 1 -->
 
-  <button type="button">Opens Fold #</button>
-  <div>
+  <button type="button" class="relapse-btn">Opens Fold #</button>
+  <div class="relapse-fold">
     This is Fold #1
   </div>
 
   <!-- PANEL 2 -->
 
-  <a href="..">Opens Fold #2</a>
-  <nav>
-    <ul>
-      <li>This is Fold #3</li>
-    </ul>
-  </nav>
+  <a href=".." type="button" class="relapse-btn">Opens Fold #2</a>
+  <div class="relapse-fold">
+    This is Fold #1
+  </div>
 
   <!-- PANEL 3 -->
 
-  <button type="button">Opens Fold #3</button>
-  <p>
-    This is Fold #3
-  </p>
+  <button type="button" class="relapse-btn">Opens Fold #3</button>
+  <div class="relapse-fold">
+    This is Fold #1
+  </div>
 
 </div>
 ```
@@ -85,6 +78,10 @@ The module requires some basic stylings. Simplest is CSS defaults, but for the a
 ### Class Names
 
 Relapse uses 4 specific class names on folds which can be used to infer the current state a fold exists. You can use these classes to add things like opened/closed icons and background colors.
+
+### `initial`
+
+Applied to the toggle button element to open a fold at runtime.
 
 ### `opened`
 
@@ -104,61 +101,127 @@ Applied to the toggle button element when it is disabled.
 
 ### SASS
 
-This is a bare minimum starting point the styling the accordion.
+Import the base styles and use the SCSS variables to customize the look and feel of the accordion.
 
 <!-- prettier-ignore -->
 ```scss
-$accordion-border-width: 1px !default;
-$accordion-border-color: #e5e5e5 !default;
-$accordion-expanded-color: #03b5d2 !default;
-$accordion-disabled-opacity: 0.5 !default;
+@import "relapse";
+```
 
+<details>
+<summary>
+Variables
+</summary>
 
-.accordion {
+<!-- prettier-ignore -->
+```scss
+$relapse-border-width: 1px !default;
+$relapse-border-color: #e5e5e5 !default;
+$relapse-padding: 50px !default;
+$relapse-transition-height: 225ms !default;
+$relapse-transition-opacity: 200ms !default;
+$relapse-transition-timing: ease-in-out !default;
+```
+
+</details>
+
+<details>
+<summary>
+Stylesheet
+</summary>
+
+<!-- prettier-ignore -->
+```scss
+/* -------------------------------------------- */
+/* RELAPSE                                      */
+/* -------------------------------------------- */
+
+$relapse-border-width: 1px !default;
+$relapse-border-color: #e5e5e5 !default;
+$relapse-padding: 50px !default;
+$relapse-transition-height: 225ms !default;
+$relapse-transition-opacity: 200ms !default;
+$relapse-transition-timing: ease-in-out !default;
+
+.relapse {
   position: relative;
-  border: 1px solid $accordion-border-color;
+  display: block;
+  width: 100%;
+  border: $relapse-border-width solid $relapse-border-color;
+  border-top: none;
 
-  section {
-    height: 0;
+
+  &-fold {
+    max-height: 0;
+    margin: 0 !important;
+    padding: 0 !important;
     overflow: hidden;
     opacity: 0;
-    will-change: opacity, height;
+    -webkit-transition: opacity $relapse-transition-opacity linear,
+      max-height $relapse-transition-height $relapse-transition-timing;
+    transition: opacity $relapse-transition-opacity linear,
+      max-height $relapse-transition-height $relapse-transition-timing;
+    will-change: opacity, max-height;
+
+    @media (prefers-reduced-motion: reduce) {
+      -webkit-transition: none;
+      transition: none;
+    }
+
+    > :first-child {
+      padding: $relapse-padding;
+    }
+
+    &.expanded {
+      max-height: auto;
+      visibility: visible;
+      opacity: 1;
+    }
   }
 
-  button {
-    position: relative;
-    display: block;
+  &-btn {
+    display: inherit;
     width: 100%;
-    padding: 25px;
+    margin: 0;
+    padding: inherit;
+    color: inherit;
+    font-size: inherit;
     text-align: left;
-    background: none;
+    background-color: inherit;
     border: none;
-    border-bottom: $accordion-border-width solid $accordion-border-color;
-    outline: none;
+    border-top: $relapse-border-width solid $relapse-border-color;
+    border-radius: 0;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 
+    &.initial {
+      color: inherit;
+      background-color: inherit;
 
-    &[aria-expanded="false"][aria-disable="true"],
-    &[aria-expanded="false"].disabled {
-      opacity: $accordion-disabled-opacity;
-
-      &:focus {
-        color: inherit;
-        cursor: default;
+      + .relapse-fold {
+        max-height: unset;
+        visibility: visible;
+        opacity: 1;
       }
     }
 
-    &[aria-expanded="true"] {
-      color: $accordion-expanded-color;
+    &.opened {
+      color: inherit;
+      background-color: inherit;
     }
 
-    &:hover,
-    &:focus {
-      color: $accordion-expanded-color;
-      cursor: pointer;
+    &.focused {
+      background-color: inherit;
+      outline: none;
     }
   }
 }
 ```
+
+</details>
 
 # Options
 
@@ -175,18 +238,6 @@ Persist will persist a fold to be expanded at all times.
 Multiple allows for multiple folds to be opened.
 
 **Default:** `false`
-
-### `transition`
-
-The rAF transition (ms) for the collapse and expand animations
-
-**Default:** `300`
-
-### `fade`
-
-Whether or not the fold content should gently fade in and fade out between expands/collapse
-
-**Default:** `true`
 
 ### `schema`
 
@@ -206,13 +257,6 @@ You may also prefer to pass options via data attributes on the element.
 
 - data-accordion-persist
 - data-accordion-multiple
-- data-accordion-transition
-- data-accordion-fade
-
-Buttons and folds also accept the following attribute options to be annotated on an individual basis.
-
-- data-accordion-transition
-- data-accordion-fade
 
 # Instance
 
@@ -228,18 +272,14 @@ interface Accordion {
   id: string;
   element: HTMLElement;
   active: number;
-  collapsing: boolean;
   events: {
     [name: string]: Array<(this: Accordion, fold?: Fold) => void>
   };
   config: {
-    duration: number;
     persist: boolean;
     multiple: boolean;
-    preserve: boolean;
-    keyboard: boolean;
-    fade: boolean;
     classes: {
+      opened: string;
       expanded: string;
       focused: string;
       disabled: string;
@@ -250,8 +290,6 @@ interface Accordion {
     button: HTMLButtonElement | HTMLElement;
     content: HTMLElement;
     number: number;
-    transition: number;
-    fade: boolean;
     expanded: boolean;
     focused: boolean;
     disabled: boolean;
