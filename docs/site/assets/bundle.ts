@@ -132,4 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (accordion.folds[4].expanded) accordion.collapse(4); else accordion.expand(4);
 
   });
+
+  relapse('#expanded');
 });

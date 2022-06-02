@@ -68,7 +68,7 @@ function $folds (scope: Scope, event: ReturnType<typeof $events>) {
   return (fold: Fold) => {
 
     /**
-     * Expanding Element - Opens a closed fold, uses RAF to handle the transition.
+     * Expanding Element - Opens a closed fold
      */
     const $active = (index: number) => {
 
@@ -86,7 +86,7 @@ function $folds (scope: Scope, event: ReturnType<typeof $events>) {
     };
 
     /**
-     * Collapsing Element -Closes an open fold, uses RAF to handle the transition.
+     * Collapsing Element -Closes an open fold
      */
     const $collapse = (focus: Fold) => {
 
@@ -177,7 +177,7 @@ function $folds (scope: Scope, event: ReturnType<typeof $events>) {
 
       let focus = $active(index);
 
-      if (config.multiple && !focus.expanded) {
+      if (config.multiple && focus.expanded) {
         $collapse(focus);
       } else {
         for (const node of scope.folds) {
@@ -383,6 +383,8 @@ function relapse (selector: string | HTMLElement, options?: Options) {
 
     fold.button = button as any;
     fold.content = content as any;
+
+    if (fold.expanded) fold.content.style.maxHeight = `${fold.content.scrollHeight}px`;
 
     folds(fold);
   }

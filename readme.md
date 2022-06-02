@@ -132,6 +132,17 @@ Stylesheet
 
 <!-- prettier-ignore -->
 ```scss
+/* -------------------------------------------- */
+/* RELAPSE                                      */
+/* -------------------------------------------- */
+
+$relapse-border-width: 1px !default;
+$relapse-border-color: #e5e5e5 !default;
+$relapse-padding: 50px !default;
+$relapse-transition-height: 225ms !default;
+$relapse-transition-opacity: 200ms !default;
+$relapse-transition-timing: ease-in-out !default;
+
 .relapse {
   position: relative;
   display: block;
@@ -139,21 +150,22 @@ Stylesheet
   border: $relapse-border-width solid $relapse-border-color;
   border-top: none;
 
+
   &-fold {
     max-height: 0;
     margin: 0 !important;
     padding: 0 !important;
     overflow: hidden;
     opacity: 0;
-    will-change: opacity, max-height;
-    transition: opacity $relapse-transition-opacity linear,
-      max-height $relapse-transition-height $relapse-transition-timing;
     -webkit-transition: opacity $relapse-transition-opacity linear,
       max-height $relapse-transition-height $relapse-transition-timing;
+    transition: opacity $relapse-transition-opacity linear,
+      max-height $relapse-transition-height $relapse-transition-timing;
+    will-change: opacity, max-height;
 
     @media (prefers-reduced-motion: reduce) {
+      -webkit-transition: none;
       transition: none;
-       -webkit-transition: none;
     }
 
     > :first-child {
@@ -184,6 +196,17 @@ Stylesheet
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+
+    &.initial {
+      color: inherit;
+      background-color: inherit;
+
+      + .relapse-fold {
+        max-height: unset;
+        visibility: visible;
+        opacity: 1;
+      }
+    }
 
     &.opened {
       color: inherit;
