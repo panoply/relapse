@@ -128,15 +128,15 @@ export declare interface Fold {
   /**
    * The button element which toggles this fold.
    */
-  button: HTMLElement;
+  btn: HTMLElement;
   /**
    * The content fold element which is toggled.
    */
-  content: HTMLElement;
+  el: HTMLElement;
   /**
    * The zero based index reference for the fold.
    */
-  number: number;
+  idx: number;
   /**
    * Whether or not the fold is expanded.
    */
@@ -266,13 +266,6 @@ declare const Relapse: {
    * accordion component.
    */
   (selector: string | Element, options?: Options): Scope;
-  /**
-   * *LOAD ACCORDIONS*
-   *
-   * Queries the document for `data-relapse="*"` annotated
-   * elements and intializes them.
-   */
-  load(): Scope;
   /**
    * *GET ACCORDION*
    *

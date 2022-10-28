@@ -2,7 +2,11 @@ import relapse from 'relapse';
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  const accordion = relapse('#accordion');
+  const accordion = relapse('#accordion', {
+    classes: {
+      opened: 'is-open'
+    }
+  });
 
   relapse.get();
 

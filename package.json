@@ -1,7 +1,7 @@
 {
   "name": "relapse",
   "description": "A lightweight ESM (vanilla) toggle library for creating dynamic collapsible components.",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "homepage": "https://github.com/panoply/relapse",
   "author": {
     "name": "Nikolas Savvidis",
@@ -20,7 +20,9 @@
   "module": "./index.js",
   "exports": {
     ".": {
-      "import": "./index.js"
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "default": "./index.js"
     }
   },
   "files": [
@@ -53,9 +55,8 @@
   },
   "scripts": {
     "dev": "esbuild src/index.ts --outfile=index.js --format=esm --bundle --watch",
-    "build": "pnpm run esm && pnpm run iife",
+    "build": "pnpm run esm",
     "esm": "esbuild src/index.ts --outfile=index.js --format=esm --bundle --mangle-props=^[$] --minify",
-    "iife": "esbuild src/iife.ts --outfile=iife.js --format=iife --bundle --mangle-props=^[$] --minify",
     "gzs": "gzip-size index.js --include-original"
   },
   "browserslist": [
