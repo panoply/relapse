@@ -17,7 +17,7 @@ export declare interface Events <T = Scope, F = Fold>{
   /**
    * Triggered before expanding or collapsing.
    * Returning a boolean `false` will `preventDefault()`
-   * and toggle will not be fired.
+   * and toggle will not be invoked.
    *
    * > Use the `fold.expanded` parameter to determine the type of toggle occuring.
    */
@@ -39,17 +39,15 @@ export declare interface Events <T = Scope, F = Fold>{
 export declare interface Options {
   /**
    * Whether or not to persist a fold. This will prevent
-   * the accordion from collapsing all folds, keeping
+   * the accordion from collapsing all folds, by always keeping
    * one expanded.
-   *
    *
    * @default true
    */
   persist?: boolean;
   /**
    * Whether or not multiple folds can be expanded. This
-   * will allow the use to control what folds are collapsed
-   * and expanded.
+   * will allow all folds to be expanded.
    *
    * @default false
    */
@@ -60,7 +58,7 @@ export declare interface Options {
    * optionally set this to `null` to omit prefixing.
    *
    * @default
-   * 'data-accordion'
+   * 'data-relapse'
    *
    * @example
    *
@@ -77,8 +75,7 @@ export declare interface Options {
   classes?: {
     /**
      * The class to use for loaded folds in an opened
-     * state. Applies on button elements, it will expand
-     * folds at runtime.
+     * state. Annotate button elements to expand folds at runtime.
      *
      * @default 'initial'
      */
@@ -92,8 +89,7 @@ export declare interface Options {
     opened?: string;
     /**
      * The expanded class name which is added to buttons
-     * and folds upon being expanded, ie: transition end
-     *
+     * and folds upon being expanded, ie: transition ends.
      *
      * @default 'expanded'
      */
@@ -130,13 +126,13 @@ export declare interface Fold {
    */
   button: HTMLElement;
   /**
-   * The content fold element which is toggled.
+   * The fold element which is toggled.
    */
   content: HTMLElement;
   /**
    * The zero based index reference for the fold.
    */
-  number: number;
+  index: number;
   /**
    * Whether or not the fold is expanded.
    */
@@ -144,8 +140,10 @@ export declare interface Fold {
   /**
    * Whether or not the fold is disabled. This will
    * be set to `true` on expanded folds when the `persist`
-   * option is enabled. If the fold is collapsed and this
-   * is `true` then then toggling will be prevented.
+   * option is enabled.
+   *
+   * If the fold is collapsed and this is `true` then then
+   * toggling will be prevented.
    */
   disabled: boolean;
   /**
@@ -199,7 +197,7 @@ export declare interface Scope {
    */
   id: string;
   /**
-   * The accordion options
+   * The accordion options merged with defaults
    */
   config: Options;
   /**
@@ -211,8 +209,11 @@ export declare interface Scope {
    */
   active: number;
   /**
-   * The list of folds contained within this
-   * accordion.
+   * The number of collapsed folds, ie: the open count
+   */
+  count: number;
+  /**
+   * The list of folds contained within this accordion.
    */
   folds: Fold[]
   /**
@@ -257,27 +258,20 @@ declare global {
 
 declare const Relapse: {
   /**
-   * *RELAPSE ACCORDION*
+   * **_RELAPSE ACCORDION_**
    *
-   * A sliky smooth, modern and lightweight (2kb gzip)
+   * A sliky smooth, modern, lightweight (2kb gzip) full featured
    * accordion component.
    */
   (selector: string | Element, options?: Options): Scope;
   /**
-   * *LOAD ACCORDIONS*
-   *
-   * Queries the document for `data-relapse="*"` annotated
-   * elements and intializes them.
-   */
-  load(): Scope;
-  /**
-   * *GET ACCORDION*
+   * **_GET ACCORDION_**
    *
    * Find the current loaded accordion by its `id`
    */
   get(id: string): Scope;
   /**
-   * *ALL ACCORDIONS*
+   * **_ALL ACCORDIONS_**
    *
    * Returns the `window.replace` Map instance.
    */
