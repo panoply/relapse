@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  relapse('.multi');
+
   relapse.get();
 
   // @ts-ignore

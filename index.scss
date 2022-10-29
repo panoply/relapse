@@ -7,7 +7,7 @@ $relapse-border-color: #e5e5e5 !default;
 $relapse-padding: 50px !default;
 $relapse-transition-height: 225ms !default;
 $relapse-transition-opacity: 200ms !default;
-$relapse-transition-timing: ease-in-out !default;
+$relapse-transition-easing: ease-in-out !default;
 
 .relapse {
   position: relative;
@@ -24,9 +24,9 @@ $relapse-transition-timing: ease-in-out !default;
     overflow: hidden;
     opacity: 0;
     -webkit-transition: opacity $relapse-transition-opacity linear,
-      max-height $relapse-transition-height $relapse-transition-timing;
+      max-height $relapse-transition-height $relapse-transition-easing;
     transition: opacity $relapse-transition-opacity linear,
-      max-height $relapse-transition-height $relapse-transition-timing;
+      max-height $relapse-transition-height $relapse-transition-easing;
     will-change: opacity, max-height;
 
     @media (prefers-reduced-motion: reduce) {

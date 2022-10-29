@@ -1,13 +1,14 @@
 # Relapse
 
-An [A11y](https://www.a11yproject.com/) compliant, lightweight (1.8kb gzip) and dependency free toggle library for collapsible accordions. Written in TypeScript and distributed in ES6 this tiny little module flaunts an extensive API.
+An [A11y](https://www.a11yproject.com/) compliant, lightweight (1.9kb gzip) dependency free toggle utility for collapsible accordions. Written in TypeScript and distributed in ES6 this tiny little module flaunts an extensive API for usage in modern web projects,
 
 ### Key Features
 
-- Minimal markup (2 element node tree).
-- Silky smooth transitions.
+- Minimal markup (2 element node tree)
+- Silky smooth transitions
+- Drop-in solution with no complexities
 - Accessibility support
-- Functional and pure, no classes or prototype.
+- Functional and pure, no classes or prototype
 - Event dispatching with global context access
 
 ### Installation
@@ -41,7 +42,7 @@ relapse('#accordion', {
 
 ### Markup
 
-The node tree is minimal and markup must adhere (use) the below structure. By default, no padding or margin is applied to the fold elements, you should avoid applying
+The node tree is minimal and markup must adhere (use) the below structure. By default, no padding or margin is applied to the fold elements. Each `relapse-fold` represents an element that will be expanded and collapsed.
 
 <!-- prettier-ignore -->
 ```html
@@ -49,7 +50,7 @@ The node tree is minimal and markup must adhere (use) the below structure. By de
 
   <!-- PANEL 1 -->
 
-  <button type="button" class="relapse-btn">Opens Fold #</button>
+  <button type="button" class="relapse-btn">Opens Fold #1</button>
   <div class="relapse-fold">
     This is Fold #1
   </div>
@@ -73,11 +74,11 @@ The node tree is minimal and markup must adhere (use) the below structure. By de
 
 # Styling
 
-The module requires some basic stylings. Simplest is CSS defaults, but for the adults there is a SASS version. The defaults apply styles according to hierarch and structure. Everything nested within an element using the class `accordion` will be styled without having to apply class names.
+The module leverages CSS for transforms effects (open/close). Simplest approach it to use the CSS defaults, but for the adults there is you can import/use the SCSS stylesheet. The defaults apply styles according to hierarch and structure. Everything nested within an element using the class `relapse` will be styled without having to apply additional class names.
 
-### Class Names
+### Classes
 
-Relapse uses 4 specific class names on folds which can be used to infer the current state a fold exists. You can use these classes to add things like opened/closed icons and background colors.
+Relapse uses 5 specific class names on folds which will infer the current state of a fold. You can use these classes to add things like opened/closed icons and background colors.
 
 ### `initial`
 
@@ -99,9 +100,133 @@ Applied to the fold element when it is expanded
 
 Applied to the toggle button element when it is disabled.
 
-### SASS
+## CSS Usage
 
-Import the base styles and use the SCSS variables to customize the look and feel of the accordion.
+Include the following CSS in your projects. The default styles are intend to get your started. You can optionally leverage CSS variables to customize the look and feel of the accordion for low level usage.
+
+### Variables
+
+```css
+:root {
+  --relapse-border-width: 1px;
+  --relapse-border-color: #e5e5e5;
+  --relapse-padding: 50px;
+  --relapse-transition-height: 225ms;
+  --relapse-transition-opacity: 200ms;
+  --relapse-transition-timing: ease-in-out;
+}
+```
+
+<details>
+<summary>
+
+### Stylesheet
+
+</summary>
+
+<!-- prettier-ignore -->
+```css
+.relapse {
+  border: var(--relapse-border-width) solid var(--relapse-border-color);
+  border-top: none;
+  display: block;
+  position: relative;
+  width: 100%;
+}
+
+.relapse-btn {
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  border: none;
+  border-radius: 0;
+  border-top: var(--relapse-border-width) solid var(--relapse-border-color);
+  cursor: pointer;
+  display: inherit;
+  font-size: inherit;
+  margin: 0;
+  padding: inherit;
+  text-align: left;
+  user-select: none;
+  width: 100%;
+}
+
+.relapse-btn,
+.relapse-btn.initial {
+  background-color: inherit;
+  color: inherit;
+}
+
+.relapse-btn.focused {
+  background-color: inherit;
+  outline: none;
+}
+
+.relapse-btn.initial + .relapse-fold {
+  max-height: unset;
+  opacity: 1;
+  visibility: visible;
+}
+
+.relapse-btn.opened {
+  background-color: inherit;
+  color: inherit;
+}
+
+.relapse-fold {
+  padding: 0 !important;
+  margin: 0 !important;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  will-change: opacity, max-height;
+  transition: opacity var(--relapse-transition-opacity) linear,
+    max-height var(--relapse-transition-height) var(--relapse-transition-easing);
+  -webkit-transition: opacity var(--relapse-transition-opacity) linear,
+    max-height var(--relapse-transition-height) var(--relapse-transition-easing);
+}
+
+.relapse-fold > :first-child {
+  padding: var(--relapse-padding);
+}
+
+.relapse-fold.expanded {
+  max-height: auto;
+  opacity: 1;
+  visibility: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .relapse-fold {
+    -webkit-transition: none;
+    transition: none;
+  }
+}
+```
+
+</details>
+
+## SCSS Usage
+
+If you are developing with SASS, you can import the default styling and extend upon them. Either copy/paste the default stylesheet or include it within your project. Optionally leverage the SCSS variables for low level customizations.
+
+### Variables
+
+You can apply some basic customizations using the exposed variables. There is no limitations and you can extend to fit desired aesthetics.
+
+<!-- prettier-ignore -->
+```scss
+$relapse-border-width:          1px !default;
+$relapse-border-color:          #e5e5e5 !default;
+$relapse-padding:               50px !default;
+$relapse-transition-height:     225ms !default;
+$relapse-transition-opacity:    200ms !default;
+$relapse-transition-timing:     ease-in-out !default;
+```
+
+### Importing
+
+You may also choose to import the below default SCSS Stylesheet
 
 <!-- prettier-ignore -->
 ```scss
@@ -110,24 +235,9 @@ Import the base styles and use the SCSS variables to customize the look and feel
 
 <details>
 <summary>
-Variables
-</summary>
 
-<!-- prettier-ignore -->
-```scss
-$relapse-border-width: 1px !default;
-$relapse-border-color: #e5e5e5 !default;
-$relapse-padding: 50px !default;
-$relapse-transition-height: 225ms !default;
-$relapse-transition-opacity: 200ms !default;
-$relapse-transition-timing: ease-in-out !default;
-```
+### SCSS Stylesheet
 
-</details>
-
-<details>
-<summary>
-Stylesheet
 </summary>
 
 <!-- prettier-ignore -->
@@ -136,12 +246,12 @@ Stylesheet
 /* RELAPSE                                      */
 /* -------------------------------------------- */
 
-$relapse-border-width: 1px !default;
-$relapse-border-color: #e5e5e5 !default;
-$relapse-padding: 50px !default;
-$relapse-transition-height: 225ms !default;
-$relapse-transition-opacity: 200ms !default;
-$relapse-transition-timing: ease-in-out !default;
+$relapse-border-width:          1px !default;
+$relapse-border-color:          #e5e5e5 !default;
+$relapse-padding:               50px !default;
+$relapse-transition-height:     225ms !default;
+$relapse-transition-opacity:    200ms !default;
+$relapse-transition-timing:     ease-in-out !default;
 
 .relapse {
   position: relative;
@@ -225,17 +335,17 @@ $relapse-transition-timing: ease-in-out !default;
 
 # Options
 
-The accordion provides the following options.
+Relapse provides the following surface level option configurations.
 
 ### `persist`
 
-Persist will persist a fold to be expanded at all times.
+Persist will ensure a fold is always expanded, traditional accordion style.
 
 **Default:** `true`
 
 ### `multiple`
 
-Multiple allows for multiple folds to be opened.
+Allows for multiple folds to be expanded.
 
 **Default:** `false`
 
@@ -249,18 +359,30 @@ Customize the attribute annotation data attribute.
 
 Customize the class names that relapse applies
 
-**Default:** `data-accordion`
+**Default:**
 
-# Option Attributes
+```ts
+{
+  initial: 'initial',
+  opened: 'opened',
+  focused: 'focused',
+  expanded: 'expanded',
+  disabled: 'disabled'
+}
+```
 
-You may also prefer to pass options via data attributes on the element.
+# Attribute Options
+
+You may also prefer to pass options via data attributes. Relapse support attribute configurations from within the DOM.
 
 - data-accordion-persist
 - data-accordion-multiple
 
 # Instance
 
-Relapse will maintain active instances in global scope. Each accordion is accessible via `window.relapse` which uses a `Map` store who's keys will reference the element `id` (when no `id` is defined one is generated).
+Relapse will maintain active instances in global scope. Each accordion is accessible via `window.relapse` which uses a `Map` store who's keys will reference the element `id` of each accordion. When no `id` is defined one is generated with a UUID value.
+
+> The Typings will inform upon the methods and values available to each instance.
 
 ```ts
 interface Accordion {
@@ -307,7 +429,7 @@ interface Accordion {
 
 # Events
 
-Events will be dispatched at different points of a collapse. The toggled fold is passed in the listeners arguments and you can access the accordions instance via the `this` context.
+Events will be dispatched at different points of an expand and collapse. The toggled fold is passed in the listeners arguments and you can access the accordions instance via the `this` context of the event callbacks.
 
 ```js
 import accordion from 'relapse';
@@ -334,19 +456,26 @@ event.on('destroy', function (this: IAccordion) {});
 
 # Methods
 
+In addition to the events, Relapse instances also expose some basic methods:
+
 ```typescript
 import relapse from 'relapse';
 
 const accordion = relapse('#accordion');
 
+// Expands a fold
 accordion.expand(fold: number | string);
 
+// Collapse a fold
 accordion.collapse(fold: number | string);
 
+// Destroy
 accordion.destroy();
 ```
 
 ### Folds
+
+Each fold is provided additional methods for interfacing. Access folds using a zero based index reference.
 
 ```js
 import relapse from 'relapse';

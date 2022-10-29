@@ -9,7 +9,7 @@ declare global {
  *
  * The emitted events for the accordion.
  */
-export function $events (events: Scope['events']) {
+function $events (events: Scope['events']) {
 
   const emit = (name: EventNames, scope: Scope, fold?: Fold): boolean => {
 
@@ -73,12 +73,12 @@ function $folds (scope: Scope, event: ReturnType<typeof $events>) {
     const $active = (index: number) => {
 
       if (typeof index !== 'number') {
-        if (scope.active !== fold.idx) scope.active = fold.idx;
+        if (scope.active !== fold.index) scope.active = fold.index;
         return fold;
       }
 
       if (scope.folds[index]) {
-        scope.active = fold.idx;
+        scope.active = fold.index;
         return scope.folds[index];
       } else {
         throw new TypeError(`No fold exists at index: ${index}`);
@@ -90,15 +90,15 @@ function $folds (scope: Scope, event: ReturnType<typeof $events>) {
      */
     const $collapse = (focus: Fold) => {
 
-      focus.btn.ariaDisabled = 'false';
-      focus.btn.ariaExpanded = 'false';
-      focus.btn.classList.remove(classes.opened);
-      focus.el.classList.remove(classes.expanded);
+      focus.button.ariaDisabled = 'false';
+      focus.button.ariaExpanded = 'false';
+      focus.button.classList.remove(classes.opened);
+      focus.content.classList.remove(classes.expanded);
       focus.expanded = false;
 
       // if we want to transition when closing we
       // have to set the current height and replace auto
-      focus.el.style.maxHeight = '0';
+      focus.content.style.maxHeight = '0';
 
     };
 
@@ -110,11 +110,11 @@ function $folds (scope: Scope, event: ReturnType<typeof $events>) {
 
       focus.close();
 
-      focus.btn.ariaDisabled = 'true';
-      focus.btn.ariaExpanded = 'true';
-      focus.btn.classList.add(classes.opened);
-      focus.el.classList.add(classes.expanded);
-      focus.el.style.maxHeight = `${focus.el.scrollHeight}px`;
+      focus.button.ariaDisabled = 'true';
+      focus.button.ariaExpanded = 'true';
+      focus.button.classList.add(classes.opened);
+      focus.content.classList.add(classes.expanded);
+      focus.content.style.maxHeight = `${focus.content.scrollHeight}px`;
       focus.expanded = true;
 
       focus.disable();
@@ -132,7 +132,7 @@ function $folds (scope: Scope, event: ReturnType<typeof $events>) {
       } else {
         for (const node of scope.folds) {
           if (node.expanded) {
-            if (config.persist && node.idx === focus.idx) break;
+            if (config.persist && node.index === focus.index) break;
             $collapse(node);
             focus = node;
             break;
@@ -150,15 +150,15 @@ function $folds (scope: Scope, event: ReturnType<typeof $events>) {
    * Focus Button - Applies focus to the button
    */
     fold.focus = () => {
-      scope.active = fold.idx; // focused Scope
-      fold.btn.classList.add(classes.focused);
+      scope.active = fold.index; // focused Scope
+      fold.button.classList.add(classes.focused);
       event.emit('focus', scope, fold);
     };
 
     /**
    * Blur Button - Applies blur to the button
    */
-    fold.blur = () => fold.btn.classList.remove(classes.focused);
+    fold.blur = () => fold.button.classList.remove(classes.focused);
 
     /**
    * Button Enable - Writes
@@ -169,8 +169,8 @@ function $folds (scope: Scope, event: ReturnType<typeof $events>) {
 
       if (focus.disabled) {
         focus.disabled = false;
-        focus.btn.ariaDisabled = 'false';
-        focus.btn.classList.remove(classes.disabled);
+        focus.button.ariaDisabled = 'false';
+        focus.button.classList.remove(classes.disabled);
       }
     };
 
@@ -185,13 +185,13 @@ function $folds (scope: Scope, event: ReturnType<typeof $events>) {
         if (focus.expanded) {
           if (config.persist) {
             focus.disabled = true;
-            focus.btn.ariaDisabled = 'true';
+            focus.button.ariaDisabled = 'true';
           }
         } else {
           focus.close();
           focus.disabled = true;
-          focus.btn.ariaDisabled = 'true';
-          focus.btn.classList.add(classes.disabled);
+          focus.button.ariaDisabled = 'true';
+          focus.button.classList.add(classes.disabled);
         }
       }
     };
@@ -200,9 +200,7 @@ function $folds (scope: Scope, event: ReturnType<typeof $events>) {
 
       if (event.emit('toggle', scope, fold)) return;
 
-      return fold.expanded
-        ? fold.close()
-        : fold.open();
+      return fold.expanded ? fold.close() : fold.open();
 
     };
 
@@ -210,19 +208,19 @@ function $folds (scope: Scope, event: ReturnType<typeof $events>) {
 
       fold.close();
 
-      fold.btn.removeEventListener('click', fold.toggle);
-      fold.btn.removeEventListener('focus', fold.focus);
-      fold.btn.removeEventListener('blur', fold.blur);
+      fold.button.removeEventListener('click', fold.toggle);
+      fold.button.removeEventListener('focus', fold.focus);
+      fold.button.removeEventListener('blur', fold.blur);
 
       if (remove) {
-        scope.element.removeChild(fold.el);
-        scope.element.removeChild(fold.btn);
+        scope.element.removeChild(fold.content);
+        scope.element.removeChild(fold.button);
       }
     };
 
-    fold.btn.addEventListener('click', fold.toggle);
-    fold.btn.addEventListener('focus', fold.focus);
-    fold.btn.addEventListener('blur', fold.blur);
+    fold.button.addEventListener('click', fold.toggle);
+    fold.button.addEventListener('focus', fold.focus);
+    fold.button.addEventListener('blur', fold.blur);
 
     scope.folds.push(fold);
 
@@ -278,25 +276,42 @@ const $defaults = (options: Options, attrs: NamedNodeMap): Options => {
 
 };
 
-function relapse (selector: string | HTMLElement, options?: Options) {
+const relapse = function relapse (selector: string | HTMLElement | NodeListOf<HTMLElement>, options?: Options) {
 
-  const el: HTMLElement = typeof selector === 'string' ? document.body.querySelector(selector) : selector;
+  let el: HTMLElement;
+
+  if (typeof selector === 'string') {
+    if (selector.charCodeAt(0) === 35) { // #
+      el = document.body.querySelector(selector);
+    } else {
+      for (const e of document.body.querySelectorAll(selector)) relapse(e as HTMLElement, options);
+    }
+  } else if (selector instanceof NodeList) {
+    for (const e of selector) relapse(e as HTMLElement, options);
+  } else if (selector instanceof Element) {
+    el = selector as HTMLElement;
+  }
 
   if (!el) return;
 
   if (!(window.relapse instanceof Map)) window.relapse = new Map();
 
   const scope: Scope = Object.create(null);
-
+  scope.events = {};
   scope.folds = [];
-  scope.events = Object.create(null);
   scope.element = el;
   scope.id = `A${window.relapse.size}`;
   scope.count = 0;
 
   scope.config = $defaults(options, scope.element.attributes);
 
-  let key: string = scope.element.getAttribute('data-relapse');
+  let key: string;
+  if (scope.element.hasAttribute('data-relapse')) {
+    key = scope.element.getAttribute('data-relapse');
+  } else {
+    key = Math.random().toString(36).slice(2);
+    scope.element.setAttribute('data-relapse', key);
+  }
 
   const id: string = scope.element.getAttribute('id');
 
@@ -324,22 +339,21 @@ function relapse (selector: string | HTMLElement, options?: Options) {
   for (let i = 0; i < length; i = i + 2) {
 
     const btn = children[i] as HTMLElement;
-    const content = children[i + 1] as HTMLElement;
-
+    const el = children[i + 1] as HTMLElement;
     const fold: Fold = Object.create(null);
 
-    fold.idx = scope.folds.length;
+    fold.index = scope.folds.length;
 
     const isInitial = btn.classList.contains(classes.initial);
     const isOpened = btn.classList.contains(classes.opened);
     const isDisabled = btn.classList.contains(classes.disabled);
-    const isExpanded = content.classList.contains(classes.expanded);
+    const isExpanded = el.classList.contains(classes.expanded);
 
     if (btn.ariaExpanded === 'true' || isOpened || isExpanded || isInitial) {
 
       // class name and attribute align
       if (!isOpened) btn.classList.add(classes.opened); else btn.ariaExpanded = 'true';
-      if (!isExpanded) content.classList.add(classes.expanded);
+      if (!isExpanded) el.classList.add(classes.expanded);
       if (!isDisabled) btn.classList.add(classes.disabled);
       if (!isInitial) btn.classList.remove(classes.initial);
 
@@ -354,7 +368,7 @@ function relapse (selector: string | HTMLElement, options?: Options) {
       // class name and attribute align
       if (!isDisabled) btn.classList.add(classes.disabled); else btn.ariaDisabled = 'false';
 
-      content.classList.remove(classes.expanded);
+      el.classList.remove(classes.expanded);
       btn.classList.remove(classes.opened);
 
       btn.ariaExpanded = 'false';
@@ -373,27 +387,27 @@ function relapse (selector: string | HTMLElement, options?: Options) {
     }
 
     if (btn.id) fold.id = btn.id;
-    if (content.id) fold.id = content.id;
+    if (el.id) fold.id = el.id;
 
     if (!('id' in fold)) {
       // @ts-ignore-next-line
-      fold.id = `${scope.id}F${fold.idx}`;
+      fold.id = `${scope.id}F${fold.index}`;
       // @ts-ignore-next-line
       btn.id = `B${fold.id}`;
       // @ts-ignore-next-line
-      content.id = `C${fold.id}`;
+      el.id = `C${fold.id}`;
     }
 
     btn.setAttribute('aria-controls', fold.id);
-    content.setAttribute('aria-labelledby', btn.id);
-    content.setAttribute('role', 'region');
+    el.setAttribute('aria-labelledby', btn.id);
+    el.setAttribute('role', 'region');
 
-    fold.btn = btn as any;
-    fold.el = content as any;
+    fold.button = btn as any;
+    fold.content = el as any;
 
     if (fold.expanded) {
       scope.count = scope.count + 1;
-      fold.el.style.maxHeight = `${fold.el.scrollHeight}px`;
+      fold.content.style.maxHeight = `${fold.content.scrollHeight}px`;
     }
 
     folds(fold);
@@ -405,7 +419,7 @@ function relapse (selector: string | HTMLElement, options?: Options) {
       return method.charCodeAt(0) === 100 ? scope.folds[fold][method](remove as never) : scope.folds[fold][method]();
     } else if (typeof fold === 'string') {
       for (const f of scope.folds) {
-        if (f.btn.dataset[`${scope.config.schema}-fold`] === fold) {
+        if (f.button.dataset[`${scope.config.schema}-fold`] === fold) {
           return method.charCodeAt(0) === 100 ? f[method](remove as never) : f[method]();
         }
       }
