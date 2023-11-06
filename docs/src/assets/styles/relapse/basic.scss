@@ -1,0 +1,37 @@
+.basic {
+  border: 1px solid lightgray;
+}
+
+.basic > button {
+  background-color: bisque;
+}
+
+.basic > button.initial {
+  color: white;
+}
+
+.basic > button.focused {
+  color: red;
+}
+
+.basic > button.opened {
+  color: gray;
+}
+
+.basic > button + * {
+  max-height: 0;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.basic > button + .expanded {
+  max-height: inherit;
+  visibility: visible;
+  opacity: 1;
+}
+
+.h-300 {
+  pre.papyrus {
+    max-height: 300px;
+  }
+}

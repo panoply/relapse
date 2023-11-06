@@ -18,8 +18,11 @@
   "stylelint.packageManager": "pnpm",
   "stylelint.enable": true,
   "scss.validate": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.stylelint": true
+  },
   "[liquid]": {
-    "editor.formatOnSave": false,
+    "editor.formatOnSave": true,
     "editor.defaultFormatter": "sissel.shopify-liquid"
   },
   "liquid.config.method": "workspace",
@@ -34,7 +37,4 @@
       "forceIndent": true
     }
   },
-  "editor.codeActionsOnSave": {
-    "source.fixAll.stylelint": true
-  }
 }

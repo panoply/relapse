@@ -1,0 +1,46 @@
+.relapse {
+  overflow: hidden;
+  border: 1px solid lightgray;
+  border-radius: 10px;
+}
+
+.relapse > .relapse-button {
+  width: 100%;
+  color: green;
+  font-weight: 600;
+  text-align: left;
+  background-color: #374062;
+  border: none;
+  border-bottom: 1px solid lightgray;
+}
+
+.relapse-button:last-of-type {
+  border-bottom: none;
+}
+
+.relapse > .relapse-button.focused {
+  color: red;
+}
+
+.relapse > .relapse-button.initial,
+.relapse > .relapse-button.opened {
+  color: hotpink;
+}
+
+.relapse > .initial + .relapse-fold,
+.relapse > .relapse-button + .expanded {
+  max-height: inherit;
+  visibility: visible;
+  opacity: 1;
+}
+
+.relapse > .relapse-fold {
+  max-height: 0;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.relapse-fold > p {
+  margin: 0;
+  padding: 10px;
+}

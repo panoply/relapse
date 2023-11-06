@@ -1,0 +1,21 @@
+:not(pre) > code {
+  padding: 0.2em 0.5em 0.3em;
+  color: #fff;
+  font-weight: 500;
+  font-size: 0.79rem;
+  font-family: $papyrus-font-family;
+  text-shadow: #232930;
+  background-color: #232930;
+  border-radius: 0.2rem;
+  -webkit-font-smoothing: antialiased;
+}
+
+h3 > code {
+  margin-bottom: $spacer-1 !important;
+  padding-left: 0;
+  font-weight: 100;
+  font-size: 1.1rem;
+  font-family: $font-family-code;
+  text-transform: lowercase;
+  background-color: transparent;
+}

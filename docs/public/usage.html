@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <title>
+      Relapse
+    </title>
+    <meta name="description" content="A lightweight ESM (vanilla) toggle utility for creating dynamic collapsible components">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link
+      href="https://fonts.gstatic.com"
+      crossorigin
+      rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+    <script src="bundle.min.js" defer></script>
+  </head>
+
+  <body>
+    <div id="main" class="container-fluid container-md py-4">
+
+      <input
+        type="button"
+        class="d-unset d-sm-none col-auto btn drawer-toggle ml-4"
+        data-drawer="sidebar">
+
+      <aside
+        id="sidebar"
+        class="drawer-panel drawer-left  sidebar br"
+        data-controller="drawer"
+        data-drawer-direction-value="left"
+        data-drawer-mode-value="push"
+        data-drawer-shift-value="#main">
+
+        <div class="px-5 pt-4">
+  <ul class="list tr">
+    <li class="mb-2">
+      <a
+        href="/"
+        class="h6 fw-light">
+        Intro
+      </a>
+    </li>
+    <li class="mb-2">
+      <a
+        href="/usage"
+        class="h6 fw-bold fc-white">
+        Usage
+      </a>
+    </li>
+    <li class="mb-2">
+      <a
+        href="/style"
+        class="h6 fw-light">
+        Style
+      </a>
+    </li>
+    <li class="mb-2">
+      <a
+        href="/examples"
+        class="h6 fw-light">
+        Examples
+      </a>
+    </li>
+    <li class="mb-2">
+      <a
+        href="https://github.com/panoply/relapse"
+        target="_blank"
+        class="h6 fw-light">
+        Github
+      </a>
+    </li>
+  </ul>
+</div>
+
+      </aside>
+
+      <div id="shift" class="row jc-center jc-sm-start">
+        <div class="col-11 col-md-11 col-lg-11 pt-5 p-3 p-sm-5 content">
+          <h2>Usage</h2>
+<p>Calling <code>relapse()</code> with options omitted will initialize on all elements in the DOM annotated with a <code>data-relapse</code> attribute. Relapse requires that you call the default export to initialize.</p>
+<pre class="papyrus  "><code style="position: initial;" class="language-js lines "><span class="token keyword module">import</span> relapse <span class="token keyword module">from</span> <span class="token string">'relapse'</span><span class="token semi">;</span>
+
+<span class="token comment">// initializes on all elements with data-relapse attribute</span>
+<span class="token function">relapse</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token semi">;</span>
+
+<span class="token comment">// initialize on a specific element matching the selector</span>
+<span class="token function">relapse</span><span class="token punctuation">(</span><span class="token string">'.selector'</span><span class="token punctuation">)</span><span class="token semi">;</span><span class="line-numbers"><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span></span></code></pre>
+<br>
+<p>Relapse works within a minimal node tree. The required markup structure consists of an outer (wrapper) element, button element/s and fold element/s. The button and fold elements must be arranged as siblings.</p>
+<pre class="papyrus  "><code style="position: initial;" class="language-html lines "><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">data-relapse</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>example<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token comment">&lt;!-- [0] --></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Opens Fold #1<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>This is Fold #1<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token comment">&lt;!-- [1] --></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Opens Fold #2<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>This is Fold #2<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token comment">&lt;!-- [2] --></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Opens Fold #3<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>This is Fold #3<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span class="line-numbers"><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span></span></code></pre>
+<blockquote>
+<p>Fold elements within the toggle group must <strong>not</strong> apply padding or margin. Relapse uses <code>max-height</code> for expand calculations and spacing applied will result in folds not being flush.</p>
+</blockquote>
+<hr>
+<h2>Options</h2>
+<p>Relapse exposes only a small set of configuration options. When you need custom control for a specific element, you can provide a <code>selector</code> parameter (e.g: <code>relapse('.selector')</code>) which will instruct relapse to invoke in isolation and return a single instance. Calling relapse without a selector parameter (e.g: <code>relapse()</code>) will return an array list of instances.</p>
+<pre class="papyrus  "><code style="position: initial;" class="language-js lines "><span class="token keyword module">import</span> relapse <span class="token keyword module">from</span> <span class="token string">'relapse'</span><span class="token semi">;</span>
+
+<span class="token function">relapse</span><span class="token punctuation">(</span><span class="token string">'.selector'</span><span class="token punctuation-chars">,</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">persist</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation-chars">,</span> <span class="token comment">// Whether or not a fold should always be expanded</span>
+  <span class="token literal-property property">multiple</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation-chars">,</span> <span class="token comment">// Whether or not multiple folds can be expanded</span>
+  <span class="token literal-property property">duration</span><span class="token operator">:</span> <span class="token number">225</span><span class="token punctuation-chars">,</span> <span class="token comment">// Animation speed transition is ms</span>
+  <span class="token literal-property property">schema</span><span class="token operator">:</span> <span class="token string">'data-relapse'</span><span class="token punctuation-chars">,</span> <span class="token comment">// Custom data attribute reference</span>
+  <span class="token literal-property property">classes</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">initial</span><span class="token operator">:</span> <span class="token string">'initial'</span><span class="token punctuation-chars">,</span> <span class="token comment">// The class to use for initial expands</span>
+    <span class="token literal-property property">opened</span><span class="token operator">:</span> <span class="token string">'opened'</span><span class="token punctuation-chars">,</span> <span class="token comment">// The class to use for opened button</span>
+    <span class="token literal-property property">focused</span><span class="token operator">:</span> <span class="token string">'focused'</span><span class="token punctuation-chars">,</span> <span class="token comment">// The class to use on button focus</span>
+    <span class="token literal-property property">expanded</span><span class="token operator">:</span> <span class="token string">'expanded'</span><span class="token punctuation-chars">,</span> <span class="token comment">// The class to use on expanded fold</span>
+    <span class="token literal-property property">disabled</span><span class="token operator">:</span> <span class="token string">'disabled'</span> <span class="token comment">// The class to use for disabled fold</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token semi">;</span><span class="line-numbers"><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span></span></code></pre>
+<br>
+<h3><code>persist</code></h3>
+<p>Whether or not to always ensure a fold within the toggle group is expanded.</p>
+<h3><code>multiple</code></h3>
+<p>Whether or not multiple folds within a toggle group can be expanded. When <code>false</code> only a single fold will be expanded</p>
+<h3><code>duration</code></h3>
+<p>Set the expand and collapse transition speed in <strong>ms</strong>. Passing a negative value (e.g: <code>-1</code>) or <code>NaN</code> will limit the inline CSS.</p>
+<h3><code>schema</code></h3>
+<p>Change the data attribute annotation to a custom name. Changes to this apply to attribute customizations.</p>
+<h3><code>classes</code></h3>
+<p>Define a set of custom classes for relapse to apply. See <a href="/styling">styling</a> for a complete overview</p>
+<pre class="papyrus  "><code style="position: initial;" class="language-js lines "><span class="token punctuation">{</span>
+  <span class="token literal-property property">initial</span><span class="token operator">:</span> <span class="token string">'initial'</span><span class="token punctuation-chars">,</span>
+  <span class="token literal-property property">opened</span><span class="token operator">:</span> <span class="token string">'opened'</span><span class="token punctuation-chars">,</span>
+  <span class="token literal-property property">focused</span><span class="token operator">:</span> <span class="token string">'focused'</span><span class="token punctuation-chars">,</span>
+  <span class="token literal-property property">expanded</span><span class="token operator">:</span> <span class="token string">'expanded'</span><span class="token punctuation-chars">,</span>
+  <span class="token literal-property property">disabled</span><span class="token operator">:</span> <span class="token string">'disabled'</span>
+<span class="token punctuation">}</span><span class="line-numbers"><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span></span></code></pre>
+<hr>
+<h2>Instance</h2>
+<p>Relapse will maintain active instances in global scope. Each relapse instance is accessible via <code>window.relapse</code> which uses a <code>Map</code> store where keys reference the <code>data-relapse</code> value contained on elements. If you've omitted a <strong>value</strong> from the <code>data-relapse</code> attribute or you are initializing an instance in isolation (i.e: via selector), then relapse will use the <code>id=&quot;&quot;</code> value as a key identifier in the global store. If neither an <code>id</code> or <code>data-relapse</code> value are defined, a UUID is generated.</p>
+<!-- prettier-ignore -->
+<pre class="papyrus  "><code style="position: initial;" class="language-js lines "><span class="token keyword module">import</span> relapse <span class="token keyword module">from</span> <span class="token string">'relapse'</span><span class="token semi">;</span>
+
+<span class="token variable">const</span> toggle <span class="token operator">=</span> <span class="token function">relapse</span><span class="token punctuation">(</span><span class="token string">'.selector'</span><span class="token punctuation">)</span><span class="token semi">;</span>
+
+<span class="token object">toggle</span><span class="token punctuation-chars">.</span><span class="token function">expand</span><span class="token punctuation">(</span><span class="token punctuation">)</span>        <span class="token comment">// Accepts a fold index of id to expand</span>
+<span class="token object">toggle</span><span class="token punctuation-chars">.</span><span class="token function">collapse</span><span class="token punctuation">(</span><span class="token punctuation">)</span>      <span class="token comment">// Accepts a fold index of id to collapse</span>
+<span class="token object">toggle</span><span class="token punctuation-chars">.</span><span class="token function">destroy</span><span class="token punctuation">(</span><span class="token punctuation">)</span>       <span class="token comment">// Accepts a fold index of id to destroy</span>
+<span class="token object">toggle</span><span class="token punctuation-chars">.</span><span class="token function">on</span><span class="token punctuation">(</span>event<span class="token punctuation-chars">,</span> cb<span class="token punctuation">)</span><span class="token semi">;</span>  <span class="token comment">// Event listeners which emit on folds</span>
+<span class="token object">toggle</span><span class="token punctuation-chars">.</span>id              <span class="token comment">// Returns the relapse id</span>
+<span class="token object">toggle</span><span class="token punctuation-chars">.</span>element         <span class="token comment">// Returns the relapse element</span>
+<span class="token object">toggle</span><span class="token punctuation-chars">.</span>parent          <span class="token comment">// Nested relapse occurrence element</span>
+<span class="token object">toggle</span><span class="token punctuation-chars">.</span>active          <span class="token comment">// Zero based index of current active fold</span>
+<span class="token object">toggle</span><span class="token punctuation-chars">.</span>events          <span class="token comment">// An object or event listeners</span>
+<span class="token object">toggle</span><span class="token punctuation-chars">.</span>config          <span class="token comment">// The configuration settings</span>
+<span class="token object">toggle</span><span class="token punctuation-chars">.</span>folds<span class="token punctuation">[</span><span class="token punctuation">]</span>         <span class="token comment">// An array list of fold instances</span><span class="line-numbers"><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span></span></code></pre>
+<hr>
+<h2>Events</h2>
+<p>Events will be dispatched at different points when an expanding and collapsing folds within the toggle group. Event parameters will include the toggled fold and <code>this</code> scope will pass in the Relapse instance.</p>
+<!-- prettier-ignore -->
+<pre class="papyrus  "><code style="position: initial;" class="language-js lines "><span class="token keyword module">import</span> relapse <span class="token keyword module">from</span> <span class="token string">'relapse'</span><span class="token semi">;</span>
+
+<span class="token variable">const</span> event <span class="token operator">=</span> <span class="token function">relapse</span><span class="token punctuation">(</span><span class="token string">'.selector'</span><span class="token punctuation">)</span><span class="token semi">;</span>
+
+<span class="token comment">// toggle button has been focused.</span>
+<span class="token object">event</span><span class="token punctuation-chars">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'focus'</span><span class="token punctuation-chars">,</span> <span class="token function-name">function</span> <span class="token punctuation">(</span><span class="token parameter">fold</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token semi">;</span>
+
+<span class="token comment">// toggle button has been clicked</span>
+<span class="token object">event</span><span class="token punctuation-chars">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'toggle'</span><span class="token punctuation-chars">,</span> <span class="token function-name">function</span> <span class="token punctuation">(</span><span class="token parameter">fold</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token semi">;</span>
+
+<span class="token comment">// fold has been opened</span>
+<span class="token object">event</span><span class="token punctuation-chars">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'expand'</span><span class="token punctuation-chars">,</span> <span class="token function-name">function</span> <span class="token punctuation">(</span><span class="token parameter">fold</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token semi">;</span>
+
+<span class="token comment">// fold has been closed</span>
+<span class="token object">event</span><span class="token punctuation-chars">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'collapse'</span><span class="token punctuation-chars">,</span> <span class="token function-name">function</span> <span class="token punctuation">(</span><span class="token parameter">fold</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token semi">;</span>
+
+<span class="token comment">// relapse instance has been destroyed.</span>
+<span class="token object">event</span><span class="token punctuation-chars">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'destroy'</span><span class="token punctuation-chars">,</span> <span class="token function-name">function</span> <span class="token punctuation">(</span><span class="token parameter">fold</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token semi">;</span><span class="line-numbers"><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span></span></code></pre>
+<hr>
+<h3>Methods</h3>
+<p>A Relapse instances also expose some basic methods for programmatic control.</p>
+<pre class="papyrus  "><code style="position: initial;" class="language-typescript lines "><span class="token keyword module">import</span> relapse <span class="token keyword module">from</span> <span class="token string">'relapse'</span><span class="token semi">;</span>
+
+<span class="token variable">const</span> method <span class="token operator">=</span> <span class="token function">relapse</span><span class="token punctuation">(</span><span class="token string">'.selector'</span><span class="token punctuation">)</span><span class="token semi">;</span>
+
+<span class="token comment">// Expands a fold</span>
+<span class="token object">method</span><span class="token punctuation-chars">.</span><span class="token function">expand</span><span class="token punctuation">(</span>fold<span class="token operator">:</span> <span class="token types">number</span> <span class="token operator">|</span> <span class="token types">string</span><span class="token punctuation">)</span><span class="token semi">;</span>
+
+<span class="token comment">// Collapse a fold</span>
+<span class="token object">method</span><span class="token punctuation-chars">.</span><span class="token function">collapse</span><span class="token punctuation">(</span>fold<span class="token operator">:</span> <span class="token types">number</span> <span class="token operator">|</span> <span class="token types">string</span><span class="token punctuation">)</span><span class="token semi">;</span>
+
+<span class="token comment">// Destroy</span>
+<span class="token object">method</span><span class="token punctuation-chars">.</span><span class="token function">destroy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token semi">;</span><span class="line-numbers"><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span></span></code></pre>
+<hr>
+<h2>Folds</h2>
+<p>Folds expose additional methods for interfacing, you can target folds using a zero based index reference within a collapsible group or by an identifier value. Take the following code sample, wherein there are 3 different relapse toggle groups. There are 2 relapse components using the <code>data-relapse</code> attribute and 1 relapse component using a <code>selector</code> reference. The values which were passed to components using <code>data-relapse</code> attributes will become our reference for when we need to access the instance for programmatic control.</p>
+<p>When multiple relapse elements exist in the DOM the <strong>return</strong> value of <code>relapse</code> is a <code>Relapse[]</code> list of instances starting at the first occurrence encountered. Elements which do not use <code>data-relapse</code> attribute annotation can be initialized in isolation by passing the <strong>selector</strong> to relapse.</p>
+<!-- prettier-ignore -->
+<pre class="papyrus  "><code style="position: initial;" class="language-html lines "><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>section</span> <span class="token attr-name">data-relapse</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>foo<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token comment">&lt;!-- [0] --></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Collapse 1<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>I am collapse item number 1<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token comment">&lt;!-- [1] --></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Collapse 2<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>I am collapse item number 2<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token comment">&lt;!-- [2] --></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Collapse 3<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>qux<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    I am collapse item number 3 with id of qux
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>section</span><span class="token punctuation">></span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>section</span> <span class="token attr-name">data-relapse</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>bar<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token comment">&lt;!-- [0] --></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Collapse 1<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>I am collapse item number 1<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token comment">&lt;!-- [1] --></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Collapse 2<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>I am collapse item number 2<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>section</span><span class="token punctuation">></span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>section</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>baz<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token comment">&lt;!-- [0] --></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Collapse 1<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>I am collapse item number 1<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token comment">&lt;!-- [1] --></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Collapse 2<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>I am collapse item number 2<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>section</span><span class="token punctuation">></span></span><span class="line-numbers"><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span></span></code></pre>
+<br>
+<p>The below code snippet targets the relapse component using <code>data-relapse=&quot;foo&quot;</code> in the above example. We are obtaining the fold which uses the id <code>qux</code> and describing each available reference and method. The <code>folds.get()</code> method is a sugar helper for querying relapse folds, it accepts either a string value which matches the fold element <code>id</code> or a zero based index value.</p>
+<!-- prettier-ignore -->
+<pre class="papyrus  "><code style="position: initial;" class="language-js lines "><span class="token keyword module">import</span> relapse <span class="token keyword module">from</span> <span class="token string">'relapse'</span><span class="token semi">;</span>
+
+<span class="token comment">// Initialize on all occurrences using data-relapse attributes</span>
+<span class="token function">relapse</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token semi">;</span>
+
+<span class="token comment">// Return the relapse component using data-relapse="foo"</span>
+<span class="token variable">const</span> foo <span class="token operator">=</span>  <span class="token object">relapse</span><span class="token punctuation-chars">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'foo'</span><span class="token punctuation">)</span><span class="token semi">;</span>
+
+<span class="token comment">// Return the fold in relapse foo component using id="qux"</span>
+<span class="token variable">const</span> fold <span class="token operator">=</span> <span class="token object">foo</span><span class="token punctuation-chars">.</span>folds<span class="token punctuation-chars">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'qux'</span><span class="token punctuation">)</span><span class="token semi">;</span>
+
+<span class="token object">fold</span><span class="token punctuation-chars">.</span>id         <span class="token comment">// The fold id, defaults to custom identifier if undefined</span>
+<span class="token object">fold</span><span class="token punctuation-chars">.</span>button     <span class="token comment">// The button toggle element which controls the fold</span>
+<span class="token object">fold</span><span class="token punctuation-chars">.</span>element    <span class="token comment">// The fold HTML Element</span>
+<span class="token object">fold</span><span class="token punctuation-chars">.</span>index      <span class="token comment">// The zero based index of the fold in the toggle group</span>
+<span class="token object">fold</span><span class="token punctuation-chars">.</span>expanded   <span class="token comment">// Boolean value informing whether fold is expanded</span>
+<span class="token object">fold</span><span class="token punctuation-chars">.</span>height     <span class="token comment">// The max-height value of the fold, alias of scrollHeight</span>
+<span class="token object">fold</span><span class="token punctuation-chars">.</span>disabled   <span class="token comment">// Boolean value indication a disable/enabled state</span>
+<span class="token object">fold</span><span class="token punctuation-chars">.</span><span class="token function">open</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token semi">;</span>    <span class="token comment">// Open the fold in the toggle group</span>
+<span class="token object">fold</span><span class="token punctuation-chars">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token semi">;</span>   <span class="token comment">// Close the fold in the toggle group.</span>
+<span class="token object">fold</span><span class="token punctuation-chars">.</span><span class="token function">blur</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token semi">;</span>    <span class="token comment">// Apply blur to the button in toggle group</span>
+<span class="token object">fold</span><span class="token punctuation-chars">.</span><span class="token function">focus</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token semi">;</span>   <span class="token comment">// Apply focus to the button in toggle group</span>
+<span class="token object">fold</span><span class="token punctuation-chars">.</span><span class="token function">toggle</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token semi">;</span>  <span class="token comment">// Open or Close the fold in the toggle group</span>
+<span class="token object">fold</span><span class="token punctuation-chars">.</span><span class="token function">enable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token semi">;</span>  <span class="token comment">// Enable the fold to expand and collapse</span>
+<span class="token object">fold</span><span class="token punctuation-chars">.</span><span class="token function">disable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token semi">;</span> <span class="token comment">// Disable the fold from expand and collapse</span>
+<span class="token object">fold</span><span class="token punctuation-chars">.</span><span class="token function">destroy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token semi">;</span> <span class="token comment">// Remove the button and fold from toggle group</span><span class="line-numbers"><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span></span></code></pre>
+<br>
+<p>Following the above example, below we are targeting the <strong>selector</strong> based relapse component in our example. The last element with the <code>id</code> value of <code>baz</code> will be initialized in isolation, but it will still be accessible in global store (i.e: <code>window.relapse.get('baz')</code>). Because none of folds have an <code>id</code> attribute, we will target them using a zero based index.</p>
+<!-- prettier-ignore -->
+<pre class="papyrus  "><code style="position: initial;" class="language-js lines "><span class="token keyword module">import</span> relapse <span class="token keyword module">from</span> <span class="token string">'relapse'</span><span class="token semi">;</span>
+
+<span class="token variable">const</span> <span class="token punctuation">{</span> folds <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">relapse</span><span class="token punctuation">(</span><span class="token string">'#baz'</span><span class="token punctuation">)</span><span class="token semi">;</span>
+
+folds<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation-chars">.</span>id         <span class="token comment">// The fold id, defaults to custom identifier if undefined</span>
+folds<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation-chars">.</span>button     <span class="token comment">// The button toggle element which controls the fold</span>
+folds<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation-chars">.</span>element    <span class="token comment">// The fold HTML Element</span>
+folds<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation-chars">.</span>index      <span class="token comment">// The zero based index of the fold in the toggle group</span>
+folds<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation-chars">.</span>expanded   <span class="token comment">// Boolean value informing whether fold is expanded</span>
+folds<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation-chars">.</span>height     <span class="token comment">// The max-height value of the fold, alias of scrollHeight</span>
+folds<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation-chars">.</span>disabled   <span class="token comment">// Boolean value indication a disable/enabled state</span>
+folds<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation-chars">.</span><span class="token function">open</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token semi">;</span>    <span class="token comment">// Open the fold in the toggle group</span>
+folds<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation-chars">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token semi">;</span>   <span class="token comment">// Close the fold in the toggle group.</span>
+folds<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation-chars">.</span><span class="token function">blur</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token semi">;</span>    <span class="token comment">// Apply blur to the button in toggle group</span>
+folds<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation-chars">.</span><span class="token function">focus</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token semi">;</span>   <span class="token comment">// Apply focus to the button in toggle group</span>
+folds<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation-chars">.</span><span class="token function">toggle</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token semi">;</span>  <span class="token comment">// Open or Close the fold in the toggle group</span>
+folds<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation-chars">.</span><span class="token function">enable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token semi">;</span>  <span class="token comment">// Enable the fold to expand and collapse</span>
+folds<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation-chars">.</span><span class="token function">disable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token semi">;</span> <span class="token comment">// Disable the fold from expand and collapse</span>
+folds<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation-chars">.</span><span class="token function">destroy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token semi">;</span> <span class="token comment">// Remove the button and fold from toggle group</span><span class="line-numbers"><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span></span></code></pre>
+
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

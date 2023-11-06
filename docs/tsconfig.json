@@ -4,8 +4,7 @@
     "test"
   ],
   "include": [
-    "src/index.ts",
-    "index.d.ts",
+    "src/assets/scripts/**/*.ts",
   ],
   "typeAcquisition": {
     "enable": true
@@ -14,13 +13,14 @@
     "incremental": true,
     "declaration": true,
     "target": "ES6",
-    "removeComments": true,
+    "moduleResolution": "Node",
     "lib": [
       "es2020",
       "dom",
       "dom.iterable"
     ],
     "module": "ES6",
+    "removeComments": true,
     "pretty": true
   }
 }
