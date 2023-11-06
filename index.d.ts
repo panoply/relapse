@@ -21,7 +21,7 @@ export declare interface Events <T = Scope, F = Fold>{
    *
    * > Use the `fold.expanded` parameter to determine the type of toggle occuring.
    */
-  (event: 'toggle', callback: (this: T, fold?: F) => void | false);
+  (event: 'toggle', callback: (this: T, fold?: F) => void | boolean);
   /**
    * Triggered when a fold has been expanded.
    */
@@ -36,26 +36,34 @@ export declare interface Events <T = Scope, F = Fold>{
   (event: 'destroy', callback: (this: T) => void);
 }
 
+
 export declare interface Options {
   /**
-   * Whether or not to persist a fold. This will prevent
-   * the accordion from collapsing all folds, by always keeping
-   * one expanded.
-   *
-   * @default true
-   */
-  persist?: boolean;
-  /**
-   * Whether or not multiple folds can be expanded. This
-   * will allow all folds to be expanded.
+   * Whether or not to persist a single fold. This will prevent
+   * an accordion type toggle group from collapsing all folds, by
+   * always keeping one expanded.
    *
    * @default false
    */
+  persist?: boolean;
+  /**
+   * Whether or not multiple folds can be expanded within a toggle group. This
+   * will allow all folds to be expanded. When set to `false` only one fold
+   * can be expanded per group.
+   *
+   * @default true
+   */
   multiple?: boolean;
   /**
+   * The animation speed in `ms` to apply inline. Set this to `NaN` if you are
+   * controlling duration speed within CSS.
+   *
+   * @default 225
+   */
+  duration?: number;
+  /**
    * The data-attribute annotation schema. This allows you
-   * to customise the attribute prefix key name. You can
-   * optionally set this to `null` to omit prefixing.
+   * to customise the attribute prefix key name.
    *
    * @default
    * 'data-relapse'
@@ -65,10 +73,11 @@ export declare interface Options {
    * // Default behaviour
    * <div
    *  class="relapse"
+   *  data-relapse="id"
    *  data-relapse-multiple="true"
    *  data-relapse-persist="false">  </div>
    */
-  schema?: null | `data-${string}`;
+  schema?: `data-${string}`;
   /**
    * Custom class names
    */
@@ -114,8 +123,8 @@ export declare interface Options {
 export declare interface Fold {
   /**
    * The fold id. This value will be used as the `key`
-   * reference for the fold. If the fold button or content
-   * element has an `id="*"` attribute then that value will be used.
+   * reference for the fold. If the fold button or content element has an `id="*"`
+   * attribute then that value will be used.
    *
    * If both the button and fold element contain an `id` attribute
    * then the `id` defined on the fold will be used.
@@ -128,7 +137,7 @@ export declare interface Fold {
   /**
    * The fold element which is toggled.
    */
-  content: HTMLElement;
+  element: HTMLElement;
   /**
    * The zero based index reference for the fold.
    */
@@ -137,6 +146,10 @@ export declare interface Fold {
    * Whether or not the fold is expanded.
    */
   expanded: boolean;
+  /**
+   * The current folds max-height
+   */
+  height: number;
   /**
    * Whether or not the fold is disabled. This will
    * be set to `true` on expanded folds when the `persist`
@@ -161,34 +174,42 @@ export declare interface Fold {
   blur: () => void;
   /**
    * Toggles the fold. The expanded fold will be collapsed
-   * or vice-versa.
+   * or vice-versa. Use the `grow()` method to recalculate
+   * height.
    */
   toggle: () => void;
   /**
-   * Enable the fold, Optionally accepts an `index` reference
-   * to target specific fold.
+   * Enable the fold, Optionally accepts an `id` reference
+   * to target specific fold either by a `0` based index of fold id.
    */
-  enable: (index?: number) => void;
+  enable: (id?: number | string) => void;
   /**
-   * Disable the fold, Optionally accepts an `index` reference
-   * to target specific fold.
+   * Disable the fold, Optionally accepts an `id` reference
+   * to target specific fold either by a `0` based index of fold id.
    */
-  disable: (index?: number) => void;
+  disable: (id?: number | string) => void;
   /**
-   * Open the fold, Optionally accepts an `index` reference
-   * to target specific fold.
+   * Open the fold, Optionally accepts an `id` reference
+   * to target specific fold either by a `0` based index of fold id.
    */
-  open: (index?: number) => void;
+  open: (id?: number | string) => void;
   /**
-   * Close the fold, Optionally accepts an `index` reference
-   * to target specific fold.
+   * Close the fold,  Optionally accepts an `id` reference
+   * to target specific fold either by a `0` based index of fold id.
    */
-  close: (index?: number) => void;
+  close: (id?: number | string) => void;
   /**
    * Destroy the fold. You can optionally remove the
    * fold from the dom by passing in `true`.
    */
   destroy: (remove?: boolean) => void;
+}
+
+export declare interface Folds extends Array<Fold> {
+  /**
+   * Return a fold by `0` based index of by `id` attribute value.
+   */
+  get(id: string | number): Fold;
 }
 
 export declare interface Scope {
@@ -209,17 +230,21 @@ export declare interface Scope {
    */
   active: number;
   /**
+   * Indicated a nested accordion within a fold
+   */
+  parent: HTMLElement;
+  /**
    * The number of collapsed folds, ie: the open count
    */
   count: number;
   /**
    * The list of folds contained within this accordion.
    */
-  folds: Fold[]
+  folds: Folds;
   /**
    * Binded events listeners.
    */
-  events: { [name: string]: Events<Readonly<Scope>, Fold>[] }
+  events: { [K in EventNames]: Events<Readonly<Scope>, Fold>[] }
   /**
    * Listen for an event
    */
@@ -232,7 +257,7 @@ export declare interface Scope {
    * Expand a fold by passing its `0` based index.
    *
    * You can optionally annotate folds you need programmitic
-   * control over with a `data-accordion-fold="*"` attribute and
+   * control over with a `data-relapse-fold="*"` attribute and
    * pass the value provided opposed to the index.
    */
   expand: (fold: number | string) => void;
@@ -240,7 +265,7 @@ export declare interface Scope {
    * Collapse a fold by passing its `0` based index.
    *
    * You can optionally annotate folds you need programmitic
-   * control over with a `data-accordion-fold="*"` attribute and
+   * control over with a `data-relapse-fold="*"` attribute and
    * instead pass the value provided opposed to the index.
    */
   collapse: (fold: string | number) => void;
@@ -253,17 +278,51 @@ export declare interface Scope {
 }
 
 declare global {
-  export interface Window { relapse: Map<string, Scope> }
+  export interface Window {
+    /**
+     * **_Relapse Instances_**
+     *
+     * This is getter which will return a `Map` containing all
+     * current relapse instances in the DOM.
+     */
+    relapse: Map<string, Scope>
+  }
 }
 
 declare const Relapse: {
   /**
-   * **_RELAPSE ACCORDION_**
+   * **_RELAPSE_**
    *
-   * A sliky smooth, modern, lightweight (2kb gzip) full featured
-   * accordion component.
+   * A lightweight and a silky smooth ESM (vanilla) toggle utility for
+   * creating dynamic collapsible components.
+   *
+   * @example
+   * import relapse from 'relapse';
+   *
+   * // Calling relapse will invoke on all elements containing data-relapse
+   * // All elements using class name .selector will be used by relapse
+   * relapse('.selector');
+   *
+   * // Element with id value of #collapse will be used by relapse
+   * relapse(document.querySelector('#collapse'));
    */
-  (selector: string | Element, options?: Options): Scope;
+  (selector: string | HTMLElement | NodeListOf<HTMLElement>, options?: Options): Scope;
+  /**
+   * **_RELAPSE_**
+   *
+   * A lightweight and a silky smooth ESM (vanilla) toggle utility for
+   * creating dynamic collapsible components.
+   *
+   * @example
+   * import relapse from 'relapse';
+   *
+   * // Calling relapse will invoke on all elements containing data-relapse
+   * relapse();
+   *
+   * // Calling relapse will invoke on all elements containing data-toggle
+   * relapse({ schema: 'data-toggle' });
+   */
+  (options?: Options): Scope[];
   /**
    * **_GET ACCORDION_**
    *

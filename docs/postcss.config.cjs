@@ -10,7 +10,10 @@ module.exports = {
     }),
     purge({
       variables: true,
-      content: ['public/**/*.html', 'public/**/*.js']
+      content: [
+        'public/**/*.html',
+        'public/**/*.js'
+      ]
     })
   ]
 };

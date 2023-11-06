@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <title>
+      Relapse
+    </title>
+    <meta name="description" content="A lightweight ESM (vanilla) toggle utility for creating dynamic collapsible components">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link
+      href="https://fonts.gstatic.com"
+      crossorigin
+      rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link href="{{'style.css' | url }}" rel="stylesheet">
+    <script src="{{'bundle.min.js' | url }}" defer></script>
+  </head>
+
+  <body>
+    <div id="main" class="container-fluid container-md py-4">
+
+      <input
+        type="button"
+        class="d-unset d-sm-none col-auto btn drawer-toggle ml-4"
+        data-drawer="sidebar">
+
+      <aside
+        id="sidebar"
+        class="drawer-panel drawer-left {{ drawer }} sidebar br"
+        data-controller="drawer"
+        data-drawer-direction-value="left"
+        data-drawer-mode-value="push"
+        data-drawer-shift-value="#main">
+
+        {% render 'sidebar'
+          , url: page.url %}
+      </aside>
+
+      <div id="shift" class="row jc-center jc-sm-start">
+        <div class="col-11 col-md-11 col-lg-11 pt-5 p-3 p-sm-5 content">
+          {{ content }}
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
