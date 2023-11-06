@@ -25,12 +25,11 @@
   ],
   "scripts": {
     "dev": "rm -rf public && pnpm run sass:build && concurrently \"pnpm run js:watch\" \"pnpm run sass:watch\" \"pnpm run 11ty:watch\"",
-    "build": "rm -rf public && pnpm run js:build && pnpm run sass:build && pnpm run 11ty:build && pnpm run postbuild",
-    "postbuild": "postcss public/style.css -r --no-map && rm -rf public/style.css.map",
+    "build": "rm -rf public && pnpm run js:build && pnpm run sass:build && pnpm run 11ty:build",
     "11ty:watch": "eleventy --serve --watch",
     "11ty:build": "eleventy",
-    "js:build": "esbuild src/assets/scripts/bundle.ts --outfile=public/bundle.min.js --format=esm --bundle --minify",
-    "js:watch": "esbuild src/assets/scripts/bundle.ts --outfile=public/bundle.min.js --format=esm --bundle --watch",
+    "js:build": "tsup --minify",
+    "js:watch": "tsup --watch",
     "sass:build": "sass --load-path=node_modules ./src/assets/styles/stylesheet.scss public/style.css --no-source-map",
     "sass:watch": "sass --watch ./src/assets/styles/stylesheet.scss public/style.css --no-source-map --poll",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -76,7 +75,8 @@
     "postcss": "^8.4.31",
     "postcss-cli": "^10.1.0",
     "sass": "^1.69.5",
-    "stylelint": "^15.11.0"
+    "stylelint": "^15.11.0",
+    "tsup": "^7.2.0"
   },
   "dependencies": {
     "@hotwired/stimulus": "^3.2.2",
