@@ -2,7 +2,7 @@
 
 An [A11y](https://www.a11yproject.com/) compliant, lightweight (1.9kb gzip) dependency free toggle utility for collapsible accordions. Written in TypeScript and distributed in ES6 this tiny little module flaunts an extensive API for usage in modern web projects,
 
-Visit Documentation: https://panoply.github.io/relapse/public
+Visit Documentation: https://panoply.github.io/relapse
 
 ### Key Features
 
