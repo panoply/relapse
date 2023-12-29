@@ -1,0 +1,60 @@
+.sidebar {
+  background-color: $body-bg;
+
+  @include media-breakpoint-up(md) {
+    position: fixed;
+    display: block !important;
+    width: 200px;
+    height: 100vh;
+    transform: translateX(0);
+    visibility: visible;
+    opacity: 1;
+  }
+
+  @include media-breakpoint-up(xl) {
+    position: fixed;
+    display: block !important;
+    width: 250px;
+    height: 100vh;
+    transform: translateX(0);
+  }
+
+  @include media-breakpoint-up(xxl) {
+    position: fixed;
+    display: block !important;
+    width: 250px;
+    height: 100vh;
+    margin-left: 10%;
+    transform: translateX(0);
+  }
+
+  details[open] > summary {
+    color: $white;
+    font-weight: $font-weight-bolder;
+    background-image: url(icon-minus($white));
+  }
+
+  details > summary {
+    list-style-type: none;
+    margin-bottom: 0;
+    color: $link-color;
+    background-image: url(icon-plus($link-color));
+    background-repeat: no-repeat;
+    background-position: right 0px center;
+    background-size: 15px;
+
+    &:hover {
+      color: $link-hover-color;
+    }
+  }
+}
+
+.content {
+  @include media-breakpoint-up(md) {
+    padding-left: 240px !important;
+  }
+
+  @include media-breakpoint-up(xxl) {
+    padding-left: 340px !important;
+  }
+}

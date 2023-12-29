@@ -1,0 +1,27 @@
+.tabs {
+  background: #0f1215;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+}
+
+.tab {
+  font-family: $font-family-heading;
+  font-weight: $font-weight-bold;
+  font-size: .85rem;
+  font-weight: 600;
+  color: #65696f;
+  font-weight: $font-weight-bolder;
+
+  &.active {
+    color: $white;
+
+  }
+}
+
+.tab-content {
+  background-color: $code-bg;
+
+  > .papyrus {
+    margin-top:0 !important;
+  }
+}

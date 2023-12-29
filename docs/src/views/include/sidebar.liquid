@@ -1,0 +1,46 @@
+<div class="px-4 pt-5 d-block w-100">
+  <ul class="list tl">
+    {% for item in menu %}
+      {% if item.type == 'href' %}
+        <li class="mb-2">
+          <a
+            spx-morph
+            spx-position="y:0"
+            href="{{ item.url }}"
+            class="h6 {% if url == item.url %}fw-bold fc-white{% else %}fw-light{% endif %} spx">
+            {{ item.title }}
+          </a>
+        </li>
+      {% elsif item.type == 'button' %}
+
+        {% capture open %}
+          {% if url contains item.group %}
+            open
+          {% endif %}
+        {% endcapture %}
+        <li
+          class="mb-2"
+          data-relapse="sidebar-{{ item.title | slug }}"
+          data-relapse-unique="true">
+          <details {{ open }}>
+            <summary class="h6 fw-light">
+              {{ item.title }}
+            </summary>
+            <ul class="list py-2">
+              {% for link in item.links %}
+                <li>
+                  <a
+                    spx-position="y:0"
+                    href="{{ link.url }}"
+                    class="h6 fs-sm {% if url contains link.url %}fw-bold fc-white{% else %}fw-light{% endif %} spx">
+                    {{ link.title }}
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          </details>
+        </li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+</div>

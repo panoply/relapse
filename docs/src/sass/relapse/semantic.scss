@@ -1,0 +1,59 @@
+/* stylelint-disable function-url-quotes */
+
+.semantic-relapse {
+  position: relative;
+  display: block;
+  border: $border-width solid $border-color;
+  background-color: #16181c;
+
+  details {
+
+    &:first-of-type > summary { border-top: none }
+    &:last-of-type > summary { border-bottom: none; }
+
+    > summary.initial,
+    > summary.opened,
+    &[open] > summary {
+      background-image: url(icon-minus('#fff'));
+      background-color: #16181c;
+    }
+
+    > summary {
+      list-style-type: none;
+      width: 100%;
+      padding: 10px;
+      background-color: transparent;
+      background-image: url(icon-plus('#fff'));
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 15px;
+      border-top: $border-width solid $border-color;
+      cursor: pointer;
+      user-select: none;
+
+      + * {
+        background-color: #0f1215;
+        padding: 20px;
+        margin: 0 !important;
+      }
+
+      &.opened {}
+      &.initial {}
+      &.disabled {}
+      &.expanded {}
+      &.focused { outline: none; }
+
+      &:hover {
+        background-color: #222c38;
+      }
+
+      &::before {
+        content: '';
+      }
+
+      &::-webkit-details-marker {
+        display: none;
+      }
+    }
+  }
+}

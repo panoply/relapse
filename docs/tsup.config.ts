@@ -1,18 +1,16 @@
-import { defineConfig } from 'tsup'
+import { defineConfig } from 'tsup';
 
 export default defineConfig({
   entry: [
-   'src/assets/scripts/bundle.ts'
+    'src/app/bundle.ts'
   ],
   outDir: 'public',
-  outExtension(ctx) {
-    return {
-      js: '.min.js'
-    }
+  outExtension (ctx) {
+    return { js: '.min.js' };
   },
+  watch: [ '../dist/index.js' ],
   clean: false,
-  format: ['iife'],
+  format: [ 'iife' ],
   treeshake: true,
-  minify: 'terser',
-  platform: 'browser',
-})
+  platform: 'browser'
+});

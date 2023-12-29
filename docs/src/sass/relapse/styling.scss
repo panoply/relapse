@@ -1,0 +1,37 @@
+.styling {
+  position: relative;
+  display: block;
+  border: 1px solid #989292;
+  color: black;
+  font-family: system-ui;
+  background-color: #fafafa;
+}
+.styling > details[open] > summary {
+  background-color: #dedddd;
+}
+.styling > details:first-child > summary {
+  border-top: none;
+}
+.styling > details > summary {
+  border-top: 1px solid #989292;
+  background-color: #efefef;
+  padding: 10px;
+  cursor: pointer;
+  user-select: none;
+  list-style-type: none; /* <summary> specific */
+}
+.styling > details > summary:hover {
+  background-color: #dedddd;
+  transition: background-color 200ms linear;
+}
+.styling > details > summary.focused {
+  outline: none;
+}
+.styling > details > summary.disabled {
+  outline: none;
+}
+.styling > details > summary + * {
+  background-color: #fafafa;
+  margin: 0;
+  padding: 25px 10px;
+}

@@ -1,10 +1,24 @@
 /* eslint-disable array-bracket-spacing */
 
 const eleventy = require('@panoply/11ty')
+const svgsprite = require('eleventy-plugin-svg-sprite');
 const htmlmin = require('@sardine/eleventy-plugin-tinyhtml');
 const md = require('markdown-it');
 const mdcontainer = require('markdown-it-container')
 const papyrus = require('papyrus');
+
+/**
+ * Sugar helper for generating markup. Just a simple `.join('')`
+ * utility
+ *
+ * @param {string[]} lines
+ * @returns {string}
+ */
+function string (lines) {
+
+  return lines.join('')
+
+}
 
 
 function highlighter (md, raw, language) {
@@ -29,25 +43,6 @@ function highlighter (md, raw, language) {
           lineNumbers: false
         })
 
-      } else if (language ==='css:editor') {
-
-        language = language.slice(0, language.indexOf(':'))
-
-        console.log(language);
-
-        code = papyrus.static(raw, {
-          language,
-          editor: false,
-          showSpace: false,
-          trimEnd: true,
-          trimStart: true,
-          addClass: {
-            pre: ['css-editor']
-          }
-        });
-
-        console.log(code);
-
       } else {
 
         code = papyrus.static(raw, {
@@ -70,13 +65,104 @@ function highlighter (md, raw, language) {
     }
 
   } else {
+
     code = md.utils.escapeHtml(raw);
+
   }
 
 
   return code
 
 };
+
+
+function tabs(md, tokens, idx) {
+
+  if(tokens[idx].nesting === 1) {
+
+    const col = tokens[idx].info.trim().match(/^tabs\s+(.*)$/);
+
+    if (col !== null) {
+
+      // opening tag
+      return col[1] === 'example' ? string([
+        /* html */`
+        <div data-controller="tabs">
+          <div class="row gx-0 bd tabs py-2 px-2">
+            <div class="col-auto mr-2">
+              <button
+                type="button"
+                class="btn upcase tab active"
+                data-index="0"
+                data-tabs-target="btn"
+                data-action="tabs#toggle">
+                DEMO
+              </button>
+            </div>
+            <div class="col-auto">
+              <button
+                type="button"
+                class="btn upcase tab"
+                data-index="1"
+                data-tabs-target="btn"
+                data-action="tabs#toggle">
+                HTML
+              </button>
+            </div>
+            <div class="col-auto">
+              <button
+                type="button"
+                class="btn upcase tab"
+                data-index="2"
+                data-tabs-target="btn"
+                data-action="tabs#toggle">
+                CSS
+              </button>
+            </div>
+          </div>
+          <div class="col-12 tab-content p-4" data-tabs-target="tab">
+        `,
+      ]) : col[1] ==='markup' ? string([
+        /* html */`
+        <div data-controller="tabs">
+          <div class="row gx-0 bd tabs py-2 px-2">
+            <div class="col-auto mr-2">
+              <button
+                type="button"
+                class="btn upcase tab active"
+                data-index="0"
+                data-tabs-target="btn"
+                data-action="tabs#toggle">
+                SEMANTIC
+              </button>
+            </div>
+            <div class="col-auto">
+              <button
+                type="button"
+                class="btn upcase tab"
+                data-index="1"
+                data-tabs-target="btn"
+                data-action="tabs#toggle">
+                SIBLING
+              </button>
+            </div>
+          </div>
+          <div class="col-12 tab-content" data-tabs-target="tab">
+        `,
+      ]) : string([
+        /* html */`
+          <div class="col-12 tab-content d-none" data-tabs-target="tab">
+        `
+      ])
+    }
+   }
+
+
+
+  return '</div>'
+
+
+}
 
 
 /**
@@ -125,6 +211,41 @@ function notes(tokens, index) {
 
 }
 
+/**
+ * Generates HTML markup for various blocks
+ *
+ * @param {"note"|"tip"|"important"} type The type of alert to create.
+ * @param {Array<markdownit>} tokens Array of MarkdownIt tokens to use.
+ * @param {number} index The index of the current token in the tokens array.
+ * @returns {string} The markup for the alert.
+ */
+function heading(md, tokens, idx) {
+
+
+  if(tokens[idx].nesting === 1) {
+
+    var col = tokens[idx].info.trim().match(/^heading\s+(.*)$/);
+
+    if (col !== null) {
+
+      // opening tag
+      return string([
+        /* html */`
+        <div class="row row-rev heading-ico mb-2">
+          <div class="col-auto pl-1">${col[1] === 'JS' ? JS : HTML}</div>
+          <div class="col-auto">
+        `
+      ])
+    }
+
+
+  }
+
+  return '</div></div>'
+
+
+}
+
 module.exports = eleventy (function(config){
 
   const markdown = md({
@@ -132,13 +253,52 @@ module.exports = eleventy (function(config){
     breaks: true,
     highlight: (str, lang) => highlighter(markdown, str, lang)
   })
+  .use(mdcontainer, 'tabs', { render: (tokens, idx) => tabs(markdown, tokens, idx) })
   .use(mdcontainer, 'note', { render: (tokens, idx) => notes(tokens, idx) })
   .use(mdcontainer, 'grid', { render: (tokens, idx) => grid(markdown, tokens, idx) })
+  .use(mdcontainer, 'heading', { render: (tokens, idx) => heading(markdown, tokens, idx) })
   .disable("code");;
 
 
   config.setLibrary('md', markdown);
   config.setDynamicPermalinks(false);
+  config.addPlugin(svgsprite, {
+    path: 'src/svg',
+    spriteConfig: {
+      mode: {
+        symbol: {
+          inline: true,
+          sprite: 'sprite.svg',
+          example: false
+        }
+      },
+      shape: {
+        transform: ['svgo'],
+        id: {
+          generator: 'svg-%s'
+        }
+      },
+      svg: {
+        xmlDeclaration: false,
+        doctypeDeclaration: false
+      }
+    }
+  });
+
+  if(process.env.ENV ==='prod') {
+    config.addPlugin(htmlmin, {
+      collapseBooleanAttributes: false,
+      collapseWhitespace: true,
+      decodeEntities: true,
+      html5: true,
+      removeAttributeQuotes: false,
+      removeComments: true,
+      removeOptionalTags: false,
+      sortAttributes: true,
+      sortClassName: true
+    });
+  }
+
 
 
   return {
@@ -149,9 +309,9 @@ module.exports = eleventy (function(config){
     dir: {
       input: 'src',
       output: 'public',
-      includes: 'include',
-      layouts: 'layout',
-      data: ''
+      includes: 'views/include',
+      layouts: 'views/layout',
+      data: 'data'
     }
   };
 

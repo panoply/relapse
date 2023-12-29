@@ -1,0 +1,140 @@
+/* stylelint-disable function-url-quotes */
+
+/* -------------------------------------------- */
+/* DRAWER                                       */
+/* -------------------------------------------- */
+
+.drawer-toggle {
+  background-image: url(icon-menu($white));
+  background-repeat: no-repeat;
+}
+
+.drawer-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: $drawer-overlay-z-index;
+  width: 100%;
+  height: 100%;
+  background-color: $drawer-overlay-bg;
+  visibility: hidden;
+  opacity: 0;
+  user-select: none;
+  backdrop-filter: blur(5px);
+
+  .bg-visible & {
+    visibility: visible;
+    opacity: 1;
+
+    @include transition(
+      visibility 5ms linear $drawer-duration,
+      opacity 5ms linear,
+      backdrop-filter 5ms linear
+    );
+  }
+
+  .drawer-open & {
+    visibility: visible;
+    opacity: 1;
+    will-change: transform, opacity;
+
+    @include transition(
+      transform $drawer-duration $drawer-easing,
+      opacity $drawer-overlay-duration ease,
+      backdrop-filter 5ms linear
+    );
+  }
+}
+
+/* -------------------------------------------- */
+/* MAKDOWN QUOTES                               */
+/* -------------------------------------------- */
+
+blockquote {
+  position: relative;
+  width: 100%;
+  margin-top: 40px;
+  margin-right: 15px;
+  margin-bottom: 40px;
+  padding: 10px;
+  padding-left: 55px;
+  background-color: #1a1e26;
+  background-image: url(icon-bell($gray-600));
+  background-repeat: no-repeat no-repeat;
+  background-position: 20px center;
+  background-size: 20px;
+  border: $border-width $border-color solid;
+  border-radius: 0.5rem;
+
+  > p code {
+    color: #76fffc;
+  }
+
+  > p {
+    margin: 0;
+    color: $body-color;
+    font-weight: 200;
+    font-family: $font-family-base;
+    -webkit-font-smoothing: subpixel-antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* -------------------------------------------- */
+/* INLINE CODE                                  */
+/* -------------------------------------------- */
+
+:not(pre) > code {
+  padding: 0.2em 0.5em 0.3em;
+  color: #fff;
+  font-weight: 500;
+  font-size: 0.79rem;
+  font-family: $papyrus-font-family;
+  text-shadow: #232930;
+  background-color: #232930;
+  border-radius: 0.2rem;
+  -webkit-font-smoothing: antialiased;
+}
+
+h3 > code {
+  margin-bottom: $spacer-1 !important;
+  padding-left: 0;
+  font-weight: 100;
+  font-size: 1.1rem;
+  font-family: $font-family-code;
+  text-transform: lowercase;
+  background-color: transparent;
+}
+
+pre.papyrus[data-papyrus='static']
+  > code[class*='language-']
+  > div.line-numbers {
+  height: 100%;
+}
+
+/* -------------------------------------------- */
+/* TABLE                                        */
+/* -------------------------------------------- */
+
+table {
+  width: 100%;
+}
+/* -------------------------------------------- */
+/* NAVIGATE                                     */
+/* -------------------------------------------- */
+
+.navigate {
+  a {
+    font-family: $font-family-heading;
+    color: $link-color;
+
+    &:hover {
+      color: $white;
+    }
+  }
+
+  .icon {
+    width: 20px;
+    height: 20px;
+  }
+}
