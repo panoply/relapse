@@ -1,4 +1,7 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-use-before-define */
+
+type LiteralUnion<LiteralType> = LiteralType | (string & Record<never, never>);
 
 // eslint-disable-next-line no-unused-vars
 export declare type EventNames = (
@@ -31,67 +34,210 @@ export declare interface Events <T = Scope, F = Fold>{
    */
   (event: 'collapse', callback: (this: T, fold?: F) => void);
   /**
-   * Triggered when a fold has been destoryed.
+   * Triggered when a fold has been destroyed.
    */
   (event: 'destroy', callback: (this: T) => void);
 }
 
-
-export declare interface Options {
+export declare interface FadingOptions {
   /**
-   * Whether or not to persist a single fold. This will prevent
-   * an accordion type toggle group from collapsing all folds, by
-   * always keeping one expanded.
+   * Fold content fading duration when expanding/collapsing
    *
-   * @default false
+   * @default 120
    */
-  persist?: boolean;
+  duration?: number;
   /**
-   * Whether or not multiple folds can be expanded within a toggle group. This
-   * will allow all folds to be expanded. When set to `false` only one fold
-   * can be expanded per group.
+   * The easing effect of fold content when expanding/collapsing
+   *
+   * @default 'linear
+   */
+  easing?: LiteralUnion<'ease' | 'ease-in' | 'ease-in-out' | 'ease-out' | 'linear'>;
+  /**
+   * Whether or not Relapse should apply CSS `will-change` rendering hints to the user agent
+   * inline via `style=""` properties. Rendering hint will state what kind of transition is
+   * expected to be performed on the element.
    *
    * @default true
    */
-  multiple?: boolean;
+  hint?: boolean;
+}
+
+export declare interface FoldingOptions {
   /**
-   * The animation speed in `ms` to apply inline. Set this to `NaN` if you are
-   * controlling duration speed within CSS.
+   * The animation speed in `ms` to applied when expanding and collapsing folds.
+   * The value provided here will be passed to the `duration` keyframe option of
+   * the [WAAPI](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API)
+   * animation instance of fold elements.
+   *
+   * > **NOTE**
+   * >
+   * > This value will also be used for `fading` animations.
    *
    * @default 225
    */
   duration?: number;
   /**
-   * The data-attribute annotation schema. This allows you
-   * to customise the attribute prefix key name.
+   * The folding animation easing effect to use. Accepts cubic-bezier or any valid
+   * CSS easing value. The value provided here will be passed to the `duration` keyframe
+   * option of the [WAAPI](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API)
+   * animation instance of fold elements.
    *
-   * @default
-   * 'data-relapse'
+   * ---
    *
-   * @example
+   * @default 'ease-in-out'
+   */
+  easing?: LiteralUnion<'ease' | 'ease-in' | 'ease-in-out' | 'ease-out'>;
+  /**
+   * Whether or not Relapse should apply CSS `will-change` rendering hints to the user agent
+   * inline via `style=""` properties. Rendering hint will state what kind of transition is
+   * expected to be performed on the element.
    *
-   * // Default behaviour
+   * @default true
+   */
+  hint?: boolean;
+}
+
+export declare interface Options {
+  /**
+   * Whether or not the instance identifer should be treated as unique. When `true` Relapse
+   * will not throw when an instance exists, but instead will skip re-assignment or teardowns.
+   * This option is helpful in SPA's or when you need to persist the instance.
+   *
+   * ---
+   *
+   * @default false
+   */
+  unique?: boolean;
+  /**
+   * Whether or not to persist a single fold. This will prevent an accordion type
+   * toggle group from having all folds collapsed (closed), ensuring that a single
+   * fold remains expanded (opened).
+   *
+   * ---
+   *
+   * @default false
+   */
+  persist?: boolean;
+  /**
+   * Whether or not multiple folds can be expanded (opened) within an accordion type
+   * toggle group. This will allow all folds to be opened. When set to `false` only
+   * a single fold can be expanded per group.
+   *
+   * ---
+   *
+   * @default true
+   */
+  multiple?: boolean;
+  /**
+   * The data-attribute annotation schema. This allows you to customise the attribute
+   * prefix key name that Relapse uses for query selection.
+   *
+   * ---
+   *
+   * ```html
+   * <!-- defaults -->
    * <div
    *  class="relapse"
    *  data-relapse="id"
    *  data-relapse-multiple="true"
-   *  data-relapse-persist="false">  </div>
+   *  data-relapse-persist="false"> </div>
+   * ```
+   *
+   * @default 'data-relapse'
    */
-  schema?: `data-${string}`;
+  schema?: `data-${Lowercase<string>}`;
   /**
-   * Custom class names
+   * Folding animation control applied when expanding and collapsing folds.
+   * Relapse uses the [Web Animation API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API)
+   * and settings provided here will be passed to this API.
+   *
+   * ---
+   *
+   * **Default Settings**
+   *
+   * ```ts
+   * {
+   *   folding: {
+   *    duration: 220,
+   *    easing: 'ease-in-out'
+   * }
+   * ```
+   */
+  folding?: FoldingOptions
+  /**
+   * Fading animation control applied to inner contents of folds when expanding and collapsing.
+   * Relapse uses the [Web Animation API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API)
+   * and settings provided here will be passed to this API.
+   *
+   * ---
+   *
+   * **Default Settings**
+   *
+   * ```ts
+   * {
+   *   fading: {
+   *    duration: 120,
+   *    easing: 'linear'
+   * }
+   * ```
+   */
+  fading?: FadingOptions;
+  /**
+   * Custom class names to apply to the relapse elements such as button and folds.
+   *
+   * ---
+   *
+   * **Default Settings**
+   *
+   * ```ts
+   * {
+   *   classes: {
+   *    opened: 'opened', // applied to buttons
+   *    expanded: 'expanded', // applied to folds
+   *    focused: 'focused', // applied to buttons
+   *    disabled: 'disabled' // applied to buttons
+   * }
+   * ```
    */
   classes?: {
     /**
-     * The class to use for loaded folds in an opened
-     * state. Annotate button elements to expand folds at runtime.
-     *
-     * @default 'initial'
-     */
-    initial?: string;
-    /**
      * The opened class name which is added to buttons
      * and folds upon being opened.
+     *
+     * ---
+     *
+     * **Semantic Example**
+     *
+     * The class defined here will be applied to the `<summary>` tag
+     * in semantic structures.
+     *
+     * ```html
+     * <details>
+     *   <!-- class applies here when fold is expanded -->
+     *   <summary class="opened">Button</summary>
+     *   ...
+     * </details>
+     *
+     *
+     * ```
+     *
+     * **Sibling Example**
+     *
+     * The class defined here will be applied to the `<button>` tag
+     * in sibling structures. You can use this class to have the fold
+     * open by default, replicating the `<details>` behaviour.
+     *
+     * ```html
+     * <section data-relapse>
+     *  <!-- class applies here when fold is expanded -->
+     *  <button class="opened"></button>
+     *  ...
+     * </section>
+     *
+     *
+     * ```
+     *
+     * ---
      *
      * @default 'opened'
      */
@@ -99,6 +245,42 @@ export declare interface Options {
     /**
      * The expanded class name which is added to buttons
      * and folds upon being expanded, ie: transition ends.
+     *
+     *
+     * ---
+     *
+     * **Semantic Example**
+     *
+     * The class defined here will be applied to the next element sibling of
+     * the `<summary>` tag in semantic structures.
+     *
+     * ```html
+     * <details>
+     *  <summary class="opened">Button</summary>
+     *  <!-- class applies here when fold is expanded -->
+     *  <p class="expanded"></p>
+     * </details>
+     *
+     *
+     * ```
+     *
+     * **Sibling Example**
+     *
+     * The class defined here will be applied to the next element sibling of
+     * the `<button>` tag.
+     *
+     * ```html
+     * <section data-relapse="accordion">
+     *  <button class="opened"></button>
+     *  <!-- class applies here when fold is expanded -->
+     *  <div class="expanded"></div>
+     *  ...
+     * </section>
+     *
+     *
+     * ```
+     *
+     * ---
      *
      * @default 'expanded'
      */
@@ -132,12 +314,128 @@ export declare interface Fold {
   id: string;
   /**
    * The button element which toggles this fold.
+   *
+   * The comments in below examples inform on the elements this value
+   * will hold depending on markup structure.
+   *
+   * ---
+   *
+   * **Example 1**
+   *
+   * Using a semantic structure with `<details>` markup. The
+   * button value will `<summary>`
+   *
+   * ```html
+   * <div data-relapse="id">
+   *  <details>
+   *    <!-- The "button" element -->
+   *    <summary>Collapse</summary>
+   *    <p>Hello World</p>
+   *  </details>
+   * </div>
+   * ```
+   *
+   * ---
+   *
+   * **Example 2**
+   *
+   * Using a basic sibling structure, wherein the `<button>` is the value.
+   *
+   * ```html
+   * <div data-relapse="id">
+   *  <!-- The "button" element -->
+   *  <button>
+   *    Collapse
+   *  </button>
+   *  ...
+   * </div>
+   * ```
    */
   button: HTMLElement;
   /**
-   * The fold element which is toggled.
+   * The fold element which will be toggled (i.e: expanded/collapsed).
+   * This will always be the node wich contains the inner contents.
+   *
+   * The comments in below examples inform on the elements this value
+   * will hold depending on markup structure.
+   *
+   * ---
+   *
+   * **Example 1**
+   *
+   * Using a semantic structure with `<details>` markup.
+   *
+   * ```html
+   * <div data-relapse="id">
+   *  <details>
+   *    <summary>Collapse</summary>
+   *    <!-- The fold "element"-->
+   *    <p>
+   *      Hello World
+   *    </p>
+   *  </details>
+   * </div>
+   * ```
+   *
+   * ---
+   *
+   * **Example 2**
+   *
+   * Using a basic sibling structure, wherein `element` will be
+   * the same as the `wrapper` value.
+   *
+   * ```html
+   * <div data-relapse="id">
+   *  <button>Collapse</button>
+   *  <!-- The section tag is the "element" -->
+   *  <section>
+   *    Hello World
+   *  </section>
+   * </div>
+   * ```
    */
   element: HTMLElement;
+  /**
+   * The wrapper element which contains the button and element nodes.
+   * For sibling structures the value will be identical to `element`.
+   *
+   * The comments in below examples inform on the elements this value
+   * will hold depending on markup structure.
+   *
+   * ---
+   *
+   * **Example 1**
+   *
+   * Using a semantic structure with `<details>` markup.
+   *
+   * ```html
+   * <div data-relapse="id">
+   *  <!-- Details tag is the "wrapper" element -->
+   *  <details>
+   *    <summary>Collapse</summary>
+   *    <p>Hello World</p>
+   *  </details>
+   * </div>
+   * ```
+   *
+   * ---
+   *
+   * **Example 2**
+   *
+   * Using a basic sibling structure, wherein `wrapper` will be
+   * the same as the `element` value.
+   *
+   * ```html
+   * <div data-relapse="id">
+   *  <button>Collapse</button>
+   *  <!-- The section tag is the "wrapper" element -->
+   *  <section>
+   *    Hello World
+   *  </section>
+   * </div>
+   * ```
+   */
+  wrapper: HTMLElement;
   /**
    * The zero based index reference for the fold.
    */
@@ -147,7 +445,7 @@ export declare interface Fold {
    */
   expanded: boolean;
   /**
-   * The current folds max-height
+   * The current fold height offset height.
    */
   height: number;
   /**
@@ -155,8 +453,7 @@ export declare interface Fold {
    * be set to `true` on expanded folds when the `persist`
    * option is enabled.
    *
-   * If the fold is collapsed and this is `true` then then
-   * toggling will be prevented.
+   * If the fold is collapsed and this is `true` then then toggling will be prevented.
    */
   disabled: boolean;
   /**
@@ -165,19 +462,19 @@ export declare interface Fold {
    * > The `focus` class will be added to the button and the
    * `active` index will be updated (unless button is disabled).
    */
-  focus: () => void;
+  focus: (e: Event) => void;
   /**
    * Blur the button.
    *
    * > The `focus` class will be removed from the toggle button.
    */
-  blur: () => void;
+  blur: (e: Event) => void;
   /**
    * Toggles the fold. The expanded fold will be collapsed
    * or vice-versa. Use the `grow()` method to recalculate
    * height.
    */
-  toggle: () => void;
+  toggle: (e: Event) => void;
   /**
    * Enable the fold, Optionally accepts an `id` reference
    * to target specific fold either by a `0` based index of fold id.
@@ -207,6 +504,10 @@ export declare interface Fold {
 
 export declare interface Folds extends Array<Fold> {
   /**
+   * Fold References targeted by ID string
+   */
+  refs: { [id: string]: number };
+  /**
    * Return a fold by `0` based index of by `id` attribute value.
    */
   get(id: string | number): Fold;
@@ -218,35 +519,79 @@ export declare interface Scope {
    */
   id: string;
   /**
-   * The accordion options merged with defaults
+   * The Relapse identifier Key
+   */
+  key: string;
+  /**
+   * Configuration options merged with defaults
+   *
+   * @see {@link Options}
    */
   config: Options;
   /**
-   * The accordion element.
+   * The relapse element, this will be outer most wrapper node
+   *
+   * @example
+   * <div data-relapse="id"> // ← Value of this property
+   * ...
+   * </div>
    */
   element: HTMLElement;
   /**
-   * The index of the last expanded fold.
+   * Whether or not the accordion us using semantic markup.
+   *
+   * > **NOTE**
+   * >
+   * > Relapse will determine semantic structures by checking whether first child
+   * > in the node tree is a `<details>` element.
+   */
+  semantic: boolean;
+  /**
+   * The index of the last known expanded fold.
    */
   active: number;
   /**
-   * Indicated a nested accordion within a fold
+   * Fold watches the following folds and will trigger adjustments
    */
-  parent: HTMLElement;
+  parent: HTMLElement[];
   /**
    * The number of collapsed folds, ie: the open count
    */
-  count: number;
+  openCount: number;
   /**
-   * The list of folds contained within this accordion.
+   * An array list of folds contained within the instance.
+   *
+   * @see {@link Fold}
+   * @example
+   * import relapse from 'relapse';
+   *
+   * const accordion = relapse();
+   *
+   * // Return a fold by id reference
+   * accordion.folds.get('<id>')
+   *
+   * // The first fold occurance
+   * accordion.folds[0]
+   *
+   * // The second fold occurance
+   * accordion.folds[1]
    */
   folds: Folds;
   /**
-   * Binded events listeners.
+   * Returns the binded events listeners of the Relapse instance
    */
-  events: { [K in EventNames]: Events<Readonly<Scope>, Fold>[] }
+  readonly events: { [K in EventNames]?: Events<Readonly<Scope>, Fold>[] }
   /**
-   * Listen for an event
+   * Listen for an event,
+   *
+   * @example
+   * import relapse from 'relapse';
+   *
+   * const accordion = relapse();
+   *
+   * accordion.on('expand', function(fold){
+   *  console.log(fold); // The fold which was expanded
+   * })
    */
   on: Events<Readonly<Scope>, Fold>;
   /**
@@ -270,7 +615,7 @@ export declare interface Scope {
    */
   collapse: (fold: string | number) => void;
   /**
-   * Destroy the accordion. You optionally use this method
+   * Destroy the relapse instance. You optionally use this method
    * to target a specific fold and inform on whether it should
    * be removed or not.
    */
@@ -280,7 +625,7 @@ export declare interface Scope {
 declare global {
   export interface Window {
     /**
-     * **_Relapse Instances_**
+     * 🪗 **Relapse Instances**
      *
      * This is getter which will return a `Map` containing all
      * current relapse instances in the DOM.
@@ -291,7 +636,7 @@ declare global {
 
 declare const Relapse: {
   /**
-   * **_RELAPSE_**
+   * 🪗 **RELAPSE**
    *
    * A lightweight and a silky smooth ESM (vanilla) toggle utility for
    * creating dynamic collapsible components.
@@ -308,7 +653,7 @@ declare const Relapse: {
    */
   (selector: string | HTMLElement | NodeListOf<HTMLElement>, options?: Options): Scope;
   /**
-   * **_RELAPSE_**
+   * 🪗 **RELAPSE**
    *
    * A lightweight and a silky smooth ESM (vanilla) toggle utility for
    * creating dynamic collapsible components.
@@ -324,17 +669,17 @@ declare const Relapse: {
    */
   (options?: Options): Scope[];
   /**
-   * **_GET ACCORDION_**
+   * **GET**
    *
-   * Find the current loaded accordion by its `id`
+   * Find the current relapse instance by its `id` value
    */
   get(id: string): Scope;
   /**
-   * **_ALL ACCORDIONS_**
+   * **ALL**
    *
    * Returns the `window.replace` Map instance.
    */
-  get(): Map<string, Scope>
+  list(): Map<string, Scope>
 };
 
 export default Relapse;
