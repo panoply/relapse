@@ -1,7 +1,15 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-use-before-define */
 
+/**
+ * String Literal Union
+ */
 type LiteralUnion<LiteralType> = LiteralType | (string & Record<never, never>);
+
+/**
+ * Identity Utility
+ */
+type Identity<T> = T;
 
 // eslint-disable-next-line no-unused-vars
 export declare type EventNames = (
@@ -12,11 +20,15 @@ export declare type EventNames = (
   | 'destroy'
 )
 
-export declare interface Events <T = Scope, F = Fold>{
+export declare interface Events <T = Relapse, F = Fold, R = void>{
   /**
    * Triggered when a fold button has been focused.
    */
-  (event: 'focus', callback: (this: T, fold?: F) => void);
+  <Binding = object>(
+    event: 'focus',
+    callback: (this: Binding & T, fold?: Binding & F) => void,
+    binding?: Binding
+  ): R;
   /**
    * Triggered before expanding or collapsing.
    * Returning a boolean `false` will `preventDefault()`
@@ -24,22 +36,34 @@ export declare interface Events <T = Scope, F = Fold>{
    *
    * > Use the `fold.expanded` parameter to determine the type of toggle occuring.
    */
-  (event: 'toggle', callback: (this: T, fold?: F) => void | boolean);
+  <Binding = object>(
+    event: 'toggle',
+    callback: (this: Binding & T, fold?: F) => void | boolean,
+    binding?: Binding
+  ): R;
   /**
    * Triggered when a fold has been expanded.
    */
-  (event: 'expand', callback: (this: T, fold?: F) => void);
+  <Binding = object>(
+    event: 'expand',
+    callback: (this: Binding & T, fold?: F, binding?: Binding) => void,
+    binding?: Binding
+  ): R;
   /**
    * Triggered when a fold has been collapsed
    */
-  (event: 'collapse', callback: (this: T, fold?: F) => void);
+  <Binding = object>(
+    event: 'collapse',
+    callback: (this: Binding & T, fold?: F) => void,
+    binding?: Binding
+  ): R;
   /**
-   * Triggered when a fold has been destroyed.
+   * Triggered when an instance has been destroyed.
    */
-  (event: 'destroy', callback: (this: T) => void);
+  (event: 'destroy', callback: (this: T) => void): R;
 }
 
-export declare interface FadingOptions {
+export declare interface FadeOptions {
   /**
    * Fold content fading duration when expanding/collapsing
    *
@@ -52,26 +76,14 @@ export declare interface FadingOptions {
    * @default 'linear
    */
   easing?: LiteralUnion<'ease' | 'ease-in' | 'ease-in-out' | 'ease-out' | 'linear'>;
-  /**
-   * Whether or not Relapse should apply CSS `will-change` rendering hints to the user agent
-   * inline via `style=""` properties. Rendering hint will state what kind of transition is
-   * expected to be performed on the element.
-   *
-   * @default true
-   */
-  hint?: boolean;
 }
 
-export declare interface FoldingOptions {
+export declare interface FoldOptions {
   /**
    * The animation speed in `ms` to applied when expanding and collapsing folds.
    * The value provided here will be passed to the `duration` keyframe option of
    * the [WAAPI](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API)
    * animation instance of fold elements.
-   *
-   * > **NOTE**
-   * >
-   * > This value will also be used for `fading` animations.
    *
    * @default 225
    */
@@ -87,14 +99,6 @@ export declare interface FoldingOptions {
    * @default 'ease-in-out'
    */
   easing?: LiteralUnion<'ease' | 'ease-in' | 'ease-in-out' | 'ease-out'>;
-  /**
-   * Whether or not Relapse should apply CSS `will-change` rendering hints to the user agent
-   * inline via `style=""` properties. Rendering hint will state what kind of transition is
-   * expected to be performed on the element.
-   *
-   * @default true
-   */
-  hint?: boolean;
 }
 
 export declare interface Options {
@@ -138,14 +142,14 @@ export declare interface Options {
    * <!-- defaults -->
    * <div
    *  class="relapse"
-   *  data-relapse="id"
-   *  data-relapse-multiple="true"
-   *  data-relapse-persist="false"> </div>
+   *  relapse="id"
+   *  relapse-multiple="true"
+   *  relapse-persist="false"> </div>
    * ```
    *
-   * @default 'data-relapse'
+   * @default 'relapse'
    */
-  schema?: `data-${Lowercase<string>}`;
+  schema?: Lowercase<string>;
   /**
    * Folding animation control applied when expanding and collapsing folds.
    * Relapse uses the [Web Animation API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API)
@@ -157,13 +161,14 @@ export declare interface Options {
    *
    * ```ts
    * {
-   *   folding: {
+   *   fold: {
    *    duration: 220,
-   *    easing: 'ease-in-out'
+   *    easing: 'ease-in-out',
+   *    hint: true
    * }
    * ```
    */
-  folding?: FoldingOptions
+  fold?: FoldOptions
   /**
    * Fading animation control applied to inner contents of folds when expanding and collapsing.
    * Relapse uses the [Web Animation API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API)
@@ -175,13 +180,14 @@ export declare interface Options {
    *
    * ```ts
    * {
-   *   fading: {
+   *   fade: {
    *    duration: 120,
-   *    easing: 'linear'
+   *    easing: 'linear',
+   *    hint: true
    * }
    * ```
    */
-  fading?: FadingOptions;
+  fade?: FadeOptions;
   /**
    * Custom class names to apply to the relapse elements such as button and folds.
    *
@@ -194,7 +200,6 @@ export declare interface Options {
    *   classes: {
    *    opened: 'opened', // applied to buttons
    *    expanded: 'expanded', // applied to folds
-   *    focused: 'focused', // applied to buttons
    *    disabled: 'disabled' // applied to buttons
    * }
    * ```
@@ -287,13 +292,6 @@ export declare interface Options {
     expanded?: string;
     /**
      * The focused class name which is added to buttons
-     * and folds that are in focus.
-     *
-     * @default 'focused'
-     */
-    focused?: string;
-    /**
-     * The focused class name which is added to buttons
      * and folds that are disabled.
      *
      * @default 'disabled'
@@ -304,6 +302,8 @@ export declare interface Options {
 
 export declare interface Fold {
   /**
+   * **Relapse Fold ID**
+   *
    * The fold id. This value will be used as the `key`
    * reference for the fold. If the fold button or content element has an `id="*"`
    * attribute then that value will be used.
@@ -313,6 +313,8 @@ export declare interface Fold {
    */
   id: string;
   /**
+   * **Relapse Button Element**
+   *
    * The button element which toggles this fold.
    *
    * The comments in below examples inform on the elements this value
@@ -353,6 +355,8 @@ export declare interface Fold {
    */
   button: HTMLElement;
   /**
+   * **Relapse Fold Element**
+   *
    * The fold element which will be toggled (i.e: expanded/collapsed).
    * This will always be the node wich contains the inner contents.
    *
@@ -396,6 +400,8 @@ export declare interface Fold {
    */
   element: HTMLElement;
   /**
+   * **Relapse Fold Wrapper Element**
+   *
    * The wrapper element which contains the button and element nodes.
    * For sibling structures the value will be identical to `element`.
    *
@@ -437,18 +443,26 @@ export declare interface Fold {
    */
   wrapper: HTMLElement;
   /**
+   * **Relapse Fold Index**
+   *
    * The zero based index reference for the fold.
    */
   index: number;
   /**
-   * Whether or not the fold is expanded.
+   * **Relapse Fold Expanded**
+   *
+   * Whether or not the fold has expanded.
    */
   expanded: boolean;
   /**
-   * The current fold height offset height.
+   * **Relapse Fold Height**
+   *
+   * The current fold height
    */
   height: number;
   /**
+   * **Relapse Fold Disabled Status**
+   *
    * Whether or not the fold is disabled. This will
    * be set to `true` on expanded folds when the `persist`
    * option is enabled.
@@ -457,78 +471,109 @@ export declare interface Fold {
    */
   disabled: boolean;
   /**
-   * Focus the button.
+   * **Relapse Fold Locked Status**
    *
-   * > The `focus` class will be added to the button and the
-   * `active` index will be updated (unless button is disabled).
+   * Whether or not the fold is disabled and locked. This will be `true`
+   * when the fold is marked as `disabled` upon intialisation.
+   */
+  locked: boolean;
+  /**
+   * **Relapse Fold Focus**
+   *
+   * Focus the button.
    */
   focus: (e: Event) => void;
   /**
-   * Blur the button.
+   * **Relapse Fold Blur**
    *
-   * > The `focus` class will be removed from the toggle button.
+   * Blur the button.
    */
   blur: (e: Event) => void;
   /**
-   * Toggles the fold. The expanded fold will be collapsed
-   * or vice-versa. Use the `grow()` method to recalculate
-   * height.
+   * **Relapse Fold Toggle**
+   *
+   * Toggles the fold. The expanded fold will be collapsed or vice-versa.
    */
   toggle: (e: Event) => void;
   /**
+   * **Relapse Fold Enable**
+   *
    * Enable the fold, Optionally accepts an `id` reference
    * to target specific fold either by a `0` based index of fold id.
    */
   enable: (id?: number | string) => void;
   /**
+   * **Relapse Fold Disable**
+   *
    * Disable the fold, Optionally accepts an `id` reference
    * to target specific fold either by a `0` based index of fold id.
    */
   disable: (id?: number | string) => void;
   /**
+   * **Relapse Fold Open**
+   *
    * Open the fold, Optionally accepts an `id` reference
    * to target specific fold either by a `0` based index of fold id.
    */
   open: (id?: number | string) => void;
   /**
+   * **Relapse Fold Close**
+   *
    * Close the fold,  Optionally accepts an `id` reference
    * to target specific fold either by a `0` based index of fold id.
    */
   close: (id?: number | string) => void;
   /**
-   * Destroy the fold. You can optionally remove the
-   * fold from the dom by passing in `true`.
+   * **Relapse Fold Destroy**
+   *
+   * Teardown the fold and destroy its interactivity.
    */
-  destroy: (remove?: boolean) => void;
+  destroy: () => void;
 }
 
 export declare interface Folds extends Array<Fold> {
   /**
-   * Fold References targeted by ID string
+   * Index lookup
    */
-  refs: { [id: string]: number };
+  ref: { [id: string]: number }
   /**
    * Return a fold by `0` based index of by `id` attribute value.
    */
   get(id: string | number): Fold;
 }
 
-export declare interface Scope {
+export declare enum Status {
+  Static = 1,
+  Transition = 2,
+}
+
+export declare interface Relapse {
   /**
-   * The internal id reference for this instance
+   * **Relapse ID**
+   *
+   * The Relapse identifier Key
    */
   id: string;
   /**
-   * The Relapse identifier Key
-   */
-  key: string;
-  /**
+   * **Relapse Options**
+   *
    * Configuration options merged with defaults
    *
    * @see {@link Options}
    */
-  config: Options;
+  options: Options;
   /**
+   * **Relapse Status**
+   *
+   * The current status indicates the state of of operation executing
+   *
+   * - `1` Relapse is static, no expand or collapse taking place
+   * - `2` Relapse is either expanding or collapsing a fold.
+   */
+  status: Status;
+  /**
+   * **Relapse Element**
+   *
    * The relapse element, this will be outer most wrapper node
    *
    * @example
@@ -538,6 +583,8 @@ export declare interface Scope {
    */
   element: HTMLElement;
   /**
+   * **Relapse Semantic**
+   *
    * Whether or not the accordion us using semantic markup.
    *
    * > **NOTE**
@@ -547,18 +594,20 @@ export declare interface Scope {
    */
   semantic: boolean;
   /**
+   * **Relapse Active Fold Index**
+   *
    * The index of the last known expanded fold.
    */
   active: number;
   /**
-   * Fold watches the following folds and will trigger adjustments
-   */
-  parent: HTMLElement[];
-  /**
+   * **Relapse Opened Fold Count**
+   *
    * The number of collapsed folds, ie: the open count
    */
   openCount: number;
   /**
+   * **Relapse Folds**
+   *
    * An array list of folds contained within the instance.
    *
    * @see {@link Fold}
@@ -578,10 +627,14 @@ export declare interface Scope {
    */
   folds: Folds;
   /**
+   * **Relapse Events**
+   *
    * Returns the binded events listeners of the Relapse instance
    */
-  readonly events: { [K in EventNames]?: Events<Readonly<Scope>, Fold>[] }
+  readonly events: { [K in EventNames]?: Events<Readonly<Relapse>, Fold>[] }
   /**
+   * **Relapse On Event**
+   *
    * Listen for an event,
    *
    * @example
@@ -593,93 +646,138 @@ export declare interface Scope {
    *  console.log(fold); // The fold which was expanded
    * })
    */
-  on: Events<Readonly<Scope>, Fold>;
+  on: Events<Readonly<Relapse>, Fold, number>;
   /**
+   * **Relapse Off Event**
    * Remove an event.
    */
-  off: Events<Readonly<Scope>, Fold>;
+  off: Events<Readonly<Relapse>, Fold, void>;
   /**
+   * **Relapse Expand Fold**
+   *
    * Expand a fold by passing its `0` based index.
    *
    * You can optionally annotate folds you need programmitic
    * control over with a `data-relapse-fold="*"` attribute and
    * pass the value provided opposed to the index.
    */
-  expand: (fold: number | string) => void;
+  expand: (fold?: number | string) => void;
   /**
+   * **Relapse Collapse Fold**
+   *
    * Collapse a fold by passing its `0` based index.
    *
    * You can optionally annotate folds you need programmitic
    * control over with a `data-relapse-fold="*"` attribute and
    * instead pass the value provided opposed to the index.
    */
-  collapse: (fold: string | number) => void;
+  collapse: (fold?: string | number) => void;
   /**
-   * Destroy the relapse instance. You optionally use this method
-   * to target a specific fold and inform on whether it should
-   * be removed or not.
+   * **Relapse Destriy**
+   *
+   * Destroy the relapse instance.
    */
-  destroy: (fold?: string | number, remove?: boolean) => void;
+  destroy: () => void;
 }
+
+export declare class Methods {
+
+  /**
+   * Return the current relapse instance by its `id` value. Identifiers can be
+   * defined via `data-relapse=""`. If you are not using attribute annotations,
+   * then relapse will use the `id=""` value.
+   *
+   * If neither a `data-relapse` or `id` attribute exists then Relapse will assign
+   * an identifier.
+   */
+  static get: {
+    (id: string): Relapse;
+    (ids: string[]): Relapse[];
+    (): Relapse[]
+  };
+
+  /**
+   * Current Version
+   */
+  static version: string;
+
+  /**
+   * Iterates over all existing instances of Relapse.
+   */
+  static each(callback: (scope?: Relapse, id?: string) => void): boolean;
+
+  /**
+   * Whether or not an instance exists for the provided identifier/s.
+   */
+  static has(id: string | string[]): boolean;
+
+  /**
+   * Destory and teardown all active instances or those which match the
+   * provided `ids`.
+   */
+  static destroy(id?: string | string[]): boolean;
+
+}
+
+interface IRelapse extends Identity<typeof Methods> {
+  /**
+   * 🪗 **RELAPSE**
+   *
+   * A lightweight and a silky smooth ESM (vanilla) toggle utility for
+   * creating dynamic collapsible components.
+   *
+   * @example
+  * import relapse from 'relapse';
+  *
+  * // Calling relapse will invoke on all elements containing data-relapse
+  * // All elements using class name .selector will be used by relapse
+  * relapse('.selector');
+  *
+  * // Element with id value of #collapse will be used by relapse
+  * relapse(document.querySelector('#collapse'));
+  */
+ (selector: string | HTMLElement | NodeListOf<HTMLElement>, options?: Options): Relapse;
+ /**
+  * 🪗 **RELAPSE**
+  *
+  * A lightweight and a silky smooth ESM (vanilla) toggle utility for
+  * creating dynamic collapsible components.
+  *
+  * @example
+  * import relapse from 'relapse';
+  *
+  * // Calling relapse will invoke on all elements containing data-relapse
+  * relapse();
+  *
+  * // Calling relapse will invoke on all elements containing data-toggle
+  * relapse({ schema: 'data-toggle' });
+  */
+ (options?: Options): Relapse[];
+}
+
+declare const Relapsed: IRelapse;
 
 declare global {
   export interface Window {
-    /**
-     * 🪗 **Relapse Instances**
-     *
-     * This is getter which will return a `Map` containing all
-     * current relapse instances in the DOM.
-     */
-    relapse: Map<string, Scope>
+   /**
+    * 🪗 **RELAPSE**
+    *
+    * A lightweight and a silky smooth ESM (vanilla) toggle utility for
+    * creating dynamic collapsible components.
+    *
+    * @example
+    * import relapse from 'relapse';
+    *
+    * // Calling relapse will invoke on all elements containing data-relapse
+    * // All elements using class name .selector will be used by relapse
+    * relapse('.selector');
+    *
+    * // Element with id value of #collapse will be used by relapse
+    * relapse(document.querySelector('#collapse'));
+    */
+    relapse: IRelapse;
   }
+
 }
 
-declare const Relapse: {
-  /**
-   * 🪗 **RELAPSE**
-   *
-   * A lightweight and a silky smooth ESM (vanilla) toggle utility for
-   * creating dynamic collapsible components.
-   *
-   * @example
-   * import relapse from 'relapse';
-   *
-   * // Calling relapse will invoke on all elements containing data-relapse
-   * // All elements using class name .selector will be used by relapse
-   * relapse('.selector');
-   *
-   * // Element with id value of #collapse will be used by relapse
-   * relapse(document.querySelector('#collapse'));
-   */
-  (selector: string | HTMLElement | NodeListOf<HTMLElement>, options?: Options): Scope;
-  /**
-   * 🪗 **RELAPSE**
-   *
-   * A lightweight and a silky smooth ESM (vanilla) toggle utility for
-   * creating dynamic collapsible components.
-   *
-   * @example
-   * import relapse from 'relapse';
-   *
-   * // Calling relapse will invoke on all elements containing data-relapse
-   * relapse();
-   *
-   * // Calling relapse will invoke on all elements containing data-toggle
-   * relapse({ schema: 'data-toggle' });
-   */
-  (options?: Options): Scope[];
-  /**
-   * **GET**
-   *
-   * Find the current relapse instance by its `id` value
-   */
-  get(id: string): Scope;
-  /**
-   * **ALL**
-   *
-   * Returns the `window.replace` Map instance.
-   */
-  list(): Map<string, Scope>
-};
-
-export default Relapse;
+export default Relapsed;

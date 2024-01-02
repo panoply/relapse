@@ -1,10 +1,10 @@
 {
   "name": "relapse",
   "description": "An A11y compliant, modern, lightweight (2kb gzip) dependency free utility for collapsible toggle components.",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "homepage": "https://panoply.github.io/relapse/",
   "author": {
-    "name": "Nikolas Savvidis",
+    "name": "Nik Savvidis",
     "url": "https://github.com/panoply"
   },
   "repository": {
@@ -17,17 +17,17 @@
   "license": "MIT",
   "type": "module",
   "types": "./index.d.ts",
-  "module": "./index.js",
-  "main": "./index.js",
+  "module": "./dist/index.js",
+  "main": "./dist/index.js",
   "exports": {
     ".": {
       "types": "./index.d.ts",
-      "import": "./index.js",
-      "default": "./index.js"
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     }
   },
   "files": [
-    "index.js",
+    "dist",
     "index.d.ts"
   ],
   "keywords": [
@@ -42,10 +42,7 @@
   "prettier": "@sissel/prettier-config",
   "eslintConfig": {
     "ignorePatterns": [
-      "package",
-      "types",
-      "index.js",
-      "iife.js",
+      "dist",
       "docs/public"
     ],
     "extends": "@sissel/eslint-config",
@@ -55,8 +52,8 @@
   },
   "scripts": {
     "dev": "tsup --watch",
-    "build": "tsup --minify",
-    "gzs": "gzip-size index.js --include-original"
+    "build": "tsup --minify --env.NODE_ENV production && pnpm run gzs",
+    "gzs": "gzip-size dist/index.js --include-original"
   },
   "browserslist": [
     "defaults",
@@ -74,15 +71,12 @@
   "devDependencies": {
     "@sissel/eslint-config": "^1.1.0",
     "@sissel/prettier-config": "^1.1.0",
-    "browserslist": "^4.21.4",
-    "eslint": "^8.26.0",
+    "browserslist": "^4.22.2",
+    "eslint": "^8.56.0",
     "gzip-size-cli": "^5.1.0",
-    "prettier": "^2.7.1",
-    "terser": "^5.24.0",
-    "tsup": "^7.2.0",
-    "typescript": "^4.8.4"
-  },
-  "optionalDependencies": {
-    "postcss": "^8.4.18"
+    "prettier": "^3.1.1",
+    "terser": "^5.26.0",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3"
   }
 }
