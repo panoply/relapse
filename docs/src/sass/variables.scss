@@ -12,6 +12,18 @@ $body-bg: #16181c;
 $body-color: $white;
 
 /* -------------------------------------------- */
+/* BACKGROUNDS                                  */
+/* -------------------------------------------- */
+
+$background-colors: (
+  transparent: $transparent,
+  white: $white,
+  black: $black,
+  ivory: $gray-100,
+  gray: $gray-400
+);
+
+/* -------------------------------------------- */
 /* BORDERS                                      */
 /* -------------------------------------------- */
 
@@ -72,6 +84,20 @@ $hr-margin-y: $spacer-5;
 /* -------------------------------------------- */
 
 $paragraph-margin-bottom: $spacer-4;
+
+/* -------------------------------------------- */
+/* TOOLTIP                                      */
+/* -------------------------------------------- */
+
+$tooltip-bg: $black;
+$tooltip-font-family: $font-family-base;
+$tooltip-font-style: normal;
+$tooltip-font-size: $font-size-sm;
+$tooltip-font-color: $white;
+$tooltip-padding-y: 0.2rem;
+$tooltip-padding-x: 0.5rem;
+$tooltip-arrow-size: 5px;
+$tooltip-radius: 3px;
 
 /* -------------------------------------------- */
 /* HEADINGS                                     */

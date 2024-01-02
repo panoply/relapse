@@ -7,14 +7,26 @@
 .tab {
   font-family: $font-family-heading;
   font-weight: $font-weight-bold;
-  font-size: .85rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: #65696f;
   font-weight: $font-weight-bolder;
 
+  .icon-right {
+    width: 22px;
+    height: 22px;
+    margin-left: 3px;
+    fill: #65696f;
+  }
+
+  &:hover {
+    .icon-right {
+      fill: $white;
+    }
+  }
+
   &.active {
     color: $white;
-
   }
 }
 
@@ -22,6 +34,6 @@
   background-color: $code-bg;
 
   > .papyrus {
-    margin-top:0 !important;
+    margin-top: 0 !important;
   }
 }

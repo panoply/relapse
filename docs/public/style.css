@@ -164,6 +164,9 @@
 /* BODY                                         */
 /* -------------------------------------------- */
 /* -------------------------------------------- */
+/* BACKGROUNDS                                  */
+/* -------------------------------------------- */
+/* -------------------------------------------- */
 /* BORDERS                                      */
 /* -------------------------------------------- */
 /* -------------------------------------------- */
@@ -180,6 +183,9 @@
 /* -------------------------------------------- */
 /* -------------------------------------------- */
 /* PARAGRAPH                                    */
+/* -------------------------------------------- */
+/* -------------------------------------------- */
+/* TOOLTIP                                      */
 /* -------------------------------------------- */
 /* -------------------------------------------- */
 /* HEADINGS                                     */
@@ -243,10 +249,10 @@
   --border-radius-lg: 0.5rem;
   --border-radius-xl: 1rem;
   --border-radius-pill: 5rem;
-  --tooltip-border-radius: 0;
+  --tooltip-border-radius: 3px;
   --tooltip-bg: #000000;
   --tooltip-color: #fff;
-  --tooltip-font-size: 0.595rem;
+  --tooltip-font-size: 0.825rem;
   --tooltip-font-family: system-ui, -apple-system, blinkmacsystemfont, Open Sans, Helvetica Neue, sans-serif;
   --tooltip-font-style: normal;
   --aspect-ratio: 1.3333333333;
@@ -1800,7 +1806,7 @@ pre {
   white-space: normal;
   background-color: #e0e4e7;
   border-radius: 0.25rem;
-  font-size: 0.725rem;
+  font-size: 0.825rem;
 }
 pre code {
   font-size: inherit;
@@ -1809,7 +1815,7 @@ pre code {
 }
 
 code {
-  font-size: 0.725rem;
+  font-size: 0.825rem;
   color: #d63384;
   word-wrap: break-word;
 }
@@ -4847,7 +4853,7 @@ html.overlay {
 }
 
 .fs-sm {
-  font-size: 0.725rem !important;
+  font-size: 0.825rem !important;
 }
 
 .fs-md {
@@ -5529,7 +5535,7 @@ html.overlay {
   user-select: none;
   text-transform: uppercase;
   padding: 0.375rem 0.75rem;
-  font-size: 0.725rem;
+  font-size: 0.825rem;
   border-radius: 0;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
@@ -5887,7 +5893,7 @@ button[aria-label][data-tooltip] {
   color: var(--tooltip-color);
   border-radius: var(--tooltip-border-radius);
   content: attr(aria-label);
-  padding: 0.1rem 0.5rem;
+  padding: 0.2rem 0.5rem;
   position: absolute;
   white-space: nowrap;
   z-index: 99999;
@@ -6256,7 +6262,7 @@ button[aria-label][data-tooltip] {
 .col-fm-label-sm {
   padding-top: 0.39rem;
   padding-bottom: 0.39rem;
-  font-size: 0.725rem;
+  font-size: 0.825rem;
 }
 
 /* -------------------------------------------- */
@@ -6264,7 +6270,7 @@ button[aria-label][data-tooltip] {
 /* -------------------------------------------- */
 .fm-text {
   margin-top: 0.25rem;
-  font-size: 0.725rem;
+  font-size: 0.825rem;
   color: #575f68;
 }
 
@@ -6302,7 +6308,7 @@ textarea.fm-input.fm-sm,
 input.fm-input.fm-sm {
   min-height: calc(1.5em + 0.5rem + 2px);
   padding: 0.32rem 0.5rem;
-  font-size: 0.725rem;
+  font-size: 0.825rem;
   border-radius: 0;
 }
 textarea.fm-input.fm-sm::file-selector-button,
@@ -6759,7 +6765,7 @@ input.fm-checkbox:disabled ~ .fm-label {
   padding-top: 0.32rem;
   padding-bottom: 0.32rem;
   padding-left: 0.5rem;
-  font-size: 0.725rem;
+  font-size: 0.825rem;
   border-radius: 0;
 }
 .fm-select:hover, .fm-select:focus {
@@ -7055,7 +7061,7 @@ input.fm-checkbox:disabled ~ .fm-label {
 .gp-sm > .gp-text,
 .gp-sm > .btn {
   padding: 0.32rem 0.5rem;
-  font-size: 0.725rem;
+  font-size: 0.825rem;
   border-radius: 0;
 }
 
@@ -7086,7 +7092,7 @@ fieldset.fm-number {
 }
 fieldset.fm-number.fm-sm .fm-input {
   line-height: 0.625;
-  font-size: 0.6590909091rem;
+  font-size: 0.75rem;
   padding: 0.16rem 0.25rem;
 }
 fieldset.fm-number.fm-sm .increment,
@@ -7153,7 +7159,7 @@ fieldset.fm-number .decrement {
   display: none;
   width: 100%;
   margin-top: 0.25rem;
-  font-size: 0.725rem;
+  font-size: 0.825rem;
   color: #198754;
 }
 
@@ -7284,7 +7290,7 @@ textarea.fm-input.is-valid {
   display: none;
   width: 100%;
   margin-top: 0.25rem;
-  font-size: 0.725rem;
+  font-size: 0.825rem;
   color: #dc3545;
 }
 
@@ -8871,6 +8877,15 @@ pre.papyrus code[class*=language-]::-webkit-scrollbar-corner {
   color: #65696f;
   font-weight: bolder;
 }
+.tab .icon-right {
+  width: 22px;
+  height: 22px;
+  margin-left: 3px;
+  fill: #65696f;
+}
+.tab:hover .icon-right {
+  fill: #ffffff;
+}
 .tab.active {
   color: #ffffff;
 }
@@ -8885,34 +8900,110 @@ pre.papyrus code[class*=language-]::-webkit-scrollbar-corner {
 .sidebar {
   background-color: #16181c;
 }
+.sidebar .icon-logo {
+  width: 100px;
+  height: 30px;
+  color: #575f68;
+  stroke: #16181c;
+  stroke-width: 1px;
+  stroke-linejoin: round;
+}
+@media (min-width: 768px) {
+  .sidebar .icon-logo {
+    width: 90px;
+  }
+}
+@media (min-width: 992px) {
+  .sidebar .icon-logo {
+    width: 100px;
+  }
+}
+.sidebar a,
+.sidebar summary {
+  font-family: "JetBrains Mono", monospace;
+  text-transform: uppercase;
+  font-size: 0.795rem;
+  margin-bottom: 5px;
+}
+.sidebar a.active,
+.sidebar summary.active {
+  font-weight: 600;
+  color: #ffffff;
+}
+.sidebar .sub-list {
+  margin-left: 2px;
+  border-left: 0.05rem solid #3b4147;
+}
+.sidebar .sub-list > li {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.sidebar .sub-list > li > a[aria-expanded=true], .sidebar .sub-list > li > a[aria-expanded=false] {
+  background-repeat: no-repeat;
+  background-position: right 0px center;
+  background-size: 15px;
+}
+.sidebar .sub-list > li > a[aria-expanded=true] {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='%23ffffff' stroke-width='1'%3e%3cpath d='M5 12h14'/%3e%3c/svg%3e");
+}
+.sidebar .sub-list > li > a[aria-expanded=false] {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='%23ffffff' stroke-width='1'%3e%3cpath d='M12 5v14M5 12h14'/%3e%3c/svg%3e");
+}
+.sidebar .sub-list > li > a + .child-list {
+  margin-left: 2px;
+  border-left: 0.05rem solid #3b4147;
+  max-height: fit-content;
+}
+.sidebar .sub-list > li > a + .child-list > li {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.sidebar .sub-list > li > a + .child-list > li > a {
+  font-size: 0.795rem !important;
+  margin-bottom: 4px;
+}
 @media (min-width: 768px) {
   .sidebar {
     position: fixed;
     display: block !important;
-    width: 200px;
+    width: 200px !important;
     height: 100vh;
     transform: translateX(0);
     visibility: visible;
     opacity: 1;
   }
 }
+@media (min-width: 992px) {
+  .sidebar {
+    position: fixed;
+    display: block !important;
+    width: 250px !important;
+    height: 100vh;
+    transform: translateX(0);
+  }
+}
 @media (min-width: 1200px) {
   .sidebar {
     position: fixed;
     display: block !important;
-    width: 250px;
+    width: 220px !important;
     height: 100vh;
     transform: translateX(0);
   }
 }
 @media (min-width: 1400px) {
   .sidebar {
-    position: fixed;
+    position: absolute;
     display: block !important;
     width: 250px;
-    height: 100vh;
-    margin-left: 10%;
+    height: 100%;
     transform: translateX(0);
+  }
+  .sidebar .sidebar-inner {
+    position: sticky;
+    top: 0;
   }
 }
 .sidebar details[open] > summary {
@@ -8929,22 +9020,57 @@ pre.papyrus code[class*=language-]::-webkit-scrollbar-corner {
   background-position: right 0px center;
   background-size: 15px;
 }
+.sidebar details > summary::-webkit-details-marker {
+  display: none;
+}
 .sidebar details > summary:hover {
   color: #666666;
 }
 
+.container-xxl {
+  position: relative;
+}
+
 @media (min-width: 768px) {
   .content {
-    padding-left: 240px !important;
+    margin-left: 235px;
+  }
+}
+@media (min-width: 992px) {
+  .content {
+    margin-left: 300px;
+  }
+}
+@media (min-width: 1200px) {
+  .content {
+    margin-left: 250px;
   }
 }
 @media (min-width: 1400px) {
   .content {
-    padding-left: 340px !important;
+    margin-left: 20%;
   }
 }
 
 /* stylelint-disable function-url-quotes */
+/* -------------------------------------------- */
+/* NAVBAR                                       */
+/* -------------------------------------------- */
+.navbar {
+  position: sticky;
+  top: 0;
+  background-color: rgba(22, 24, 28, 0.9);
+  backdrop-filter: blur(5px);
+  z-index: 9999;
+  border-bottom: #3b4147 0.05rem solid;
+}
+.navbar .icon-logo {
+  width: 100px;
+  height: 50px;
+  color: #98a5b3;
+  opacity: 0.4;
+}
+
 /* -------------------------------------------- */
 /* DRAWER                                       */
 /* -------------------------------------------- */
@@ -8986,6 +9112,58 @@ pre.papyrus code[class*=language-]::-webkit-scrollbar-corner {
   .drawer-open .drawer-backdrop {
     transition: none;
   }
+}
+
+/* -------------------------------------------- */
+/* DROPDOWN                                     */
+/* -------------------------------------------- */
+.dropdown-versions {
+  border-color: #3b4147;
+}
+.dropdown-versions.is-open > .btn {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='1'%3e%3cpath d='m6 9 6 6 6-6'/%3e%3c/svg%3e");
+}
+.dropdown-versions.is-open > .btn + ul {
+  display: flex;
+}
+.dropdown-versions .btn {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b6c2ce' stroke-width='1'%3e%3cpath d='m6 9 6 6 6-6'/%3e%3c/svg%3e");
+  background-position: right 0 center;
+  background-size: 12px;
+  border: none;
+  width: 55px;
+  padding-right: 5px;
+  padding-left: 0;
+  font-size: 0.595rem;
+  font-family: "JetBrains Mono", monospace;
+  color: #b6c2ce !important;
+}
+.dropdown-versions .btn > span {
+  padding-right: 2px;
+}
+.dropdown-versions .btn + ul {
+  left: -4px;
+  width: 85%;
+  border: none;
+  flex-direction: column-reverse;
+}
+.dropdown-versions .btn + ul > li {
+  flex: 0 0 auto;
+  justify-content: start;
+  padding-left: 8px;
+  padding-top: 2.5px;
+  background-color: #1c2028;
+}
+.dropdown-versions .btn + ul > li:hover {
+  background-color: #1c2028;
+}
+.dropdown-versions .btn + ul > li a {
+  font-size: 0.725rem !important;
+  text-transform: lowercase;
+}
+.dropdown-versions .btn + ul > li a:hover {
+  font-weight: 600;
+  color: #ffffff;
 }
 
 /* -------------------------------------------- */
@@ -9035,17 +9213,92 @@ blockquote > p {
 }
 
 h3 > code, .h3 > code {
-  margin-bottom: 0.25rem !important;
-  padding-left: 0;
   font-weight: 100;
-  font-size: 1.1rem;
-  font-family: consolas, monaco, "Andale Mono", "Ubuntu Mono", monospace;
-  text-transform: lowercase;
-  background-color: transparent;
+  font-size: 1rem;
 }
 
 pre.papyrus[data-papyrus=static] > code[class*=language-] > div.line-numbers {
   height: 100%;
+}
+
+/* -------------------------------------------- */
+/* EVENTS                                       */
+/* -------------------------------------------- */
+.events {
+  height: 400px;
+  overflow-y: scroll;
+  width: 100%;
+  position: relative;
+}
+.events::-webkit-scrollbar {
+  width: var(--papyrus-scrollbar-width);
+  height: var(--papyrus-scrollbar-width);
+}
+.events::-webkit-scrollbar-track {
+  background: var(--papyrus-scrollbar-track);
+}
+.events::-webkit-scrollbar-thumb {
+  background: var(--papyrus-scrollbar-thumb);
+}
+.events::-webkit-scrollbar-thumb:hover {
+  background: var(--papyrus-scrollbar-thumb-hover);
+}
+.events::-webkit-scrollbar-corner {
+  background: transparent;
+}
+.events .line {
+  width: 100%;
+  border-bottom: #0dcaf0 0.01rem solid;
+  margin-bottom: 8px;
+  margin-top: 5px;
+}
+.events .message {
+  color: #ffffff;
+  font-family: consolas, monaco, "Andale Mono", "Ubuntu Mono", monospace;
+  font-size: 0.775rem;
+  position: relative;
+  padding-left: 40px;
+}
+.events .message::before {
+  color: var(--papyrus-line-number-color);
+  content: attr(aria-label);
+  position: absolute;
+  left: 5px;
+  width: 15px;
+  text-align: right;
+}
+
+/* -------------------------------------------- */
+/* METHODS                                      */
+/* -------------------------------------------- */
+.btn-method {
+  border-radius: 0.375rem;
+  color: #b6c2ce;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.705rem;
+  padding-left: 10px;
+  width: 100%;
+}
+@media (min-width: 768px) {
+  .btn-method {
+    width: 100px;
+  }
+}
+.btn-method.disabled {
+  transition: opacity 200ms linear;
+  opacity: 0.3;
+}
+.btn-method.active {
+  color: #ffffff;
+  font-weight: 600;
+}
+.btn-method.active.disabled {
+  opacity: 1;
+}
+.btn-method:hover {
+  background-color: transparent;
+  color: #ffffff;
+  font-weight: 600;
 }
 
 /* -------------------------------------------- */
@@ -9061,6 +9314,16 @@ table {
 .navigate a {
   font-family: "JetBrains Mono", monospace;
   color: #b6c2ce;
+  border: 0.05rem #3b4147 solid;
+  border-radius: 5px;
+  padding: 10px 25px;
+  text-align: center;
+}
+.navigate a.prev {
+  padding: 5px 20px 5px 10px;
+}
+.navigate a.next {
+  padding: 5px 10px 5px 20px;
 }
 .navigate a:hover {
   color: #ffffff;
@@ -9122,6 +9385,56 @@ table {
 /* RELAPSE                                      */
 /* -------------------------------------------- */
 /* stylelint-disable function-url-quotes */
+.options {
+  position: relative;
+  display: block;
+  border: 0.05rem solid #3b4147;
+  background-color: #16181c;
+}
+.options details:first-of-type > summary {
+  border-top: none;
+}
+.options details:last-of-type > summary {
+  border-bottom: none;
+}
+.options details > summary.opened, .options details[open] > summary {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='%23fff' stroke-width='1'%3e%3cpath d='M5 12h14'/%3e%3c/svg%3e");
+  background-color: #16181c;
+}
+.options details > summary {
+  list-style-type: none;
+  width: 100%;
+  padding: 5px 20px;
+  background-color: transparent;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='%23fff' stroke-width='1'%3e%3cpath d='M12 5v14M5 12h14'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 15px;
+  border-top: 0.05rem solid #3b4147;
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.895rem;
+}
+.options details > summary + * {
+  background-color: #0f1215;
+  padding: 20px;
+  margin: 0 !important;
+  font-size: 0.895rem;
+}
+.options details > summary.focused {
+  outline: none;
+}
+.options details > summary:hover {
+  background-color: #222c38;
+}
+.options details > summary::before {
+  content: "";
+}
+.options details > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* stylelint-disable function-url-quotes */
 .semantic-relapse {
   position: relative;
   display: block;
@@ -9171,12 +9484,12 @@ table {
 }
 
 /* stylelint-disable function-url-quotes */
-.siblings-relapse {
+.sibling-relapse {
   position: relative;
   display: block;
   border: 0.05rem solid #3b4147;
 }
-.siblings-relapse .siblings-button {
+.sibling-relapse .sibling-button {
   width: 100%;
   padding: inherit;
   padding: 10px;
@@ -9193,42 +9506,41 @@ table {
   cursor: pointer;
   user-select: none;
 }
-.siblings-relapse .siblings-button:last-of-type:not(.opened) {
+.sibling-relapse .sibling-button:last-of-type:not(.opened) {
   border-bottom: none;
 }
-.siblings-relapse .siblings-button.initial, .siblings-relapse .siblings-button.opened {
+.sibling-relapse .sibling-button.opened {
   color: inherit;
   background-color: #16181c;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='%23fff' stroke-width='1'%3e%3cpath d='M5 12h14'/%3e%3c/svg%3e");
 }
-.siblings-relapse .siblings-button.focused {
+.sibling-relapse .sibling-button.focused {
   outline: none;
 }
-.siblings-relapse .siblings-button.initial {
+.sibling-relapse .sibling-button.initial {
   color: inherit;
 }
-.siblings-relapse .siblings-button.initial + .siblings-fold {
-  max-height: inherit;
-  transition: 1.25rem;
-  border-bottom: 0.05rem solid #3b4147;
-}
-.siblings-relapse .siblings-button.initial + .siblings-fold:last-of-type {
-  border-bottom: none;
-}
-.siblings-relapse .siblings-button + .siblings-fold {
+.sibling-relapse .sibling-button + .sibling-fold {
   max-height: 0;
   background-color: #20242c;
   overflow: hidden;
 }
-.siblings-relapse .siblings-button + .siblings-fold > :first-child {
+.sibling-relapse .sibling-button + .sibling-fold > :first-child {
   margin: 0;
   padding: 1rem;
 }
-.siblings-relapse .siblings-button + .siblings-fold.expanded {
+.sibling-relapse .sibling-button + .sibling-fold.expanded {
   max-height: inherit;
   border-bottom: 0.05rem solid #3b4147;
 }
-.siblings-relapse .siblings-button + .siblings-fold.expanded:last-of-type {
+.sibling-relapse .sibling-button + .sibling-fold.expanded:last-of-type {
+  border-bottom: none;
+}
+.sibling-relapse .sibling-button[aria-expanded=true] + .sibling-fold {
+  max-height: inherit;
+  border-bottom: 0.05rem solid #3b4147;
+}
+.sibling-relapse .sibling-button[aria-expanded=true] + .sibling-fold:last-of-type {
   border-bottom: none;
 }
 
@@ -9337,4 +9649,346 @@ table {
   background-color: #fafafa;
   margin: 0;
   padding: 25px 10px;
+}
+
+.relapse-unstyled {
+  all: initial;
+}
+
+/* -------------------------------------------- */
+/* SEMANTIC STRUCTURE                           */
+/* -------------------------------------------- */
+.relapse-semantic-base,
+.relapse-semantic-borders,
+.relapse-semantic-icon,
+.relapse-semantic-hover,
+.relapse-semantic-opened,
+.relapse-semantic-disabled,
+.relapse-semantic-expanded {
+  all: initial;
+  font-family: system-ui, -apple-system, blinkmacsystemfont, "Open Sans", "Helvetica Neue", sans-serif;
+  font-size: 15px;
+  display: block;
+  position: relative;
+  border: 1px solid black;
+}
+.relapse-semantic-base > details > summary,
+.relapse-semantic-borders > details > summary,
+.relapse-semantic-icon > details > summary,
+.relapse-semantic-hover > details > summary,
+.relapse-semantic-opened > details > summary,
+.relapse-semantic-disabled > details > summary,
+.relapse-semantic-expanded > details > summary {
+  padding: 5px 10px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  background: #f8f8f8;
+}
+.relapse-semantic-base > details > summary::-webkit-details-marker,
+.relapse-semantic-borders > details > summary::-webkit-details-marker,
+.relapse-semantic-icon > details > summary::-webkit-details-marker,
+.relapse-semantic-hover > details > summary::-webkit-details-marker,
+.relapse-semantic-opened > details > summary::-webkit-details-marker,
+.relapse-semantic-disabled > details > summary::-webkit-details-marker,
+.relapse-semantic-expanded > details > summary::-webkit-details-marker {
+  display: initial;
+}
+.relapse-semantic-base > details > summary + *,
+.relapse-semantic-borders > details > summary + *,
+.relapse-semantic-icon > details > summary + *,
+.relapse-semantic-hover > details > summary + *,
+.relapse-semantic-opened > details > summary + *,
+.relapse-semantic-disabled > details > summary + *,
+.relapse-semantic-expanded > details > summary + * {
+  padding: 10px;
+  background-color: ivory;
+}
+
+/* BORDERS ------------------------------------ */
+.relapse-semantic-borders > details:last-of-type > summary,
+.relapse-semantic-icon > details:last-of-type > summary,
+.relapse-semantic-hover > details:last-of-type > summary,
+.relapse-semantic-opened > details:last-of-type > summary,
+.relapse-semantic-disabled > details:last-of-type > summary,
+.relapse-semantic-expanded > details:last-of-type > summary {
+  border-bottom: none;
+}
+.relapse-semantic-borders > details > summary,
+.relapse-semantic-icon > details > summary,
+.relapse-semantic-hover > details > summary,
+.relapse-semantic-opened > details > summary,
+.relapse-semantic-disabled > details > summary,
+.relapse-semantic-expanded > details > summary {
+  padding: 5px 10px;
+  border-bottom: 1px solid black;
+}
+
+/* ICONS -------------------------------------- */
+.relapse-semantic-icon > details > summary,
+.relapse-semantic-hover > details > summary,
+.relapse-semantic-opened > details > summary,
+.relapse-semantic-disabled > details > summary,
+.relapse-semantic-expanded > details > summary {
+  display: flex;
+  list-style: none; /* Specific reset for Chrome / Firefox */
+}
+.relapse-semantic-icon > details > summary::-webkit-details-marker,
+.relapse-semantic-hover > details > summary::-webkit-details-marker,
+.relapse-semantic-opened > details > summary::-webkit-details-marker,
+.relapse-semantic-disabled > details > summary::-webkit-details-marker,
+.relapse-semantic-expanded > details > summary::-webkit-details-marker {
+  display: none;
+}
+.relapse-semantic-icon > details > summary::after,
+.relapse-semantic-hover > details > summary::after,
+.relapse-semantic-opened > details > summary::after,
+.relapse-semantic-disabled > details > summary::after,
+.relapse-semantic-expanded > details > summary::after {
+  content: "+";
+}
+.relapse-semantic-icon > details[open] > summary::after,
+.relapse-semantic-hover > details[open] > summary::after,
+.relapse-semantic-opened > details[open] > summary::after,
+.relapse-semantic-disabled > details[open] > summary::after,
+.relapse-semantic-expanded > details[open] > summary::after {
+  content: "–";
+}
+
+/* HOVER -------------------------------------- */
+.relapse-semantic-hover > details:not([open]) > summary,
+.relapse-semantic-opened > details:not([open]) > summary,
+.relapse-semantic-disabled > details:not([open]) > summary,
+.relapse-semantic-expanded > details:not([open]) > summary {
+  transition: background-color 200ms linear;
+}
+.relapse-semantic-hover > details:not([open]) > summary:hover,
+.relapse-semantic-opened > details:not([open]) > summary:hover,
+.relapse-semantic-disabled > details:not([open]) > summary:hover,
+.relapse-semantic-expanded > details:not([open]) > summary:hover {
+  background-color: gainsboro;
+}
+
+/* OPENED ------------------------------------- */
+.relapse-semantic-opened > details > summary.opened,
+.relapse-semantic-disabled > details > summary.opened,
+.relapse-semantic-expanded > details > summary.opened {
+  border-color: transparent;
+  background: #e9e9e9;
+}
+
+/* EXPANDED ------------------------------------- */
+.relapse-semantic-disabled > details:not(:last-of-type) > summary + .expanded,
+.relapse-semantic-expanded > details:not(:last-of-type) > summary + .expanded {
+  border-bottom: 1px solid black;
+}
+
+/* Disabled ------------------------------------- */
+.relapse-semantic-disabled > details > summary.disabled {
+  opacity: 0.5;
+  background-color: white;
+  cursor: not-allowed;
+}
+
+/* -------------------------------------------- */
+/* SIBLING STRUCTURE                            */
+/* -------------------------------------------- */
+.relapse-sibling-base,
+.relapse-sibling-borders,
+.relapse-sibling-icon,
+.relapse-sibling-hover,
+.relapse-sibling-opened,
+.relapse-sibling-disabled,
+.relapse-sibling-expanded {
+  all: initial;
+  font-family: system-ui, -apple-system, blinkmacsystemfont, "Open Sans", "Helvetica Neue", sans-serif;
+  font-size: 15px;
+  display: block;
+  position: relative;
+  border: 1px solid black;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.relapse-sibling-base > .relapse-button,
+.relapse-sibling-borders > .relapse-button,
+.relapse-sibling-icon > .relapse-button,
+.relapse-sibling-hover > .relapse-button,
+.relapse-sibling-opened > .relapse-button,
+.relapse-sibling-disabled > .relapse-button,
+.relapse-sibling-expanded > .relapse-button {
+  background: transparent;
+  border: none;
+  width: 100%;
+  padding: 5px 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.relapse-sibling-base > .relapse-button + .relapse-fold,
+.relapse-sibling-borders > .relapse-button + .relapse-fold,
+.relapse-sibling-icon > .relapse-button + .relapse-fold,
+.relapse-sibling-hover > .relapse-button + .relapse-fold,
+.relapse-sibling-opened > .relapse-button + .relapse-fold,
+.relapse-sibling-disabled > .relapse-button + .relapse-fold,
+.relapse-sibling-expanded > .relapse-button + .relapse-fold {
+  padding: 0;
+  margin: 0;
+}
+.relapse-sibling-base > .relapse-button + .relapse-fold > *,
+.relapse-sibling-borders > .relapse-button + .relapse-fold > *,
+.relapse-sibling-icon > .relapse-button + .relapse-fold > *,
+.relapse-sibling-hover > .relapse-button + .relapse-fold > *,
+.relapse-sibling-opened > .relapse-button + .relapse-fold > *,
+.relapse-sibling-disabled > .relapse-button + .relapse-fold > *,
+.relapse-sibling-expanded > .relapse-button + .relapse-fold > * {
+  padding: 10px;
+}
+
+/* BORDERS ------------------------------------ */
+.relapse-sibling-borders > .relapse-button,
+.relapse-sibling-icon > .relapse-button,
+.relapse-sibling-hover > .relapse-button,
+.relapse-sibling-opened > .relapse-button,
+.relapse-sibling-disabled > .relapse-button,
+.relapse-sibling-expanded > .relapse-button {
+  border-bottom: 1px solid black;
+}
+.relapse-sibling-borders > .relapse-button:last-of-type,
+.relapse-sibling-icon > .relapse-button:last-of-type,
+.relapse-sibling-hover > .relapse-button:last-of-type,
+.relapse-sibling-opened > .relapse-button:last-of-type,
+.relapse-sibling-disabled > .relapse-button:last-of-type,
+.relapse-sibling-expanded > .relapse-button:last-of-type {
+  border-bottom: none;
+}
+
+/* ICONS -------------------------------------- */
+.relapse-sibling-icon > .relapse-button[aria-expanded=true]::after,
+.relapse-sibling-hover > .relapse-button[aria-expanded=true]::after,
+.relapse-sibling-opened > .relapse-button[aria-expanded=true]::after,
+.relapse-sibling-disabled > .relapse-button[aria-expanded=true]::after,
+.relapse-sibling-expanded > .relapse-button[aria-expanded=true]::after {
+  content: "–";
+}
+.relapse-sibling-icon > .relapse-button::after,
+.relapse-sibling-hover > .relapse-button::after,
+.relapse-sibling-opened > .relapse-button::after,
+.relapse-sibling-disabled > .relapse-button::after,
+.relapse-sibling-expanded > .relapse-button::after {
+  content: "+";
+}
+
+/* HOVER -------------------------------------- */
+.relapse-sibling-hover > .relapse-button:not([aria-expanded=true]),
+.relapse-sibling-opened > .relapse-button:not([aria-expanded=true]),
+.relapse-sibling-disabled > .relapse-button:not([aria-expanded=true]),
+.relapse-sibling-expanded > .relapse-button:not([aria-expanded=true]) {
+  transition: background-color 200ms linear;
+}
+.relapse-sibling-hover > .relapse-button:not([aria-expanded=true]):hover,
+.relapse-sibling-opened > .relapse-button:not([aria-expanded=true]):hover,
+.relapse-sibling-disabled > .relapse-button:not([aria-expanded=true]):hover,
+.relapse-sibling-expanded > .relapse-button:not([aria-expanded=true]):hover {
+  background-color: gainsboro;
+}
+
+/* OPENED ------------------------------------- */
+.relapse-sibling-opened > .relapse-button.opened,
+.relapse-sibling-disabled > .relapse-button.opened,
+.relapse-sibling-expanded > .relapse-button.opened {
+  border-color: transparent;
+  background-color: #e9e9e9;
+}
+
+/* EXPANDED ------------------------------------- */
+.relapse-sibling-disabled > .relapse-fold:not(:last-of-type).expanded,
+.relapse-sibling-expanded > .relapse-fold:not(:last-of-type).expanded {
+  border-bottom: 1px solid black;
+}
+
+/* Disabled ------------------------------------- */
+.relapse-sibling-disabled > .relapse-button.disabled {
+  opacity: 0.5;
+  background-color: white;
+  cursor: not-allowed;
+}
+
+/* -------------------------------------------- */
+/* CLASSES                                      */
+/* -------------------------------------------- */
+.relapse-classes {
+  all: initial;
+  font-family: system-ui, -apple-system, blinkmacsystemfont, "Open Sans", "Helvetica Neue", sans-serif;
+  font-size: 0.825rem;
+  color: #000000;
+}
+.relapse-classes > details > summary + * {
+  padding: 10px;
+}
+.relapse-classes > details > summary {
+  font-size: 0.975rem;
+  padding: 5px;
+}
+.relapse-classes > details > summary.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.relapse-classes-opened {
+  all: initial;
+  font-family: system-ui, -apple-system, blinkmacsystemfont, "Open Sans", "Helvetica Neue", sans-serif;
+  font-size: 0.825rem;
+  color: #000000;
+}
+.relapse-classes-opened > details > summary + * {
+  padding: 10px;
+}
+.relapse-classes-opened > details > summary {
+  font-size: 0.975rem;
+  padding: 5px;
+  border-bottom: 1px solid transparent;
+}
+.relapse-classes-opened > details > summary.opened {
+  color: green;
+  border-bottom: 1px solid #000;
+}
+
+.relapse-classes-focused {
+  all: initial;
+  font-family: system-ui, -apple-system, blinkmacsystemfont, "Open Sans", "Helvetica Neue", sans-serif;
+  font-size: 0.825rem;
+  color: #000000;
+}
+.relapse-classes-focused > details > summary + * {
+  padding: 10px;
+}
+.relapse-classes-focused > details > summary {
+  font-size: 0.975rem;
+  padding: 5px;
+  border: 1px solid transparent;
+}
+.relapse-classes-focused > details > summary.focused {
+  outline: auto lightskyblue;
+}
+
+.relapse-classes-expanded {
+  all: initial;
+  font-family: system-ui, -apple-system, blinkmacsystemfont, "Open Sans", "Helvetica Neue", sans-serif;
+  font-size: 0.825rem;
+  color: #000000;
+}
+.relapse-classes-expanded > details > summary + * {
+  padding: 10px;
+}
+.relapse-classes-expanded > details > summary {
+  font-size: 0.975rem;
+  padding: 5px;
+  border: 1px solid transparent;
+}
+.relapse-classes-expanded > details > summary.focused {
+  outline: auto lightskyblue;
+}
+.relapse-classes-expanded > details > summary + .expanded {
+  font-size: 0.975rem;
+  border-bottom: 1px solid transparent;
+  background-color: #e0e4e7;
 }

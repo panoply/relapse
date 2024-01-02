@@ -25,7 +25,8 @@
   "liquid.format.rules": {
     "wrap": 0,
     "liquid": {
-      "forceArgument": 3
+      "forceArgument": 3,
+      "delimiterTrims": "always"
     },
     "markup": {
       "forceAttribute": 2,
@@ -57,6 +58,14 @@
           "color": "#91EBC2",
           "isWholeLine": true
         }
+      ]
+    },
+    "(relapse.*?)(?=[=])": {
+      "filterFileRegex": ".*\\.liquid",
+      "decorations": [
+        {
+          "color": "#c095ff",
+        },
       ]
     },
     "(spx-[a-z]+)": {

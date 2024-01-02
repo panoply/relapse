@@ -11,8 +11,8 @@
 /* -------------------------------------------- */
 
 @import '../../node_modules/@brixtol/bootstrap/variation';
-@import '../../node_modules/@brixtol/bootstrap/sass/components/drawer';
 @import '../../node_modules/@brixtol/bootstrap/sass/svg';
+@import '../../node_modules/@brixtol/bootstrap/sass/components/drawer';
 
 /* -------------------------------------------- */
 /* PAPYRUS                                      */
@@ -33,7 +33,9 @@
 /* RELAPSE                                      */
 /* -------------------------------------------- */
 
+@import 'relapse/options';
 @import 'relapse/semantic';
 @import 'relapse/siblings';
 @import 'relapse/menu-list';
 @import 'relapse/styling';
+@import 'relapse/unstyled';

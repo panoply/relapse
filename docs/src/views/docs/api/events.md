@@ -3,8 +3,8 @@ title: 'Relapse | Events'
 layout: base
 permalink: '/api/events.html'
 prev:
-  label: 'Folds'
-  uri: '/api/folds'
+  label: 'Methods'
+  uri: '/api/methods'
 next:
   label: 'Semantic Example'
   uri: '/examples/semantic'
@@ -20,18 +20,17 @@ import relapse from 'relapse';
 
 const event = relapse('.selector');
 
-// toggle button has been focused.
-event.on('focus', function (fold) {});
-
-// toggle button has been clicked
-event.on('toggle', function (fold) {});
-
-// fold has been opened
-event.on('expand', function (fold) {});
-
-// fold has been closed
-event.on('collapse', function (fold) {});
-
-// relapse instance has been destroyed.
-event.on('destroy', function (fold) {});
+event.on('focus', function (fold) {});     // toggle button has been focused.
+event.on('toggle', function (fold) {});    // toggle button has been clicked
+event.on('expand', function (fold) {});    // fold has been opened
+event.on('collapse', function (fold) {});  // fold has been closed
+event.on('destroy', function (fold) {});   // relapse instance has been destroyed.
 ```
+
+<br>
+
+## Example
+
+Expand and Collapse the folds in the below collapsible accordion.
+
+{% include 'api/events' %}

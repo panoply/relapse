@@ -19,7 +19,18 @@
       },
       {
         "title": "Styling",
-        "url": "/usage/styling"
+        "url": "/usage/styling",
+        "group": "/styling",
+        "links": [
+          {
+            "title": "Classes",
+            "url": "/usage/styling/classes"
+          },
+          {
+            "title": "States",
+            "url": "/usage/styling/states"
+          }
+        ]
       }
     ]
   },
@@ -37,12 +48,12 @@
         "url": "/api/options"
       },
       {
-        "title": "Methods",
-        "url": "/api/methods"
-      },
-      {
         "title": "Folds",
         "url": "/api/folds"
+      },
+      {
+        "title": "Methods",
+        "url": "/api/methods"
       },
       {
         "title": "Events",
@@ -76,11 +87,13 @@
   {
     "title": "Github",
     "type": "href",
+    "target": "_blank",
     "url": "https://github.com/panoply/relapse"
   },
   {
     "title": "NPM",
     "type": "href",
+    "target": "_blank",
     "url": "https://www.npmjs.com/package/relapse"
   }
 ]

@@ -3,39 +3,38 @@ title: 'Relapse | Folds'
 layout: base
 permalink: '/api/folds.html'
 prev:
+  label: 'Options'
+  uri: '/api/options'
+next:
   label: 'Methods'
   uri: '/api/methods'
-next:
-  label: 'Events'
-  uri: '/api/events'
 ---
 
 ## Folds
 
-Folds expose additional methods for interfacing, you can target folds using a zero based index reference within a collapsible group or by an identifier value. Take the following code sample, wherein there are 3 different relapse toggle groups. There are 2 relapse components using the `data-relapse` attribute and 1 relapse component using a `selector` reference. The values which were passed to components using `data-relapse` attributes will become our reference for when we need to access the instance for programmatic control.
+Folds are the elements which will be expanded and collapsed within toggle groups. Each fold is considered an instance and expose additional methods for interfacing. You can target folds using a zero based index reference within a collapsible group or by an identifier value provided on the markup element using an `id=""` attribute.
 
-When multiple relapse elements exist in the DOM the **return** value of `relapse` is a `Relapse[]` list of instances starting at the first occurrence encountered. Elements which do not use `data-relapse` attribute annotation can be initialized in isolation by passing the **selector** to relapse.
-
+Take the following code sample, we have are 3 different relapse toggle groups. There are **2** relapse components using the `data-relapse` attribute (`foo` and `bar`) and **1** relapse component using a `selector` reference (`baz`).
 
 :::: grid col-12
 ::: tabs markup
 
 ```html
 <section data-relapse="foo">
-<!-- [0] -->
+  <!-- [0] -->
   <details open>
     <summary>Opens Fold #1</summary>
-    <p>This is Fold #1 and will be opened by default</p>
+    <p>This is Fold 1, index 0 and is opened by default</p>
   </details>
   <!-- [1] -->
   <details>
     <summary>Opens Fold #2</summary>
-    <p>This is Fold #2</p>
+    <div>This is fold 2, index 1</div>
   </details>
   <!-- [2] -->
   <details>
     <summary>Opens Fold #3</summary>
-    <p>This is Fold #3</p>
+    <div>This is fold 3, index 2</div>
   </details>
 </section>
 
@@ -43,17 +42,25 @@ When multiple relapse elements exist in the DOM the **return** value of `relapse
   <!-- [0] -->
   <details open>
     <summary>Opens Fold #1</summary>
-    <p>This is Fold #1 and will be opened by default</p>
+    <p>This is Fold 1, index 0 and is opened by default</p>
+  </details>
+  <!-- [1] -->
+  <details id="qux">
+    <summary>Opens Fold #2</summary>
+    <div>This is fold 2, index 1 using id of qux</div>
+  </details>
+</section>
+
+<section id="baz">
+  <!-- [0] -->
+  <details>
+    <summary>Opens Fold #1</summary>
+    <div>This is fold 1, index 0</div>
   </details>
   <!-- [1] -->
   <details>
     <summary>Opens Fold #2</summary>
-    <p>This is Fold #2</p>
-  </details>
-  <!-- [2] -->
-  <details>
-    <summary>Opens Fold #3</summary>
-    <p>This is Fold #3</p>
+    <div>This is fold 2, index 1</div>
   </details>
 </section>
 ```
@@ -65,43 +72,40 @@ When multiple relapse elements exist in the DOM the **return** value of `relapse
 <section data-relapse="foo">
   <!-- [0] -->
   <button type="button">Collapse 1</button>
-  <div>I am collapse item number 1</div>
+  <div>This is Fold 1, index 0</div>
+  <!-- [2] -->
+  <button type="button">Collapse 1</button>
+  <div>This is fold 2, index 1</div>
   <!-- [1] -->
   <button type="button">Collapse 2</button>
-  <div>I am collapse item number 2</div>
-  <!-- [2] -->
-  <button type="button">Collapse 3</button>
-  <div id="qux">
-    I am collapse item number 3 with id of qux
-  </div>
+  <div>This is fold 3, index 2</div>
 </section>
 
 <section data-relapse="bar">
   <!-- [0] -->
   <button type="button">Collapse 1</button>
-  <div>I am collapse item number 1</div>
+  <div>This is Fold 1, index 0</div>
   <!-- [1] -->
   <button type="button">Collapse 2</button>
-  <div>I am collapse item number 2</div>
+  <div id="qux">This is fold 2, index 1 using id of qux</div>
 </section>
 
 <section id="baz">
   <!-- [0] -->
   <button type="button">Collapse 1</button>
-  <div>I am collapse item number 1</div>
+  <div>This is Fold 1, index 0</div>
   <!-- [1] -->
   <button type="button">Collapse 2</button>
-  <div>I am collapse item number 2</div>
+  <div>This is Fold 2, index 1</div>
 </section>
 ```
 
 :::
 ::::
 
-
 <br>
 
-The below code snippet targets the relapse component using `data-relapse="foo"` in the above example. We are obtaining the fold which uses the id `qux` and describing each available reference and method. The `folds.get()` method is a sugar helper for querying relapse folds, it accepts either a string value which matches the fold element `id` or a zero based index value.
+The below code snippet targets the relapse component using `data-relapse="foo"` in the above example. We are obtaining the fold which uses the id `qux` and describe each available reference and method available. The `folds.get()` method is a sugar helper for querying relapse folds, it accepts either a `string` value which matches the fold element `id` or a zero based `integer` index value.
 
 <!-- prettier-ignore -->
 ```js
@@ -111,26 +115,28 @@ import relapse from 'relapse';
 relapse();
 
 // Return the relapse component using data-relapse="foo"
-const foo =  relapse.get('foo');
+const foo = relapse.get('foo');
 
 // Return the fold in relapse foo component using id="qux"
 const fold = foo.folds.get('qux');
 
-fold.id         // The fold id, defaults to custom identifier if undefined
-fold.button     // The button toggle element which controls the fold
-fold.element    // The fold HTML Element
-fold.index      // The zero based index of the fold in the toggle group
-fold.expanded   // Boolean value informing whether fold is expanded
-fold.height     // The max-height value of the fold, alias of scrollHeight
-fold.disabled   // Boolean value indication a disable/enabled state
-fold.open();    // Open the fold in the toggle group
-fold.close();   // Close the fold in the toggle group.
-fold.blur();    // Apply blur to the button in toggle group
-fold.focus();   // Apply focus to the button in toggle group
-fold.toggle();  // Open or Close the fold in the toggle group
-fold.enable();  // Enable the fold to expand and collapse
-fold.disable(); // Disable the fold from expand and collapse
-fold.destroy(); // Remove the button and fold from toggle group
+fold.id              // The fold id (foo) defaults to custom identifier if undefined
+fold.button          // The <summary> element in semantic structures or <button> in sibling
+fold.wrapper         // The <details> element in semantic structures or <div> in sibling
+fold.element         // The <p> element in semantic structures of <div> in sibling
+fold.index           // The zero based index of the fold in the toggle group, i.e: 1
+fold.expanded        // Boolean value informing whether fold is expanded
+fold.height          // The current height value of the fold, offsetHeight or scrollHeight
+fold.disabled        // Boolean value indicating whether fold is in disable/enabled state
+fold.locked          // Whether the fold is locked, fold will lock if initialized as disabled.
+fold.open();         // Open the fold in the toggle group
+fold.close();        // Close the fold in the toggle group.
+fold.blur();         // Apply blur to the button in toggle group
+fold.focus();        // Apply focus to the button in toggle group
+fold.toggle();       // Open or close the fold in the toggle group
+fold.enable();       // Enable the fold to expand and collapse, opposite of disable
+fold.disable();      // Disable the fold from expand and collapse
+fold.destroy();      // Remove the button and fold from toggle group
 ```
 
 <br>
@@ -143,19 +149,21 @@ import relapse from 'relapse';
 
 const { folds } = relapse('#baz');
 
-folds[0].id         // The fold id, defaults to custom identifier if undefined
-folds[0].button     // The button toggle element which controls the fold
-folds[0].element    // The fold HTML Element
-folds[0].index      // The zero based index of the fold in the toggle group
-folds[0].expanded   // Boolean value informing whether fold is expanded
-folds[0].height     // The max-height value of the fold, alias of scrollHeight
-folds[0].disabled   // Boolean value indication a disable/enabled state
-folds[0].open();    // Open the fold in the toggle group
-folds[0].close();   // Close the fold in the toggle group.
-folds[0].blur();    // Apply blur to the button in toggle group
-folds[0].focus();   // Apply focus to the button in toggle group
-folds[0].toggle();  // Open or Close the fold in the toggle group
-folds[0].enable();  // Enable the fold to expand and collapse
-folds[0].disable(); // Disable the fold from expand and collapse
-folds[0].destroy(); // Remove the button and fold from toggle group
+fold[0].id          // Fold id at index 0
+fold[1].button      // Fold button at index 1
+fold[2].wrapper     // Fold wrapper at index 2
+fold[0].element     // Fold element at index 0
+fold[1].index       // Fold index at index 0
+fold[2].expanded    // Fold expanded status at index 2
+fold[0].height      // Fold offsetHeight at index 0
+fold[1].disabled    // Fold disabled status at index 1
+fold[2].locked      // Fold locked status at index 2
+fold[0].open();     // Fold open at index 0
+fold[1].close();    // Fold close at index 1
+fold[2].blur();     // Fold blur at index 2
+fold[0].focus();    // Fold focus at index 0
+fold[1].toggle();   // Fold toggle at index 1
+fold[2].enable();   // Fold enable at index 2
+fold[0].disable();  // Fold disable at index 0
+fold[1].destroy();  // Fold destroy at index 1
 ```

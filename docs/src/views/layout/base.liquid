@@ -34,12 +34,21 @@
   </head>
 
   <body>
-    <div class="container-fluid container-md py-4">
+    <div class="container-fluid container-xxl py-md-4">
 
-      <input
-        type="button"
-        class="d-unset d-sm-none col-auto btn drawer-toggle ml-4"
-        data-drawer="sidebar">
+      <div
+        id="navbar"
+        class="row ai-center jc-between d-flex d-md-none navbar">
+        <div class="col">
+          <input
+            type="button"
+            class="col btn drawer-toggle ml-2 mt-2"
+            data-drawer="sidebar">
+        </div>
+        <div class="col-auto pr-4">
+          {%- svg 'logo', 'icon-logo' -%}
+        </div>
+      </div>
 
       <aside
         id="sidebar"
@@ -48,23 +57,25 @@
         data-drawer-direction-value="left"
         data-drawer-width-value="250px"
         data-drawer-mode-value="push"
-        data-drawer-shift-value="#content">
-        {% render 'sidebar', menu: menu, url: page.url %}
+        data-drawer-shift-value="#content,#navbar">
+        {%- render 'sidebar', menu: menu, url: page.url -%}
+
       </aside>
+
 
       <div
         id="content"
-        class="row jc-center jc-sm-start">
+        class="row jc-center jc-md-start">
         <div
           id="main"
-          class="col-11 col-sm-12 col-md-11 col-lg-11 pt-3 p-3 p-sm-4 p-md-5 content">
-          {{ content }}
-          {% include 'navigate' %}
+          class="col-11 col-md-8 col-lg-8 col-xl-9 col-xxl-8 pt-3 p-3 p-sm-2 content">
+          {{- content -}}
+          {%- include 'navigate' -%}
         </div>
       </div>
 
     </div>
 
-    {% svgsprite %}
+    {%- svgsprite -%}
   </body>
 </html>

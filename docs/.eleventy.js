@@ -6,6 +6,26 @@ const htmlmin = require('@sardine/eleventy-plugin-tinyhtml');
 const md = require('markdown-it');
 const mdcontainer = require('markdown-it-container')
 const papyrus = require('papyrus');
+const fs = require('node:fs')
+const { join } = require('node:path');
+const { cwd } = require('node:process');
+
+function versions ()  {
+
+  const ver = require('../package.json').version
+
+
+  return fs.readdirSync(join(cwd(), 'version'))
+  .filter(v => v !== '.DS_Store')
+  .sort()
+  .map(version => {
+   const v = version.replace(/\.zip/, '')
+   const curr = ver.replace(/\.\d$/, 'x')
+   const url = curr === v ? `/relapse/` : `/relapse/v/${v}/`
+   return `<li><a href="${url}" spx-disable>${v}</a></li>`
+  }).join('')
+
+}
 
 /**
  * Sugar helper for generating markup. Just a simple `.join('')`
@@ -94,6 +114,8 @@ function tabs(md, tokens, idx) {
                 type="button"
                 class="btn upcase tab active"
                 data-index="0"
+                aria-label="Preview Example"
+                data-tooltip="top"
                 data-tabs-target="btn"
                 data-action="tabs#toggle">
                 DEMO
@@ -105,19 +127,36 @@ function tabs(md, tokens, idx) {
                 class="btn upcase tab"
                 data-index="1"
                 data-tabs-target="btn"
+                aria-label="Markup Structure"
+                data-tooltip="top"
                 data-action="tabs#toggle">
                 HTML
               </button>
             </div>
-            <div class="col-auto">
+            <!-- <div class="col-auto">
               <button
                 type="button"
                 class="btn upcase tab"
                 data-index="2"
+                aria-label="Styling"
+                data-tooltip="top"
                 data-tabs-target="btn"
                 data-action="tabs#toggle">
                 CSS
               </button>
+            </div> -->
+            <div class="col-auto ml-auto">
+              <a
+                class="btn upcase tab"
+                href="http://tinyurl.com/38twtkpb"
+                target="_blank"
+                aria-label="Open in flems playground"
+                data-tooltip="top">
+                FLEMS
+                <svg class="icon icon-right" role="group">
+                  <use xlink:href="#svg-flems"></use>
+                </svg>
+              </a>
             </div>
           </div>
           <div class="col-12 tab-content p-4" data-tabs-target="tab">
@@ -259,7 +298,8 @@ module.exports = eleventy (function(config){
   .use(mdcontainer, 'heading', { render: (tokens, idx) => heading(markdown, tokens, idx) })
   .disable("code");;
 
-
+  config.addLiquidShortcode('version', () => `<span class="lower">v</span>${require('../package.json').version}`);
+  config.addLiquidShortcode('versions', () => versions());
   config.setLibrary('md', markdown);
   config.setDynamicPermalinks(false);
   config.addPlugin(svgsprite, {
@@ -285,7 +325,7 @@ module.exports = eleventy (function(config){
     }
   });
 
-  if(process.env.ENV ==='prod') {
+  if(process.env.ENV ==='production') {
     config.addPlugin(htmlmin, {
       collapseBooleanAttributes: false,
       collapseWhitespace: true,
@@ -304,7 +344,7 @@ module.exports = eleventy (function(config){
   return {
     htmlTemplateEngine: 'liquid',
     passthroughFileCopy: false,
-    pathPrefix: '',
+    pathPrefix: '/relapse',
     templateFormats: ['liquid', 'json', 'md', 'css', 'html', 'yaml'],
     dir: {
       input: 'src',

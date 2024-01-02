@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <title>
+      Relapse
+    </title>
+    <meta name="description" content="A lightweight ESM (vanilla) toggle utility for creating dynamic collapsible components">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link
+      href="https://fonts.gstatic.com"
+      crossorigin
+      rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+    <script src="bundle.min.js" defer></script>
+  </head>
+
+  <body>
+    <div id="main" class="container-fluid container-md py-4">
+
+      <input
+        type="button"
+        class="d-unset d-sm-none col-auto btn drawer-toggle ml-4"
+        data-drawer="sidebar">
+
+      <aside
+        id="sidebar"
+        class="drawer-panel drawer-left  sidebar br"
+        data-controller="drawer"
+        data-drawer-direction-value="left"
+        data-drawer-mode-value="push"
+        data-drawer-shift-value="#main">
+
+        <div class="px-5 pt-4">
+  <ul class="list tr">
+    <li class="mb-2">
+      <a href="https://panoply.github.io/relapse/" class="h6 fw-light">
+        Intro
+      </a>
+    </li>
+    <li class="mb-2">
+      <a href="https://panoply.github.io/relapse/usage" class="h6 fw-light">
+        Usage
+      </a>
+    </li>
+    <li class="mb-2">
+      <a href="https://panoply.github.io/relapse/style" class="h6 fw-light">
+        Style
+      </a>
+    </li>
+    <li class="mb-2">
+      <a href="https://panoply.github.io/relapse/examples" class="h6 fw-bold fc-white">
+        Examples
+      </a>
+    </li>
+    <li class="mb-2">
+      <a
+        href="https://github.com/panoply/relapse"
+        target="_blank"
+        class="h6 fw-light">
+        Github
+      </a>
+    </li>
+  </ul>
+</div>
+      </aside>
+
+      <div id="shift" class="row jc-center jc-sm-start">
+        <div class="col-11 col-md-11 col-lg-11 pt-5 p-3 p-sm-5 content">
+          <h3>Basic Example</h3>
+<p>A simple accordion using relapse. The component applies custom CSS styling.</p>
+<section
+  class="example w-100"
+  data-relapse="initial"
+  data-relapse-speed="250"
+  data-relapse-persist="false"
+  data-relapse-multiple="false">
+  <button type="button" class="example-button initial">
+    Collapse 0
+  </button>
+  <section class="example-fold">
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor pretium viverra suspendisse potenti.
+    </p>
+  </section>
+  <button type="button" class="example-button">
+    Collapse 1
+  </button>
+  <section class="example-fold" aria-hidden="true">
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Tincidunt nunc pulvinar sapien et ligula ullamcorper malesuada proin. Ac tortor dignissim convallis aenean et tortor at risus. Nec feugiat nisl pretium fusce id velit ut. Ipsum consequat nisl vel pretium lectus quam id. Sit amet purus gravida quis blandit. Quis auctor elit sed vulputate mi sit. Purus semper eget duis at tellus at urna condimentum mattis. Lacinia at quis risus sed. Venenatis urna cursus eget nunc. Turpis egestas pretium aenean pharetra. Augue eget arcu dictum varius duis at consectetur lorem donec. Nisl suscipit adipiscing bibendum est ultricies integer quis auctor elit. Rhoncus dolor purus non enim praesent elementum facilisis. Proin sagittis nisl rhoncus mattis rhoncus urna neque viverra. Quisque egestas diam in arcu cursus. Arcu felis bibendum ut tristique et egestas. Nisl nunc mi ipsum faucibus vitae aliquet nec ullamcorper sit. Ultrices dui sapien eget mi proin sed. Arcu felis bibendum ut tristique et egestas quis. Tincidunt dui ut ornare lectus sit amet est. Penatibus et magnis dis parturient montes nascetur ridiculus mus mauris. Viverra nam libero justo laoreet sit amet cursus. Venenatis lectus magna fringilla urna porttitor rhoncus dolor. Sed cras ornare arcu dui. In mollis nunc sed id semper risus in hendrerit gravida. Odio tempor orci dapibus ultrices in iaculis. Fusce ut placerat orci nulla pellentesque. Sit amet mauris commodo quis imperdiet massa tincidunt nunc 
+      pulvinar. Proin libero nunc consequat interdum.
+    </p>
+  </section>
+  <button type="button" class="example-button">
+    Collapse 2
+  </button>
+  <section class="example-fold" aria-hidden="true">
+    <p>
+      Commodo sed egestas egestas fringilla phasellus faucibus. Eu tincidunt tortor aliquam nulla facilisi cras fermentum. Nullam eget felis eget nunc lobortis mattis. Et netus et malesuada fames ac turpis egestas maecenas. Vitae turpis massa sed elementum tempus egestas. Eget mi proin sed libero enim sed faucibus turpis. Pharetra convallis posuere morbi leo urna molestie. Magna eget est lorem ipsum dolor. Convallis tellus id interdum velit laoreet id. At consectetur lorem donec massa sapien faucibus et molestie. Porttitor lacus luctus accumsan tortor posuere ac.
+    </p>
+  </section>
+</section>
+<hr>
+<h3>Nested Example</h3>
+<p>A deeply nested accordion using relapse. The component expands and collapses for each nested occurrence. Relapse will detect accordions within accordions and automatically assign instance.</p>
+<section
+  class="example w-100"
+  data-relapse="nested"
+  data-relapse-persist="false"
+  data-relapse-multiple="false">
+  <button type="button" class="example-button">
+    Collapse 0
+  </button>
+  <section class="example-fold">
+    <p>
+      Commodo sed egestas egestas fringilla phasellus faucibus. Eu tincidunt tortor aliquam nulla facilisi cras fermentum. Nullam eget felis eget nunc lobortis mattis. Et netus et malesuada fames ac turpis egestas maecenas. Vitae turpis massa sed elementum tempus egestas. Eget mi proin sed libero enim sed faucibus turpis. Pharetra convallis posuere morbi leo urna molestie. Magna eget est lorem ipsum dolor. Convallis tellus id interdum velit laoreet id. At consectetur lorem donec massa sapien faucibus et molestie. Porttitor lacus luctus accumsan tortor posuere ac.
+    </p>
+  </section>
+  <button type="button" class="example-button initial">
+    Collapse 1
+  </button>
+  <section class="example-fold">
+    <div class="p-3">
+      <div class="p-3">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore 
+        magnaaliqua. Elementum sagittis vitae et leo duis ut. Ut tortor pretium viverra suspendisse potenti.
+      </div>
+      <div
+        class="example col-11 m-auto my-4"
+        data-relapse="first"
+        data-relapse-persist="false"
+        data-relapse-multiple="false">
+        <button type="button" class="example-button">
+          Collapse 1.1.0
+        </button>
+        <section class="example-fold">
+          <p>
+            Commodo sed egestas egestas fringilla phasellus faucibus. Eu tincidunt tortor aliquam nulla facilisi cras fermentum. Nullam eget felis eget nunc lobortis mattis. Et netus et malesuada fames ac turpis egestas maecenas. Vitae turpis massa sed elementum tempus egestas. Eget mi proin sed libero enim sed faucibus turpis. Pharetra convallis posuere morbi leo urna molestie. Magna eget est lorem ipsum dolor. Convallis tellus id interdum velit laoreet id. At consectetur lorem donec massa sapien faucibus et molestie. Porttitor lacus luctus accumsan tortor posuere ac.
+          </p>
+        </section>
+        <button type="button" class="example-button initial">
+          Collapse 1.1.1
+        </button>
+        <section class="example-fold">
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor pretium viverra suspendisse potenti.
+            <div
+              class="example col-11 m-auto my-4"
+              data-relapse="second"
+              data-relapse-persist="false"
+              data-relapse-multiple="true">
+              <button type="button" class="example-button">
+                Collapse 1.2.0
+              </button>
+              <section class="example-fold">
+                <p>
+                  Deeply nested
+                </p>
+              </section>
+              <button type="button" class="example-button initial">
+                Collapse 1.2.1
+              </button>
+              <section class="example-fold">
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor pretium viverra suspendisse potenti.
+                </p>
+              </section>
+            </div>
+          </p>
+        </section>
+      </div>
+    </div>
+  </section>
+  <button type="button" class="example-button">
+    Collapse 1
+  </button>
+  <section class="example-fold">
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Tincidunt nunc pulvinar sapien et ligula ullamcorper malesuada proin. Ac tortor dignissim convallis aenean et tortor at risus. Nec feugiat nisl pretium fusce id velit ut. Ipsum consequat nisl vel pretium lectus quam id. Sit amet purus gravida quis blandit. Quis auctor elit sed vulputate mi sit. Purus semper eget duis at tellus at urna condimentum mattis. Lacinia at quis risus sed. Venenatis urna cursus eget nunc. Turpis egestas pretium aenean pharetra. Augue eget arcu dictum varius duis at consectetur lorem donec. Nisl suscipit adipiscing bibendum est ultricies integer quis auctor elit. Rhoncus dolor purus non enim praesent elementum facilisis. Proin sagittis nisl rhoncus mattis rhoncus urna neque viverra. Quisque egestas diam in arcu cursus. Arcu felis bibendum ut tristique et egestas. Nisl nunc mi ipsum faucibus vitae aliquet nec ullamcorper sit. Ultrices dui sapien eget mi proin sed. Arcu felis bibendum ut tristique et egestas quis. Tincidunt dui ut ornare lectus sit amet est. Penatibus et magnis dis parturient montes nascetur ridiculus mus mauris. Viverra nam libero justo laoreet sit amet cursus. Venenatis lectus magna fringilla urna porttitor rhoncus dolor. Sed cras ornare arcu dui. In mollis nunc sed id semper risus in hendrerit gravida. Odio tempor orci dapibus ultrices in iaculis. Fusce ut placerat orci nulla pellentesque. Sit amet mauris commodo quis imperdiet massa tincidunt nunc pulvinar. Proin libero nunc consequat interdum.
+    </p>
+  </section>
+  <button type="button" class="example-button">
+    Collapse 2
+  </button>
+  <section class="example-fold">
+    <p>
+      Commodo sed egestas egestas fringilla phasellus faucibus. Eu tincidunt tortor aliquam nulla facilisi cras fermentum. Nullam eget felis eget nunc lobortis mattis. Et netus et malesuada fames ac turpis egestas maecenas. Vitae turpis massa sed elementum tempus egestas. Eget mi proin sed libero enim sed faucibus turpis. Pharetra convallis posuere morbi leo urna molestie. Magna eget est lorem ipsum dolor. Convallis tellus id interdum velit laoreet id. At consectetur lorem donec massa sapien faucibus et molestie. Porttitor lacus luctus accumsan tortor posuere ac.
+    </p>
+  </section>
+  <button type="button" class="example-button">
+    Collapse 3
+  </button>
+  <section class="example-fold">
+    <p>
+      Commodo sed egestas egestas fringilla phasellus faucibus. Eu tincidunt tortor aliquam nulla facilisi cras fermentum. Nullam eget felis eget nunc lobortis mattis. Et netus et malesuada fames ac turpis egestas maecenas. Vitae turpis massa sed elementum tempus egestas. Eget mi proin sed libero enim sed faucibus turpis. Pharetra convallis posuere morbi leo urna molestie. Magna eget est lorem ipsum dolor. Convallis tellus id interdum velit laoreet id. At consectetur lorem donec massa sapien faucibus et molestie. Porttitor lacus luctus accumsan tortor posuere ac.
+    </p>
+  </section>
+</section>
+<hr>
+<h3>Menu Example</h3>
+<p>An example of using Relapse to construct a deeply nested menu list with expand and collapse occurances.</p>
+<section
+  class="menu"
+  data-relapse="menu"
+  data-relapse-persist="false"
+  data-relapse-multiple="true">
+  <button
+    type="button"
+    class="menu-group">
+    Category 1
+  </button>
+  <ul class="menu-list">
+    <li>
+      <a
+        href="#"
+        class="fc-white">
+        Link 1
+      </a>
+    </li>
+    <li
+      class="submenu py-0"
+      data-relapse="submenu"
+      data-relapse-persist="false"
+      data-relapse-multiple="true">
+      <button
+        type="button"
+        class="submenu-group fc-white">
+        Menu Item
+      </button>
+      <div class="menu-list">
+        <ul class="py-2">
+          <li>
+            <a
+              href="#"
+              class="fc-white">
+              Link 2
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              class="fc-white">
+              Link 3
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+    <li class="menu-item">
+      <a
+        href="#"
+        class="fc-white">
+        Link 1
+      </a>
+    </li>
+    <li class="menu-item">
+      <a
+        href="#"
+        class="fc-white">
+        Link 2
+      </a>
+    </li>
+  </ul>
+  <button
+    type="button"
+    class="menu-group">
+    Category 2
+  </button>
+  <ul class="menu-list">
+    <li>
+      <a
+        href="#"
+        class="fc-white">
+        Link 1
+      </a>
+    </li>
+    <li>
+      <a
+        href="#"
+        class="fc-white">
+        Link 2
+      </a>
+    </li>
+    <li>
+      <a
+        href="#"
+        class="fc-white">
+        Link 3
+      </a>
+    </li>
+  </ul>
+  <button
+    type="button"
+    class="menu-group initial">
+    Category 3
+  </button>
+  <ul class="menu-list">
+    <li>
+      <a href="#">
+        Link 1
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        Link 2
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        Link 3
+      </a>
+    </li>
+    <li
+      class="submenu"
+      data-relapse="menu2"
+      data-relapse-persist="false"
+      data-relapse-multiple="true">
+      <button
+        type="button"
+        class="submenu-group fc-white initial">
+        Menu Item
+      </button>
+      <ul class="menu-list">
+        <li>
+          <a href="#">
+            Link 1
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            Link 2
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            Link 3
+          </a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="#">
+        Link 4
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        Link 5
+      </a>
+    </li>
+  </ul>
+</section>
+
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

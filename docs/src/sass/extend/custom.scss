@@ -1,6 +1,26 @@
 /* stylelint-disable function-url-quotes */
 
 /* -------------------------------------------- */
+/* NAVBAR                                       */
+/* -------------------------------------------- */
+
+.navbar {
+  position: sticky;
+  top: 0;
+  background-color: rgba($color: $body-bg, $alpha: .9) ;
+  backdrop-filter: blur(5px);
+  z-index: 9999;
+  border-bottom: $border-color $border-width solid;
+
+  .icon-logo {
+    width: 100px;
+    height: 50px;
+    color: $gray-500;
+    opacity: .4;
+  }
+}
+
+/* -------------------------------------------- */
 /* DRAWER                                       */
 /* -------------------------------------------- */
 
@@ -46,6 +66,69 @@
   }
 }
 
+/* -------------------------------------------- */
+/* DROPDOWN                                     */
+/* -------------------------------------------- */
+
+.dropdown-versions {
+  border-color: $border-color;
+
+  &.is-open {
+    > .btn {
+      background-image: url(icon-arrow($white));
+
+      + ul {
+        display: flex;
+      }
+    }
+  }
+  .btn {
+    background-image: url(icon-arrow($link-color));
+    background-position: right 0 center;
+    background-size: 12px;
+    border: none;
+    width: 55px;
+    padding-right: 5px;
+    padding-left: 0;
+    font-size: $font-size-xs;
+    font-family: $font-family-heading;
+    color: $link-color !important;
+    > span {
+      padding-right: 2px;
+    }
+  }
+
+  .btn + ul {
+    left: -4px;
+    width: 85%;
+    border: none;
+    flex-direction: column-reverse;
+
+
+
+    > li {
+      flex: 0 0 auto;
+      justify-content: start;
+      padding-left: 8px;
+      padding-top: 2.5px;
+      background-color: #1c2028;
+
+      &:hover {
+        background-color: #1c2028;
+      }
+
+      a {
+          font-size: .725rem !important;
+          text-transform: lowercase;
+
+          &:hover {
+            font-weight: 600;
+            color: $white;
+          }
+        }
+    }
+  }
+}
 /* -------------------------------------------- */
 /* MAKDOWN QUOTES                               */
 /* -------------------------------------------- */
@@ -97,13 +180,8 @@ blockquote {
 }
 
 h3 > code {
-  margin-bottom: $spacer-1 !important;
-  padding-left: 0;
   font-weight: 100;
-  font-size: 1.1rem;
-  font-family: $font-family-code;
-  text-transform: lowercase;
-  background-color: transparent;
+  font-size: 1rem;
 }
 
 pre.papyrus[data-papyrus='static']
@@ -113,21 +191,133 @@ pre.papyrus[data-papyrus='static']
 }
 
 /* -------------------------------------------- */
+/* EVENTS                                       */
+/* -------------------------------------------- */
+
+.events {
+  height: 400px;
+  overflow-y: scroll;
+  width: 100%;
+  position: relative;
+
+  &::-webkit-scrollbar {
+    width: var(--papyrus-scrollbar-width);
+    height: var(--papyrus-scrollbar-width);
+  }
+
+
+  &::-webkit-scrollbar-track {
+    background: var(--papyrus-scrollbar-track);
+  }
+
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--papyrus-scrollbar-thumb);
+
+    &:hover {
+      background: var(--papyrus-scrollbar-thumb-hover);
+    }
+  }
+
+  &::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  .line {
+    width: 100%;
+    border-bottom: $cyan 0.01rem solid;
+    margin-bottom: 8px;
+    margin-top: 5px;
+  }
+
+  .message {
+    color: $white;
+    font-family: $font-family-code;
+    font-size: .775rem;
+    position: relative;
+    padding-left: 40px;
+
+    &::before {
+      color: var(--papyrus-line-number-color);
+      content: attr(aria-label);
+      position: absolute;
+      left: 5px;
+      width: 15px;
+      text-align: right;
+    }
+
+  }
+}
+
+/* -------------------------------------------- */
+/* METHODS                                      */
+/* -------------------------------------------- */
+
+.btn-method {
+  border-radius: $border-radius;
+  color: $link-color;
+  font-family: $font-family-heading;
+  font-size: .705rem;
+  padding-left: 10px;
+  width: 100%;
+
+  @include media-breakpoint-up(md) {
+    width: 100px;
+  }
+
+  &.disabled {
+    transition: opacity 200ms linear;
+    opacity: .3;
+  }
+
+
+  &.active {
+    color: $white;
+    font-weight: 600;
+
+    &.disabled {
+      opacity: 1;
+    }
+  }
+
+
+  &:hover {
+    background-color: transparent;
+    color: $white;
+    font-weight: 600;
+  }
+}
+
+/* -------------------------------------------- */
 /* TABLE                                        */
 /* -------------------------------------------- */
 
 table {
   width: 100%;
 }
+
 /* -------------------------------------------- */
 /* NAVIGATE                                     */
 /* -------------------------------------------- */
 
 .navigate {
+
+
   a {
     font-family: $font-family-heading;
     color: $link-color;
+    border: $border-width $border-color solid;
+    border-radius: 5px;
+    padding: 10px 25px;
+    text-align: center;
 
+    &.prev {
+      padding: 5px 20px 5px 10px;
+    }
+
+    &.next {
+      padding: 5px 10px 5px 20px;
+    }
     &:hover {
       color: $white;
     }

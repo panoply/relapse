@@ -1,29 +1,28 @@
-{% for link in collections.all %}
-  {% if link.url == page.url %}
-    <hr>
-    <div class="row jc-between mt-1 navigate">
+{%- for link in collections.all -%}
+  {%- if link.url == page.url -%}
+    <div class="row jc-between my-5 navigate">
       <div class="col-auto">
         <a
-          href="{{ link.data.prev.uri }}"
+          href="{{ link.data.prev.uri | url }}"
           spx-position="y:0"
-          class="btn pl-0">
+          class="btn prev">
           <span class="mr-2">
-            {% svg 'chevron-left', 'icon icon-left' %}
+            {%- svg 'chevron-left', 'icon icon-left' -%}
           </span>
-          {{ link.data.prev.label }}
+          {{- link.data.prev.label -}}
         </a>
       </div>
       <div class="col-auto">
         <a
-          href="{{ link.data.next.uri }}"
+          href="{{ link.data.next.uri | url }}"
           spx-position="y:0"
-          class="btn pr-0">
-          {{ link.data.next.label }}
+          class="btn next">
+          {{- link.data.next.label -}}
           <span class="ml-2">
-            {% svg 'chevron-right', 'icon icon-right' %}
+            {%- svg 'chevron-right', 'icon icon-right' -%}
           </span>
         </a>
       </div>
     </div>
-  {% endif %}
-{% endfor %}
+  {%- endif -%}
+{%- endfor -%}

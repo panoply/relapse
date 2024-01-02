@@ -1,0 +1,100 @@
+{% # LOREM IPSUM SAMPLE TEXT FOR FIRST FOLD %}
+{%- capture content -%}
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor pretium viverra suspendisse potenti.
+{% endcapture %}
+{% # ADDITIONAL FOLD TO BE RENDERED %}
+{%- capture fold_1 -%}
+  <button type="button" class="relapse-button">
+    Collapse 1
+  </button type="button">
+  <section class="relapse-fold">
+    <div hidden>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Tincidunt nunc pulvinar sapien et ligula ullamcorper malesuada proin.
+    </div>
+  </section>
+{%- endcapture -%}
+{% # ADDITIONAL FOLD TO BE RENDERED %}
+{%- capture fold_2 -%}
+  <button type="button" class="relapse-button">
+    Collapse 2
+  </button>
+  <section class="relapse-fold">
+    <div hidden>
+    Commodo sed egestas egestas fringilla phasellus faucibus.
+    </div>
+  </section>
+{%- endcapture -%}
+{% # ADDITIONAL FOLDS THAT WILL BE RENDERED %}
+{%- capture append_folds -%}
+  {{ fold_1 }}
+  {{ fold_2 }}
+{%- endcapture -%}
+<div class="bg-ivory py-5 px-5">
+  {%- if type == 'base' or type == 'borders' or type == 'icon' or type == 'focused' or type == 'hover' -%}
+    <div
+      class="relapse-sibling-{{ type }}"
+      data-relapse>
+      <button
+        type="button"
+        class="relapse-button">
+        Collapse 0
+      </button>
+      <section class="relapse-fold">
+        <div hidden>
+          {{- content -}}
+        </div>
+      </section>
+      {{- append_folds -}}
+    </div>
+  {%- elsif type == 'opened' -%}
+    <div
+      class="relapse-sibling-{{ type }}"
+      data-relapse>
+      <button
+        type="button"
+        class="relapse-button opened">
+        Collapse 0
+      </button>
+      <section class="relapse-fold">
+        <div>
+          {{- content -}}
+        </div>
+      </section>
+      {{- append_folds -}}
+    </div>
+  {%- elsif type == 'disabled' -%}
+    <div
+      class="relapse-sibling-{{ type }}"
+      data-relapse>
+      {{- fold_1 | replace: 'Collapse 1', 'Collapse 0' -}}
+      <button
+        type="button"
+        class="relapse-button opened disabled"
+        disabled>
+        Collapse 1
+      </button>
+      <section class="relapse-fold">
+        <div>
+          This fold has been marked as disabled and also initialized expanded.
+        </div>
+      </section>
+      {{- fold_2 -}}
+    </div>
+  {%- elsif type == 'expanded' -%}
+    <div
+      class="relapse-sibling-{{ type }}"
+      data-relapse>
+      <button
+        type="button"
+        class="relapse-button opened">
+        Collapse 0
+      </button>
+      <section class="relapse-fold expanded">
+        <div>
+          {{- content -}}
+        </div>
+      </section>
+      {{- append_folds -}}
+    </div>
+  {%- endif -%}
+</div>

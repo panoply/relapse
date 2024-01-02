@@ -1,0 +1,59 @@
+<div data-controller="methods">
+  <div class="row gx-2 gx-sm-3 jc-center jc-sm-start mt-4 mb-2">
+    {%- assign folds = ' Foo, Bar, Baz' | split: ',' -%}
+    {%- for item in folds -%}
+      <div class="col-4 col-sm-auto">
+        <button
+          type="button"
+          class="btn btn-method bd opener my-3 d-block"
+          data-action="methods#expand"
+          data-methods-target="opener"
+          data-methods-fold-param="{{ forloop.index0 }}">
+          Open {{- item -}}
+        </button>
+        <button
+          type="button"
+          class="btn btn-method bd d-block disabled"
+          data-action="methods#collapse"
+          data-methods-target="closer"
+          data-methods-fold-param="{{ forloop.index0 }}">
+          Close {{- item -}}
+        </button>
+      </div>
+    {%- endfor -%}
+  </div>
+  <div class="row mt-5">
+    <div class="col-12">
+      <section
+        class="relapse"
+        data-methods-target="relapse">
+        <details>
+          <summary>
+            Foo
+          </summary>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor pretium viverra suspendisse potenti.
+          </p>
+        </details>
+        <details>
+          <summary>
+            Bar
+          </summary>
+          <div class="p-3">
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Tincidunt nunc pulvinar sapien et ligula ullamcorper malesuada proin. Ac tortor dignissim convallis aenean et tortor at risus.
+            </p>
+          </div>
+        </details>
+        <details>
+          <summary>
+            Baz
+          </summary>
+          <p>
+            Commodo sed egestas egestas fringilla phasellus faucibus. Eu tincidunt tortor aliquam nulla facilisi cras fermentum. Nullam eget felis eget nunc lobortis mattis. Et netus et malesuada fames ac turpis egestas maecenas. Vitae turpis massa sed elementum tempus egestas.
+          </p>
+        </details>
+      </section>
+    </div>
+  </div>
+</div>

@@ -1,11 +1,11 @@
 /* stylelint-disable function-url-quotes */
 
-.siblings-relapse {
+.sibling-relapse {
   position: relative;
   display: block;
   border: $border-width solid $border-color;
 
-  .siblings-button {
+  .sibling-button {
     width: 100%;
     padding: inherit;
     padding: 10px;
@@ -26,7 +26,6 @@
       border-bottom: none;
     }
 
-    &.initial,
     &.opened {
       color: inherit;
       background-color: #16181c;
@@ -41,17 +40,7 @@
       color: inherit;
     }
 
-    &.initial + .siblings-fold {
-      max-height: inherit;
-      transition: $accordion-body-padding-x;
-      border-bottom: $border-width solid $border-color;
-
-      &:last-of-type {
-        border-bottom: none;
-      }
-    }
-
-    + .siblings-fold {
+    + .sibling-fold {
       max-height: 0;
       background-color: $code-bg;
       overflow: hidden;
@@ -68,6 +57,15 @@
         &:last-of-type {
           border-bottom: none;
         }
+      }
+    }
+
+    &[aria-expanded='true'] + .sibling-fold {
+      max-height: inherit;
+      border-bottom: $border-width solid $border-color;
+
+      &:last-of-type {
+        border-bottom: none;
       }
     }
   }
