@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <title>
+      Relapse
+    </title>
+    <meta
+      name="description"
+      content="A lightweight ESM (vanilla) toggle utility for creating dynamic collapsible components">
+    <meta charset="UTF-8">
+    <meta
+      http-equiv="X-UA-Compatible"
+      content="IE=edge">
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0">
+    <link
+      href="https://fonts.googleapis.com"
+      rel="preconnect">
+    <link
+      href="https://fonts.gstatic.com"
+      crossorigin
+      rel="preconnect">
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap"
+      rel="stylesheet">
+    <link
+      href="{{'/style.css' | url }}"
+      rel="stylesheet">
+    <script
+      src="{{'/bundle.min.js' | url }}"
+      defer></script>
+  </head>
+
+  <body>
+    <div class="container-fluid container-xxl py-md-4">
+
+      <div
+        id="navbar"
+        class="row ai-center jc-between d-flex d-md-none navbar">
+        <div class="col">
+          <input
+            type="button"
+            class="col btn drawer-toggle ml-2 mt-2"
+            data-drawer="sidebar">
+        </div>
+        <div class="col-auto pr-4">
+          {%- svg 'logo', 'icon-logo' -%}
+        </div>
+      </div>
+
+      <aside
+        id="sidebar"
+        class="drawer-panel drawer-left {{ drawer }} sidebar br"
+        data-controller="drawer"
+        data-drawer-direction-value="left"
+        data-drawer-width-value="250px"
+        data-drawer-mode-value="push"
+        data-drawer-shift-value="#content,#navbar">
+        {%- render 'sidebar', menu: menu, url: page.url -%}
+
+      </aside>
+
+
+      <div
+        id="content"
+        class="row jc-center jc-md-start">
+        <div
+          id="main"
+          class="col-11 col-md-8 col-lg-8 col-xl-9 col-xxl-8 pt-3 p-3 p-sm-2 content">
+          {{- content -}}
+          {%- include 'navigate' -%}
+        </div>
+      </div>
+
+    </div>
+
+    {%- svgsprite -%}
+  </body>
+</html>

@@ -1,0 +1,99 @@
+[
+  {
+    "title": "Intro",
+    "type": "href",
+    "url": "/"
+  },
+  {
+    "title": "Usage",
+    "type": "button",
+    "group": "/usage",
+    "links": [
+      {
+        "title": "Install",
+        "url": "/usage/install"
+      },
+      {
+        "title": "Markup",
+        "url": "/usage/markup"
+      },
+      {
+        "title": "Styling",
+        "url": "/usage/styling",
+        "group": "/styling",
+        "links": [
+          {
+            "title": "Classes",
+            "url": "/usage/styling/classes"
+          },
+          {
+            "title": "States",
+            "url": "/usage/styling/states"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "API",
+    "type": "button",
+    "group": "/api",
+    "links": [
+      {
+        "title": "Instance",
+        "url": "/api/instance"
+      },
+      {
+        "title": "Options",
+        "url": "/api/options"
+      },
+      {
+        "title": "Folds",
+        "url": "/api/folds"
+      },
+      {
+        "title": "Methods",
+        "url": "/api/methods"
+      },
+      {
+        "title": "Events",
+        "url": "/api/events"
+      }
+    ]
+  },
+  {
+    "title": "Examples",
+    "type": "button",
+    "group": "/examples",
+    "links": [
+      {
+        "title": "Semantic",
+        "url": "/examples/semantic"
+      },
+      {
+        "title": "Siblings",
+        "url": "/examples/siblings"
+      },
+      {
+        "title": "Nesting",
+        "url": "/examples/nesting"
+      },
+      {
+        "title": "Menu List",
+        "url": "/examples/menu-list"
+      }
+    ]
+  },
+  {
+    "title": "Github",
+    "type": "href",
+    "target": "_blank",
+    "url": "https://github.com/panoply/relapse"
+  },
+  {
+    "title": "NPM",
+    "type": "href",
+    "target": "_blank",
+    "url": "https://www.npmjs.com/package/relapse"
+  }
+]

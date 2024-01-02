@@ -6,12 +6,12 @@ Visit Documentation: https://panoply.github.io/relapse
 
 ### Key Features
 
-- Minimal markup (2 element node tree)
-- Silky smooth transitions
-- Drop-in solution with no complexities
-- Accessibility support
-- Functional and pure, no classes or prototype
-- Event dispatching with global context access
+- Supports both semantic and sibling markup structures
+- Silky smooth transitions leveraging [WAAPI](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API)
+- Drop-in solution with no complexities, just initialize!
+- A11y compliant (accessibility support) baked into the core.
+- Functional and pure, no classes or prototype bullshit.
+- Event dispatching with global context access and persisted instances
 
 ### Installation
 
@@ -23,21 +23,32 @@ pnpm add relapse
 
 # Usage
 
-The module uses a default export:
+Relapse requires initialization to function. The selector and option parameters are completely optional.
 
+<!-- prettier-ignore -->
 ```js
 import relapse from 'relapse';
 
-relapse({
-  persist: true,
-  multiple: false,
-  schema: 'data-accordion',
+relapse('.selector', {
+  persist: false,            // Whether or not a fold should always be expanded
+  multiple: false,           // Whether or not multiple folds can be expanded
+  unique: false,             // Whether or not instance is unique
+  schema: 'data-relapse',    // Custom data attribute reference
+  fold: {
+    easing: 'ease-in-out',   // The animation easing to apply
+    duration: 120,           // Duration of the fold content transition
+    hint: true               // Whether or not to apply rendering hint
+  },
+  fade: {
+    duration: 120,           // Duration of the fold content transition
+    transition: 'linear',    // The easing effect to apply when fading content
+    hint: true               // Whether or not to apply rendering hint
+  },
   classes: {
-    initial: 'initial',
-    opened: 'opened',
-    focused: 'focused',
-    expanded: 'expanded',
-    disabled: 'disabled'
+    opened: 'opened',        // The class to use for opened button
+    focused: 'focused',      // The class to use on button focus
+    expanded: 'expanded',    // The class to use on expanded fold
+    disabled: 'disabled'     // The class to use for disabled fold
   }
 });
 ```

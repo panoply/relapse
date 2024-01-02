@@ -1,9 +1,6 @@
-example
-test
-src
-bin
-package
+
 *.js
 *.ts
 *.mjs
 *.html
+*.scss

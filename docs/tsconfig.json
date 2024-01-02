@@ -4,7 +4,7 @@
     "test"
   ],
   "include": [
-    "src/assets/scripts/**/*.ts",
+    "src/app/**/*.ts",
   ],
   "typeAcquisition": {
     "enable": true

@@ -2,10 +2,10 @@
   "npm.packageManager": "pnpm",
   "stylelint.validate": [
     "scss",
-    "sass",
-    "less",
-    "postcss"
+    "sass"
   ],
+  "stylelint.packageManager": "pnpm",
+  "stylelint.enable": true,
   "files.exclude": {
     "**/.git": true,
     "**/.svn": true,
@@ -13,20 +13,20 @@
     "**/CVS": true,
     "**/.DS_Store": true,
     "**/Thumbs.db": true,
+    "**/node_modules": true,
     "**/pnpm-lock.yaml": true
   },
-  "stylelint.packageManager": "pnpm",
-  "stylelint.enable": true,
   "scss.validate": false,
   "[liquid]": {
-    "editor.formatOnSave": false,
+    "editor.formatOnSave": true,
     "editor.defaultFormatter": "sissel.shopify-liquid"
   },
   "liquid.config.method": "workspace",
   "liquid.format.rules": {
     "wrap": 0,
     "liquid": {
-      "forceArgument": 3
+      "forceArgument": 3,
+      "delimiterTrims": "always"
     },
     "markup": {
       "forceAttribute": 2,
@@ -34,7 +34,64 @@
       "forceIndent": true
     }
   },
-  "editor.codeActionsOnSave": {
-    "source.fixAll.stylelint": true
-  }
+  "highlight.regexes": {
+    "(:{3,4})": {
+      "regexFlags": "g",
+      "decorations": [
+        {
+          "color": "#E91E63"
+        }
+      ]
+    },
+    "(?<=:{3,4}\\s)(grid|example|tabs|css|scss|html|note)": {
+      "decorations": [
+        {
+          "color": "#81D4FA",
+          "fontWeight": "900"
+        }
+      ]
+    },
+    "(?<=:{3,4}[a-z ]+)([colsxmd0-9-]+)": {
+      "regexFlags": "g",
+      "decorations": [
+        {
+          "color": "#91EBC2",
+          "isWholeLine": true
+        }
+      ]
+    },
+    "(relapse.*?)(?=[=])": {
+      "filterFileRegex": ".*\\.liquid",
+      "decorations": [
+        {
+          "color": "#c095ff",
+        },
+      ]
+    },
+    "(spx-[a-z]+)": {
+      "filterFileRegex": ".*\\.liquid",
+      "decorations": [
+        {
+          "color": "#87b0fc",
+        },
+      ]
+    },
+    "(spx-data)(:)([a-z]+)": {
+      "decorations": [
+        {
+          "color": "#87b0fc",
+        },
+        {
+          "color": "#888888",
+        },
+        {
+          "color": "#FFFFFF"
+        }
+      ]
+    }
+  },
+  "cSpell.words": [
+    "bezier",
+    "WAAPI"
+  ]
 }

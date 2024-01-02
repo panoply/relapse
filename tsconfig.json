@@ -6,21 +6,24 @@
   "include": [
     "src/index.ts",
     "index.d.ts",
+    "tsup.config.ts"
   ],
   "typeAcquisition": {
-    "enable": true
+    "enable": true,
   },
   "compilerOptions": {
     "incremental": true,
     "declaration": true,
     "target": "ES6",
     "removeComments": true,
+    "resolveJsonModule": true,
     "lib": [
       "es2020",
       "dom",
-      "dom.iterable"
+      "dom.iterable",
+      "ESNext"
     ],
-    "module": "ES6",
-    "pretty": true
+    "moduleResolution": "Node",
+    "module": "ES6"
   }
 }

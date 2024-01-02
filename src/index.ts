@@ -1,624 +1,899 @@
-import { Scope, Fold, Options, EventNames, Events } from '../index';
+/* eslint-disable no-unused-vars */
+import { Relapse, Fold, Options, EventNames, Events, Methods } from '../index';
 
-declare global {
-  export interface Window { relapse: Map<string, Scope> }
-}
+const { isArray, from } = Array;
 
-interface InternalOptions extends Options {
-  /**
-   * Whether or not expanded folds should be observed for
-   * changes in height. When enabled, Relapse will keep track
-   * of opened folds and expand where necessary.
-   *
-   */
-  parent?: HTMLElement;
-}
+/**
+ * Relapse Store
+ *
+ * This is a global store, Map reference which will maintain all
+ * relapse instances
+ */
+const $R: Map<string, Relapse> = new Map();
 
+/**
+ * Objects (Utility)
+ *
+ * Utility for generating an object without Prototype.
+ */
+const $O = <T> (object?: Partial<T>, o = Object.create(null)): T => object ? Object.assign(o, object) : o;
+
+/**
+ * Folds
+ *
+ * Extends the native Array `[]` to support additional methods.
+ */
 class Folds extends Array<Fold> {
 
-  refs: { [id: string]: number } = Object.create(null)
+  ref: { [id: string]: number } = $O();
 
-  get(id?: string | number) {
+  get = (id?: string | number) => {
 
-    const type = typeof id
+    const type = typeof id;
 
-    if(type === 'number') {
-      return this[id]
-    } else if (type === 'string') {
-      if(id in this.refs) {
-        return this[this.refs[id]]
-      } else {
-        throw new Error(`Relapse: No fold using an id value of: ${id}`)
-      }
-    } else if(type === 'undefined') {
-      return this
-    }
-  }
-}
-
-/**
- * Event Emitter
- *
- * The emitted events for the accordion.
- */
-function $events (events: { [K in EventNames]: Events<Readonly<Scope>, Fold>[] }) {
-
-  function emit (name: EventNames, scope: Scope, fold?: Fold): boolean  {
-
-    const event = events[name] || [];
-    const length = event.length;
-
-    let prevent: boolean = null;
-
-    for (let i = 0; i < length; i++) {
-      const returns = event[i].apply(scope, [ fold ]);
-      if (prevent === null && returns === false) prevent = true;
+    if (type === 'number') return this[id];
+    if (type === 'string') {
+      if (id in this.ref) return this[this.ref[id]];
+      console.error(`Relapse: Unknown fold id: ${id}`);
     }
 
-    return prevent;
-  };
-
-  function on (name: EventNames, callback: Events<Readonly<Scope>, Fold>) {
-    if (!events[name]) events[name] = [];
-    events[name].push(callback);
-  };
-
-  function off (name: EventNames, callback: () => void) {
-
-    const live = [];
-    const event = events[name];
-
-    if (event && callback) {
-      for (let i = 0, s = event.length; i < s; i++) {
-        if (event[i] !== callback) live.push(event[i]);
-      }
-    }
-
-    if (live.length) {
-      event[name] = live;
-    } else {
-      delete event[name];
-    }
-
-  };
-
-  return {
-    on,
-    off,
-    emit
-  };
-
-};
-
-/**
- * Folds instance - Creates an object literal for each content fold.
- */
-function $folds (scope: Scope, event: ReturnType<typeof $events>) {
-
-  const { classes } = scope.config;
-
-  return function (fold: Fold) {
-
-    /**
-     * Expanding Element - Opens a closed fold
-     */
-    const $active = (index: number) => {
-
-      if (typeof index !== 'number') {
-        if (scope.active !== fold.index) scope.active = fold.index;
-        return fold;
-      }
-
-      if (scope.folds.get(index)) {
-        scope.active = fold.index;
-        return scope.folds.get(index);
-      } else {
-        throw new Error(`relapse: No fold exists at index: ${index}`);
-      }
-    };
-
-    /**
-     * Collapsing Element - Closes an open fold
-     */
-    const $collapse = (focus: Fold) => {
-
-      focus.button.ariaDisabled = 'false';
-      focus.button.ariaExpanded = 'false';
-      focus.element.classList.remove(classes.expanded);
-
-      focus.expanded = false;
-
-      if (focus.button.classList.contains(classes.initial)) {
-        focus.button.classList.remove(classes.initial);
-      }
-
-      // if we want to transition when closing we
-      // have to set the current height and replace auto
-      focus.element.style.setProperty('max-height', '0')
-
-
-      if (scope.parent !== null) {
-        scope.parent.style.setProperty('max-height', `${scope.parent.scrollHeight - focus.height}px`);
-      }
-
-      if (scope.folds.length - 1 === focus.index) {
-        focus.element.addEventListener('transitionend', function $end() {
-
-          if(!focus.expanded) {
-            focus.element.style.setProperty('opacity', '0')
-            focus.element.style.setProperty('visibility','hidden')
-            focus.button.classList.remove(classes.opened);
-          }
-
-          focus.element.removeEventListener('transitionend', $end);
-
-        })
-      } else {
-
-        focus.element.style.setProperty('opacity', '0')
-        focus.element.style.setProperty('visibility','hidden')
-        focus.button.classList.remove(classes.opened);
-      }
-
-    };
-
-
-    fold.open = function (index?: number) {
-
-      const focus = $active(index);
-
-      if (focus.expanded) return;
-
-      focus.close();
-
-      focus.height = focus.element.scrollHeight;
-      focus.button.ariaDisabled = 'true';
-      focus.button.ariaExpanded = 'true';
-      focus.button.classList.add(classes.opened);
-
-      focus.element.classList.add(classes.expanded);
-      focus.element.style.setProperty('max-height', `${focus.height}px`);
-      focus.element.style.setProperty('opacity', `1`)
-      focus.element.style.setProperty('visibility', `visible`)
-
-      if (scope.parent !== null) {
-        scope.parent.style.setProperty('max-height', `${scope.parent.scrollHeight + focus.height}px`);
-      }
-
-      focus.expanded = true;
-      focus.disable();
-
-      scope.count = scope.folds.filter(({ expanded }) => expanded).length;
-      event.emit('expand', scope, focus);
-
-    };
-
-    fold.close = function (index?: number) {
-
-      let focus = $active(index);
-
-      if (scope.config.multiple) {
-        if (scope.config.persist === false || (scope.config.persist && scope.count > 1)) {
-          $collapse(focus);
-        }
-      } else {
-        for (const node of scope.folds.values()) {
-          if (node.expanded === true) {
-            if (scope.config.persist && node.index === focus.index) break;
-            $collapse(node);
-            focus = node;
-            break;
-          }
-        }
-      }
-
-      focus.enable();
-      scope.count = scope.folds.filter(({ expanded }) => expanded).length;
-      event.emit('collapse', scope, focus);
-
-    };
-
-    /**
-     * Focus Button - Applies focus to the button
-     */
-    fold.focus = function ()  {
-
-      scope.active = fold.index; // focused Scope
-      fold.button.classList.add(classes.focused);
-      event.emit('focus', scope, fold);
-    };
-
-    /**
-     * Blur Button - Applies blur to the button
-     */
-    fold.blur = function() {
-
-      fold.button.classList.remove(classes.focused);
-    }
-
-    /**
-     * Button Enable - Writes
-     */
-    fold.enable = function(index?: number)  {
-
-      const focus = $active(index);
-
-      if (focus.disabled) {
-        focus.disabled = false;
-        focus.button.ariaDisabled = 'false';
-        focus.button.classList.remove(classes.disabled);
-      }
-    };
-
-    /**
-     * Button Disable - Enables
-     */
-    fold.disable = function(index?: number) {
-
-      const focus = $active(index);
-
-      if (!focus.disabled) {
-        if (focus.expanded) {
-          if (scope.config.persist) {
-            focus.disabled = true;
-            focus.button.ariaDisabled = 'true';
-          }
-        } else {
-          focus.close();
-          focus.disabled = true;
-          focus.button.ariaDisabled = 'true';
-          focus.button.classList.add(classes.disabled);
-        }
-      }
-    };
-
-    fold.toggle = function () {
-
-      if (event.emit('toggle', scope, fold) === false) return;
-
-      return fold.expanded
-        ? fold.close()
-        : fold.open();
-    };
-
-    fold.destroy = function (remove = false) {
-
-      fold.close();
-
-      fold.button.removeEventListener('click', fold.toggle);
-      fold.button.removeEventListener('focus', fold.focus);
-      fold.button.removeEventListener('blur', fold.blur);
-
-      if (remove) {
-        scope.element.removeChild(fold.element);
-        scope.element.removeChild(fold.button);
-      }
-
-    };
-
-    fold.button.addEventListener('click', fold.toggle);
-    fold.button.addEventListener('focus', fold.focus);
-    fold.button.addEventListener('blur', fold.blur);
-
-    if(fold.element.hasAttribute('id')) {
-      scope.folds.push(fold);
-      (scope.folds as Folds).refs[fold.element.id] = scope.folds.length - 1
-    } else {
-      scope.folds.push(fold);
-    }
+    return this;
 
   };
 
 }
 
-/**
- * Default Options - Merges the default options with user options.
- */
-const $defaults = (options: InternalOptions): InternalOptions => {
+/* -------------------------------------------- */
+/* API                                          */
+/* -------------------------------------------- */
 
-  const config: InternalOptions = Object.create(null);
-
-  config.persist = true;
-  config.multiple = false;
-  config.parent = null;
-  config.schema = 'data-relapse';
-  config.duration = 225;
-  config.classes = Object.create(null);
-  config.classes.initial = 'initial';
-  config.classes.opened = 'opened';
-  config.classes.disabled = 'disabled';
-  config.classes.expanded = 'expanded';
-  config.classes.focused = 'focused';
-
-  if (typeof options === 'object') {
-    for (const o in options) {
-      if (o === 'classes') {
-        for (const c in options[o]) {
-          config.classes[c] = options[o][c];
-        }
-      } else {
-        config[o] = options[o];
-      }
-    }
-  }
-
-  return config;
-
-};
-
-function $attrs (config: InternalOptions, attrs: NamedNodeMap) {
-
-  const slice = config.schema.length + 1;
-
-  // Lets loop over all the attributes contained on the element
-  // and apply configuration to ones using valid annotations.
-  for (const { nodeName, nodeValue } of attrs) {
-
-    if(!nodeName.startsWith(config.schema)) continue
-
-    const prop = nodeName.slice(slice);
-    const value = nodeValue.trim();
-
-    if (prop === 'persist' || prop === 'multiple') {
-      if(value === 'true' || value === 'false') {
-        config[prop] = value === 'true'
-      } else {
-        throw new TypeError(`relapse: Invalid ${nodeName} attribute value. Boolean expected, received: ${value}`);
-      }
-    } else if(prop === 'duration') {
-      if(isNaN(+value)) {
-        throw new TypeError(`relapse: Invalid ${nodeName} attribute value. Number expected, received: ${value}`);
-      } else {
-        config[prop] = +value
-      }
-    }
-  }
-
-  return config;
-
-};
-
-function $style (config: InternalOptions) {
-
-  const display = config.duration / 2
-
-  return `will-change:visibility,opacity,max-height;overflow:hidden;transition:visibility ${display}ms linear,opacity ${display}ms linear,max-height ${config.duration}ms ease-in-out;`
-}
-
-
-const relapse = function relapse (selector?: string | HTMLElement | InternalOptions, options?: InternalOptions) {
+function setInstance (el: HTMLElement, config: Options) {
 
   /**
-   * Selector passed, single instance should apply
+   * Key Identifier
+   *
+   * An import reference used to identify different fold structures
    */
-  const single = typeof selector === 'string' || typeof selector === 'object' && 'tagName' in selector;
+  let id: string = el.getAttribute(config.schema);
 
-  if (single && selector instanceof NodeList) {
-    throw TypeError('relapse: Invalid selector, NodeList is not supported, pass string or Element');
+  if (id === null || id === '') {
+    id = el.hasAttribute('id') ? el.id : `R${$R.size}`;
+    el.setAttribute(config.schema, id);
+  };
+
+  // Lets ensure that the identifier provided is not already in use
+  // We will throw, if identifier is not unique, unless unique is false
+  if ($R.has(id)) {
+    if ($R.get(id).options.unique === false) return;
+    throw new Error(`Relapse: Instance already exists with id: ${id} `);
   }
 
-  const config = $defaults(single ? options : selector);
+  /**
+   * Merge attribute configurations
+   */
+  const options = setAttrs(config, el.attributes);
 
-  let element: HTMLElement = null;
+  /**
+   * Set the Folds listing
+   */
+  const folds = new Folds();
 
-  if(single) {
-    if (typeof selector === 'string') {
-      element = document.body.querySelector(selector);
-    } else {
-      element = selector
-    }
-  } else {
-    for (const node of document.body.querySelectorAll<HTMLElement>(`[${config.schema}]`)) {
-      relapse(node, options);
-    }
-  }
+  /**
+   * Create the accordion "scope" which describes each instances of a relapse collapse in the DOM.
+   */
+  const scope: Relapse = $R.set(id, <Relapse>{
+    id,
+    semantic: el.firstElementChild.nodeName === 'DETAILS',
+    openCount: 0,
+    status: 1,
+    active: NaN,
+    events: $O(),
+    get folds () { return folds; },
+    get options () { return options; },
+    get element () { return el; }
+  }).get(id);
 
-  if (element === null) return;
-  if (!(window.relapse instanceof Map)) window.relapse = new Map();
+  // Set aria multi-selectable attribute
+  el.ariaMultiSelectable = `${scope.options.multiple}`;
 
-  const scope: Scope = Object.create(null);
-  scope.events = Object.create(null);
-  scope.folds = new Folds()
-  scope.element = element;
-  scope.id = `R${window.relapse.size}`;
-  scope.count = 0;
-  scope.config = $attrs(config, scope.element.attributes);
-  scope.parent = (scope.config as InternalOptions).parent;
+  /**
+   * Generate event emitted to call on inner elements
+   */
+  const event = setEvents(scope.events);
 
-  let key: string = null;
+  /**
+   * The number of children
+   */
+  const length = el.children.length;
 
-  if (element.hasAttribute(scope.config.schema)) {
-    key = element.getAttribute(scope.config.schema);
-  } else if ('id' in element) {
-    key = element.id;
-  }
+  /**
+   * The next iteree of children
+   */
+  const next = scope.semantic ? 1 : 2;
 
-  if (key === null && window.relapse.has(key) === true) {
-    key = Math.random().toString(36).slice(2)
-  }
+  /**
+   * Deconstructed classes for quicker lookip, micro-op
+   */
+  const { classes } = scope.options;
 
+  /* -------------------------------------------- */
+  /* FOLDS                                        */
+  /* -------------------------------------------- */
 
-  scope.element.ariaMultiSelectable = `${scope.config.multiple}`;
+  /**
+   * When semantic structure, begin from first node, whereas basic structure we begin for second.
+   */
+  let i: number = 0;
 
-  const children = element.children;
-  const length = children.length;
-  const event = $events(scope.events);
-  const folds = $folds(scope, event);
-  const { classes } = scope.config;
-  const style = isNaN(scope.config.duration) || scope.config.duration === -1
-    ? null
-    : $style(scope.config)
+  do {
 
-  for (let i = 0; i < length; i = i + 2) {
+    /* -------------------------------------------- */
+    /* INSTANCE                                     */
+    /* -------------------------------------------- */
 
+    /**
+     * Fold Instance
+     */
+    const fold: Fold = $O<Fold>({
+      index: scope.folds.length,
+      locked: false
+    });
 
-    const btn = children[i];
-    const node = children[i + 1] as HTMLElement;
-    const fold: Fold = Object.create(null);
+    /* -------------------------------------------- */
+    /* SCOPES                                       */
+    /* -------------------------------------------- */
 
-    fold.index = scope.folds.length;
+    /**
+     * Whether element has `open` or `hidden` attribute
+     */
+    let isOpen: boolean = false;
 
-    const isInitial = btn.classList.contains(classes.initial);
-    const isOpened = btn.classList.contains(classes.opened);
-    const isDisabled = btn.classList.contains(classes.disabled);
-    const isExpanded = node.classList.contains(classes.expanded);
+    /**
+     * The button element, i.e: will be `<summary>` in semantic.
+     */
+    let button: HTMLElement;
 
-    if (btn.ariaExpanded === 'true' || isOpened || isExpanded || isInitial) {
+    /**
+     * The fold panel element, i.e: will be next sibling in semantic
+     */
+    let element: HTMLElement;
 
-      // class name and attribute align
-      if (!isOpened) {
-        btn.classList.add(classes.opened);
-      } else {
-        btn.ariaExpanded = 'true';
+    /**
+     * Either the `<details>` element or the same as `element` above.
+     */
+    let wrapper: HTMLElement;
+
+    /* -------------------------------------------- */
+    /* BEGIN                                        */
+    /* -------------------------------------------- */
+
+    if (scope.semantic) {
+
+      wrapper = el.children[i] as HTMLElement;
+
+      if (wrapper.nodeName !== 'DETAILS') {
+        throw new Error(`Relapse: Invalid markup on "${scope.id}", expected: <details>`);
       }
 
-      if (!isInitial) btn.classList.remove(classes.initial);
-      if (!isExpanded) node.classList.add(classes.expanded);
+      button = wrapper.firstElementChild as HTMLElement;
+      element = button.nextElementSibling as HTMLElement;
+      isOpen = wrapper.hasAttribute('open');
 
-      if (isDisabled) {
-        btn.classList.add(classes.disabled);
-        btn.ariaDisabled = 'true';
+    } else {
+
+      button = el.children[i] as HTMLElement;
+      element = wrapper = el.children[i + 1] as HTMLElement;
+
+      if (element.hasAttribute('hidden')) {
+        element.removeAttribute('hidden');
+      } else if (element.firstElementChild.hasAttribute('hidden')) {
+        element.firstElementChild.removeAttribute('hidden');
+      }
+
+    }
+
+    wrapper.setAttribute('role', 'region');
+
+    const isDisabled = button.classList.contains(classes.disabled);
+    const isOpened = button.classList.contains(classes.opened);
+    const isExpanded = element.classList.contains(classes.expanded);
+
+    if (button.ariaExpanded === 'true' || isOpen || isOpened) {
+
+      if (button.ariaExpanded !== 'true') button.ariaExpanded = 'true';
+      if (!isOpened && !isDisabled) button.classList.add(classes.opened);
+      if (!isExpanded) element.classList.add(classes.expanded);
+      if (isDisabled || button.ariaDisabled === 'true') {
+        button.classList.add(classes.disabled);
+        button.ariaDisabled = 'true';
         fold.disabled = true;
+        fold.locked = true;
       }
 
       fold.expanded = true;
 
-    } else if (btn.ariaDisabled === 'true' || isDisabled) {
+    } else if (button.ariaDisabled === 'true' || isDisabled) {
 
+      if (button.ariaDisabled !== 'true') button.ariaDisabled = 'true';
+      if (!isDisabled) button.classList.add(classes.disabled);
+      if (isOpened) button.classList.remove(classes.opened);
+
+      fold.expanded = (isExpanded || isOpen) === true;
       fold.disabled = true;
+      fold.locked = true;
 
-      // class name and attribute align
-      if (!isDisabled) {
-        btn.classList.add(classes.disabled);
-      } else {
-        btn.ariaDisabled = 'true';
-      }
-
-      if (isExpanded) {
-        fold.expanded = true;
-        btn.ariaExpanded = 'true';
-      } else {
-        fold.expanded = false;
-        btn.ariaExpanded = 'false';
-      }
-
-      if (isOpened) {
-        btn.classList.remove(classes.opened);
-      }
+      button.ariaExpanded = String(fold.expanded);
 
     } else {
 
       fold.expanded = false;
       fold.disabled = false;
 
-      btn.ariaExpanded = 'false';
-      btn.ariaDisabled = 'false';
+      button.ariaExpanded = 'false';
+      button.ariaDisabled = 'false';
 
     }
 
-    if ('id' in btn) fold.id = btn.id;
-    if ('id' in node) fold.id = node.id;
-    if (!('id' in fold)) {
-      // @ts-ignore-next-line
-      fold.id = `${scope.id}F${fold.index}`;
-      // @ts-ignore-next-line
-      btn.id = `B${fold.id}`;
-      // @ts-ignore-next-line
-      node.id = `C${fold.id}`;
-    }
+    fold.id = `${scope.id}-fold-${fold.index}`;
 
-    btn.setAttribute('aria-controls', fold.id);
-    node.setAttribute('aria-labelledby', btn.id);
-    node.setAttribute('role', 'region');
+    if (!button.hasAttribute('id')) button.id = `${scope.id}-button-${fold.index}`;
+    if (!element.hasAttribute('id')) element.id = `${scope.id}-content-${fold.index}`;
 
-    Object.defineProperties(fold, {
-      button: {
-        get() {
-          return btn
-        },
-      },
-      element: {
-        get() {
-          return node
-        },
-      }
-    })
+    button.tabIndex = fold.index;
+    button.setAttribute('aria-controls', element.id);
+    element.setAttribute('aria-labelledby', button.id);
 
     if (fold.expanded) {
 
-      scope.count = scope.count + 1;
+      scope.openCount = scope.openCount + 1;
 
-      fold.element.style.cssText = style !== null
-        ? `max-height:${fold.element.scrollHeight}px;opacity:1;visibility:visible;${style}`
-        : `max-height:${fold.element.scrollHeight}px;opacity:1;visibility:visible;`;
+      if (scope.options.multiple === false && scope.openCount === 2) {
+        console.warn(`Relapse: More than 1 fold is expanded but "multiple" is set to false on: ${scope.id}`);
+      }
+
+      if (scope.semantic) {
+        fold.height = button.offsetHeight + element.offsetHeight;
+        wrapper.style.setProperty('height', 'auto');
+      } else {
+        fold.height = element.scrollHeight;
+        wrapper.style.setProperty('max-height', 'inherit');
+      }
 
     } else {
 
-      fold.element.style.cssText = style !== null
-        ? `max-height:0px;opacity:0;visibility:hidden;${style}`
-        : 'max-height:0px;opacity:0;visibility:hidden;';
-
-    }
-
-    folds(fold);
-
-    window.relapse.set(key, null);
-
-    for (const nested of fold.element.querySelectorAll<HTMLElement>(`[${scope.config.schema}]`)) {
-      relapse(nested, { parent: fold.element });
-    }
-  }
-
-  const $find = (method: 'open' | 'close' | 'destroy', fold: string | number, remove = false) => {
-
-    if (typeof fold === 'number') {
-      return method.charCodeAt(0) === 100
-        ? scope.folds[fold][method](remove as never)
-        : scope.folds[fold][method]();
-    } else if (typeof fold === 'string') {
-      for (const f of scope.folds.values()) {
-        if (f.button.dataset[`${scope.config.schema}-fold`] === fold) {
-          return method.charCodeAt(0) === 100 ? f[method](remove as never) : f[method]();
-        }
+      if (scope.semantic) {
+        fold.height = button.offsetHeight;
+        wrapper.style.setProperty('height', 'auto');
+      } else {
+        fold.height = 0;
+        element.style.setProperty('max-height', '0');
+        element.style.setProperty('overflow', 'hidden');
       }
     }
 
-    throw new Error(`relapse: Fold does not exist: "${fold}"`);
+    fold.button = button;
+    fold.wrapper = wrapper;
+    fold.element = element;
 
-  };
+    setFold(fold, scope, event);
+
+    i = i + next;
+
+  } while (i < length);
 
   /* -------------------------------------------- */
   /* METHODS                                      */
   /* -------------------------------------------- */
 
-  scope.on = event.on as Events<Readonly<Scope>, Fold>;
+  scope.on = event.on as Events<Readonly<Relapse>, Fold, number>;
+  scope.off = event.off as Events<Readonly<Relapse>, Fold, void>;
+  scope.collapse = (fold: string | number = scope.active) => {
+    if (isNaN(fold as number)) return;
+    folds.get(fold).close(fold);
+  };
 
-  scope.off = event.off;
+  scope.expand = (fold: string | number = scope.active) => {
+    if (isNaN(fold as number)) return;
+    folds.get(fold).open(fold);
+  };
 
-  scope.collapse = (fold: string | number) => $find('close', fold);
-
-  scope.expand = (fold: string | number) => $find('open', fold);
-
-  scope.destroy = (fold?: string | number, remove = false) => {
-
-    if (typeof fold === 'undefined') {
-      for (const fold of scope.folds.values()) fold.destroy();
-    } else {
-      $find('destroy', fold, remove);
-    }
-
-    scope.element.removeAttribute('aria-multiselectable');
+  scope.destroy = () => {
+    folds.forEach(fold => fold.destroy());
     event.emit('destroy', scope);
-    window.relapse.delete(key);
+    $R.delete(id);
+  };
+
+}
+
+function setEvents (events: { [K in EventNames]?: Events<Readonly<Relapse>, Fold>[] }) {
+
+  const event = $O<any>();
+
+  event.on = (name: EventNames, cb: Events<Readonly<Relapse>, Fold>, binding?: any) => {
+
+    if (!events[name]) events[name] = [];
+    return events[name].push(binding ? cb.bind(binding) : cb) - 1;
 
   };
 
-  window.relapse.set(key, scope);
+  event.off = (name: EventNames, cb: Events<Readonly<Relapse>, Fold> | number) => {
 
-  return single ? scope : Array.from(window.relapse.values())
+    /**
+     * Select the event/s to emit
+     */
+    const event = events[name];
+    const warn = `Relapse: Removed ${name} event listener`;
+
+    if (event && typeof cb === 'number') {
+      event.splice(cb, 1);
+      console.warn(`${warn} (id: ${cb})`);
+      if (event.length === 0) delete event[name];
+    } else {
+
+      /**
+       * Reference of all events that should not be removed
+       */
+      const live = [];
+
+      if (event && typeof cb === 'function') {
+        for (let i = 0, s = event.length; i < s; i++) {
+          if (event[i] !== cb) {
+            live.push(event[i]);
+          } else {
+            console.warn(`${warn} (id: ${i})`);
+          }
+        }
+      }
+
+      if (live.length > 0) {
+        event[name] = live;
+      } else {
+        delete event[name];
+      }
+    }
+  };
+
+  event.emit = (name: EventNames, scope: Relapse, fold?: Fold): boolean => {
+
+    /**
+     * Select the event/s to emit
+     */
+    const event = events[name] || [];
+
+    /**
+     * Whether or not to `preventDefault`
+     */
+    let prevent: boolean = null;
+
+    for (let i = 0, s = event.length; i < s; i++) {
+      const returns = event[i].call(scope, fold);
+      if (prevent === null && returns === false) prevent = true;
+    }
+
+    return prevent;
+
+  };
+
+  return event;
 
 };
 
-relapse.get = (id?: string) => id ? window.relapse.get(id) : window.relapse;
+function setFold (fold: Fold, scope: Relapse, event: ReturnType<typeof setEvents>) {
+
+  const cl = scope.options.classes;
+  const fe = scope.options.fade;
+  const fc = $O({
+    easing: fe.easing,
+    duration: fe.duration * 2
+  });
+
+  /* -------------------------------------------- */
+  /* PRIVATES                                     */
+  /* -------------------------------------------- */
+
+  /**
+   * Active Fold
+   */
+  const getFold = (id: number | string) => {
+
+    if (typeof id !== 'number') {
+      if (scope.active !== fold.index) scope.active = fold.index;
+      return fold;
+    }
+
+    if (scope.folds.get(id)) {
+      scope.active = fold.index;
+      return scope.folds.get(id);
+    } else {
+      throw new Error(`Relapse: No fold exists using id: "${id}"`);
+    }
+
+  };
+
+  /**
+   * Active Count
+   */
+  const getCount = () => (
+
+    scope.folds.filter(({ expanded }) => expanded).length
+
+  );
+
+  /**
+   * Fading Animation
+   */
+  const onFading = (el: HTMLElement, opacity: [string, string], visibility: [string, string]) => {
+
+    el.style.setProperty('will-change', 'opacity,visibility');
+
+    const animate = el.animate(
+      { opacity, visibility },
+      opacity[0] === '1' ? fc : fe
+    );
+
+    animate.onfinish = () => {
+
+      el.style.setProperty('opacity', opacity[1]);
+      el.style.setProperty('visibility', visibility[1]);
+      el.style.removeProperty('will-change');
+
+    };
+
+  };
+
+  /**
+   * Folding Animation
+   */
+  const onFolding = (el: HTMLElement, height: [string, string], callback: () => void) => {
+
+    scope.status = 2;
+
+    const animate = el.animate(
+      scope.semantic
+        ? { height }
+        : { maxHeight: height },
+      scope.options.fold
+    );
+
+    animate.onfinish = callback;
+
+  };
+
+  /**
+   * Fold Collapse
+   */
+  const doCollapse = (focus: Fold) => {
+
+    if (focus.disabled) return;
+
+    const b = focus.button;
+    const w = focus.wrapper;
+    const e = focus.element;
+
+    w.style.setProperty('overflow', 'hidden');
+
+    if (scope.semantic) {
+      focus.height = b.offsetHeight;
+      w.style.setProperty('will-change', 'height');
+    } else {
+      focus.height = 0;
+      w.style.setProperty('will-change', 'max-height');
+    }
+
+    onFading(e, [ '1', '0' ], [ 'visible', 'hidden' ]);
+    onFolding(w, [ `${w.offsetHeight}px`, `${focus.height}px` ], () => {
+
+      if (scope.semantic) {
+        w.style.setProperty('height', `${focus.height}px`);
+        w.removeAttribute('open');
+      } else {
+        e.style.setProperty('max-height', '0');
+      }
+
+      focus.expanded = false;
+
+      b.ariaDisabled = 'false';
+      b.ariaExpanded = 'false';
+      b.classList.remove(cl.opened);
+      w.classList.remove(cl.expanded);
+      w.style.removeProperty('will-change');
+
+      scope.openCount = getCount();
+      scope.status = 1;
+
+      event.emit('collapse', scope, focus);
+
+    });
+
+  };
+
+  /**
+   * Fold Expand
+   */
+  const doExpand = (focus: Fold) => (time: number) => {
+
+    focus.close();
+
+    const b = focus.button;
+    const w = focus.wrapper;
+    const e = focus.element;
+
+    b.ariaDisabled = 'true';
+    b.ariaExpanded = 'true';
+
+    let start: string;
+
+    if (scope.semantic) {
+      w.setAttribute('open', '');
+      w.style.setProperty('will-change', 'height');
+      w.style.setProperty('overflow', 'hidden');
+      focus.height = b.offsetHeight + e.offsetHeight;
+      start = `${b.offsetHeight}px`;
+    } else {
+      w.style.setProperty('will-change', 'max-height');
+      focus.height = e.scrollHeight;
+      start = '0px';
+    }
+
+    b.classList.add(cl.opened);
+
+    onFading(e, [ '0', '1' ], [ 'hidden', 'visible' ]);
+    onFolding(w, [ start, `${focus.height}px` ], () => {
+
+      if (scope.semantic) {
+        w.style.setProperty('height', 'auto');
+      } else {
+        e.style.setProperty('max-height', 'inherit');
+      }
+
+      w.style.removeProperty('overflow');
+      w.style.removeProperty('will-change');
+
+      e.classList.add(cl.expanded);
+
+      focus.expanded = true;
+      scope.openCount = getCount();
+      scope.status = 1;
+
+      if (scope.options.persist && scope.openCount > 1) focus.disable();
+
+      event.emit('expand', scope, focus);
+
+    });
+  };
+
+  /* -------------------------------------------- */
+  /* PUBLIC                                       */
+  /* -------------------------------------------- */
+
+  /**
+   * Fold Close
+   */
+  fold.close = (index: number) => {
+
+    let focus = getFold(index);
+
+    if (scope.options.multiple) {
+      if (scope.options.persist === true && scope.openCount > 1) {
+        doCollapse(focus);
+      } else if (scope.options.persist === false && focus.expanded === true) {
+        doCollapse(focus);
+      }
+    } else {
+      for (const node of scope.folds) {
+        if (node.expanded === true && node.locked === false) {
+          if (scope.options.persist && node.index === focus.index) break;
+          doCollapse(node);
+          focus = node;
+          break;
+        }
+      }
+
+    }
+
+    focus.enable();
+    scope.openCount = getCount();
+
+  };
+
+  /**
+   * Button Focus
+   */
+  fold.focus = () => {
+
+    scope.active = fold.index;
+    fold.button.focus({ preventScroll: true });
+
+    event.emit('focus', scope, fold);
+
+  };
+
+  /**
+   * Button Enable
+   */
+  fold.enable = (index?: number) => {
+
+    const focus = getFold(index);
+
+    if (focus.disabled && focus.locked === false) {
+      focus.disabled = false;
+      focus.button.ariaDisabled = 'false';
+      focus.button.classList.remove(cl.disabled);
+    }
+  };
+
+  /**
+   * Button Disable
+   */
+  fold.disable = (index?: number) => {
+
+    const focus = getFold(index);
+
+    if (!focus.disabled) {
+      if (focus.expanded) {
+        if (scope.options.persist) {
+          focus.disabled = true;
+          focus.button.ariaDisabled = 'true';
+        }
+      } else {
+        focus.close();
+        focus.disabled = true;
+        focus.button.ariaDisabled = 'true';
+        focus.button.classList.add(cl.disabled);
+      }
+    }
+  };
+
+  /**
+   * Open Fold
+   */
+  fold.open = (index?: number) => {
+
+    const focus = getFold(index);
+    if (scope.status === 2 || focus.expanded) return;
+
+    requestAnimationFrame(doExpand(focus));
+
+  };
+
+  /**
+   * Fold Toggle
+   */
+  fold.toggle = (e) => {
+
+    if (scope.semantic) e.preventDefault();
+    if (scope.status === 2 || event.emit('toggle', scope, fold) === false) return;
+
+    return fold.expanded ? fold.close() : fold.open();
+
+  };
+
+  /**
+   * Fold Destory
+   */
+  fold.destroy = () => {
+    fold.button.removeEventListener('click', fold.toggle);
+    fold.button.removeEventListener('focus', fold.focus);
+    fold.button.removeEventListener('blur', fold.blur);
+  };
+
+  fold.button.addEventListener('click', fold.toggle);
+  fold.button.addEventListener('focus', fold.focus);
+
+  scope.folds.push(fold);
+  scope.folds.ref[fold.element.id] = scope.folds.length - 1;
+
+}
+
+function setSchema (options: Options | string) {
+
+  return typeof options === 'object' && 'schema' in options
+    ? options.schema
+    : '[data-relapse]';
+
+}
+
+function setDefaults (options: Options | string): Options {
+
+  const config: Options = $O({
+    persist: false,
+    unique: false,
+    multiple: false,
+    schema: 'data-relapse',
+    fold: $O({
+      duration: 200,
+      easing: 'ease-in-out'
+    }),
+    fade: $O({
+      duration: 200 - (200 / 2.5),
+      easing: 'linear'
+    }),
+    classes: $O({
+      opened: 'opened',
+      disabled: 'disabled',
+      expanded: 'expanded'
+    })
+  });
+
+  if (typeof options === 'object') {
+
+    for (const o in options) {
+      if (o === 'classes' || o === 'fade' || o === 'fold') {
+        for (const c in options[o]) config[o][c] = options[o][c];
+      } else {
+        config[o] = options[o];
+      }
+    }
+
+    if ((
+      'fade' in options &&
+      'duration' in options.fade &&
+      options.fade.duration !== config.fade.duration) === false) {
+
+      if (config.fold.duration !== 200) {
+        config.fade.duration = config.fold.duration - (config.fold.duration / 2.5);
+      }
+
+    }
+
+  }
+
+  return config;
+
+};
+
+function setAttrs (config: Options, attrs: NamedNodeMap) {
+
+  const slice = config.schema.length + 1;
+  const clone = $O<Options>({
+    fold: $O(),
+    fade: $O(),
+    classes: $O()
+  });
+
+  // Lets loop over all the attributes contained on the element
+  // and apply configuration to ones using valid annotations.
+  for (const { nodeName, nodeValue } of attrs) {
+
+    if (!nodeName.startsWith(config.schema)) continue;
+
+    const prop = nodeName.slice(slice); // slice "data-relapse-" portion
+
+    if (prop === 'schema') {
+      console.warn('Relapse: The "schema" option cannot be defined via attribute');
+      continue;
+    }
+
+    const value = nodeValue.trim();
+    const error = `Invalid ${nodeName} attribute value.`;
+
+    if (prop === 'persist' || prop === 'multiple' || prop === 'unique') {
+      if (value === 'true' || value === 'false') {
+        clone[prop] = value === 'true';
+      } else {
+        throw new TypeError(`Relapse: ${error}. Boolean expected, received: ${value}`);
+      }
+    } else if (prop === 'fold-duration' || prop === 'fade-duration') {
+      if (isNaN(+value)) {
+        throw new TypeError(`Relapse: ${error}. Number expected, received: ${value}`);
+      } else {
+        const [ name, child ] = prop.split('-');
+        clone[name][child] = +value;
+      }
+    } else if (prop.startsWith('class-') || prop === 'fold-easing' || prop === 'fade-easing') {
+      const [ name, child ] = prop.split('-');
+      clone[name][child] = value;
+    }
+  }
+
+  if ((
+    'fade' in clone &&
+    'duration' in clone.fade &&
+    clone.fade.duration !== config.fade.duration) === false && (
+    'fold' in clone &&
+    'duration' in clone.fold &&
+    clone.fold.duration !== config.fold.duration
+  )) {
+
+    clone.fade.duration = clone.fold.duration - (clone.fold.duration / 2.5);
+
+  }
+
+  for (const o in clone) {
+    if (o === 'fold' || o === 'classes' || o === 'fade') {
+      for (const c in clone[o]) config[o][c] = clone[o][c];
+    } else {
+      config[o] = clone[o];
+    }
+  }
+
+  return config;
+};
+
+/* -------------------------------------------- */
+/* RELAPSE                                      */
+/* -------------------------------------------- */
+
+const relapse = function relapse (selector?: string | HTMLElement | Options, options?: Options) {
+
+  // ensure dom is ready
+  if (document.readyState === 'loading') {
+    addEventListener('DOMContentLoaded', () => relapse(selector, options));
+    return;
+  }
+
+  /**
+   * Selector passed, single instance apply
+   */
+  const single = typeof selector === 'object' && 'tagName' in selector;
+
+  // Ensure the selector is not a NodeList
+  if (single && selector instanceof NodeList) {
+    throw TypeError('Relapse: Invalid NodeList selector. Provide string or HTMLElement');
+  }
+
+  if (single) {
+
+    const el = typeof selector === 'string'
+      ? document.body.querySelector(selector)
+      : selector;
+
+    if (el !== null) setInstance(el, setDefaults(options));
+
+  } else {
+
+    document.body.querySelectorAll<HTMLElement>(setSchema(selector)).forEach(element => (
+      setInstance(
+        element,
+        setDefaults(selector)
+      )
+    ));
+
+  }
+
+  const instances = from($R.values());
+
+  return single
+    ? instances[instances.length - 1]
+    : instances;
+
+};
+
+// @ts-expect-error
+relapse.version = VERSION;
+
+relapse.each = (cb: (scope: Relapse, id: string) => void) => (
+
+  $R.forEach(cb)
+
+);
+
+relapse.has = (id: string | string[]) => (
+
+  isArray(id) ? id : [ id ].every($R.has)
+
+);
+
+relapse.get = (id?: string | string[]) => (
+
+  typeof id === 'string'
+    ? $R.has(id) ? $R.get(id) : null
+    : isArray(id)
+      ? id.filter(x => $R.has(x)).map(x => $R.get(x))
+      : from($R.values())
+
+);
+
+/* -------------------------------------------- */
+/* GLOBAL                                       */
+/* -------------------------------------------- */
+
+if (!window.relapse) {
+  Object.defineProperty(window, 'relapse', {
+    get () {
+      return relapse;
+    }
+  });
+}
 
 export default relapse;

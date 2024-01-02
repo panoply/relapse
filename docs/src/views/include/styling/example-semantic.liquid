@@ -1,0 +1,93 @@
+{% # LOREM IPSUM SAMPLE TEXT FOR FIRST FOLD %}
+{%- capture content -%}
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor pretium viverra suspendisse potenti.
+{% endcapture %}
+{% # ADDITIONAL FOLD TO BE RENDERED %}
+{%- capture fold_1 -%}
+  <details>
+  <summary>
+    Collapse 1
+  </summary>
+  <div>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Tincidunt nunc pulvinar sapien et ligula ullamcorper malesuada proin.
+  </div>
+  </details>
+{%- endcapture -%}
+{% # ADDITIONAL FOLD TO BE RENDERED %}
+{%- capture fold_2 -%}
+  <details>
+    <summary>
+      Collapse 2
+    </summary>
+    <div>
+      Commodo sed egestas egestas fringilla phasellus faucibus.
+    </div>
+  </details>
+{%- endcapture -%}
+{% # ADDITIONAL FOLDS THAT WILL BE RENDERED %}
+{%- capture append_folds -%}
+  {{ fold_1 }}
+  {{ fold_2 }}
+{%- endcapture -%}
+<div class="bg-ivory py-5 px-5">
+  {%- if type == 'base' or type == 'borders' or type == 'icon' or type == 'focused' or type == 'hover' -%}
+    <section
+      class="relapse-semantic-{{ type }}"
+      data-relapse>
+      <details>
+        <summary>
+          Collapse 0
+        </summary>
+        <div>
+          {{- content -}}
+        </div>
+      </details>
+      {{- append_folds -}}
+    </section>
+  {%- elsif type == 'opened' -%}
+    <section
+      class="relapse-semantic-{{ type }}"
+      data-relapse>
+      <details open>
+        <summary class="opened">
+          Collapse 0
+        </summary>
+        <div>
+          {{- content -}}
+        </div>
+      </details>
+      {{- append_folds -}}
+    </section>
+  {%- elsif type == 'disabled' -%}
+    <section
+      class="relapse-semantic-{{ type }}"
+      data-relapse>
+      {{- fold_1 | replace: 'Collapse 1', 'Collapse 0' -}}
+      <details
+        open
+        disabled>
+        <summary class="disabled">
+          Collapse 1
+        </summary>
+        <div>
+          This fold has been marked as disabled and also initialized expanded.
+        </div>
+      </details>
+      {{- fold_2 -}}
+    </section>
+  {%- elsif type == 'expanded' -%}
+    <section
+      class="relapse-semantic-{{ type }}"
+      data-relapse>
+      <details open>
+        <summary>
+          Collapse 0
+        </summary>
+        <div class="expanded">
+          {{- content -}}
+        </div>
+      </details>
+      {{- append_folds -}}
+    </section>
+  {%- endif -%}
+</div>

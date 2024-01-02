@@ -1,0 +1,395 @@
+//
+// UNSTYLED RESET
+//
+.relapse-unstyled {
+  all: initial;
+}
+
+/* -------------------------------------------- */
+/* SEMANTIC STRUCTURE                           */
+/* -------------------------------------------- */
+
+.relapse-semantic-base,
+.relapse-semantic-borders,
+.relapse-semantic-icon,
+.relapse-semantic-hover,
+.relapse-semantic-opened,
+.relapse-semantic-disabled,
+.relapse-semantic-expanded {
+  all: initial;
+  font-family: $font-family-base;
+  font-size: 15px;
+  display: block;
+  position: relative;
+  border: 1px solid black;
+
+  > details > summary {
+    padding: 5px 10px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    background: $gray-100;
+
+    &::-webkit-details-marker {
+      display: initial;
+    }
+  }
+
+  > details > summary + * {
+    padding: 10px;
+    background-color: ivory;
+  }
+}
+
+
+/* BORDERS ------------------------------------ */
+
+
+.relapse-semantic-borders,
+.relapse-semantic-icon,
+.relapse-semantic-hover,
+.relapse-semantic-opened,
+.relapse-semantic-disabled,
+.relapse-semantic-expanded {
+
+  > details:last-of-type > summary {
+    border-bottom: none;
+  }
+
+  > details > summary {
+    padding: 5px 10px;
+    border-bottom: 1px solid black;
+  }
+
+}
+
+/* ICONS -------------------------------------- */
+
+.relapse-semantic-icon,
+.relapse-semantic-hover,
+.relapse-semantic-opened,
+.relapse-semantic-disabled,
+.relapse-semantic-expanded {
+
+  > details > summary {
+    display: flex;
+    list-style: none; /* Specific reset for Chrome / Firefox */
+  }
+
+  > details > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  > details > summary::after {
+    content: '+';
+  }
+
+  > details[open] > summary::after {
+    content: '–';
+  }
+}
+
+
+/* HOVER -------------------------------------- */
+
+.relapse-semantic-hover,
+.relapse-semantic-opened,
+.relapse-semantic-disabled,
+.relapse-semantic-expanded {
+
+
+
+  > details:not([open]) > summary {
+    transition: background-color 200ms linear;
+  }
+
+  > details:not([open]) > summary:hover {
+    background-color: gainsboro;
+  }
+
+}
+
+/* OPENED ------------------------------------- */
+
+.relapse-semantic-opened,
+.relapse-semantic-disabled,
+.relapse-semantic-expanded {
+
+  > details > summary {
+
+    &.opened {
+      border-color: transparent;
+      background:#e9e9e9;
+    }
+
+  }
+
+}
+
+
+/* EXPANDED ------------------------------------- */
+
+.relapse-semantic-disabled,
+.relapse-semantic-expanded {
+
+  > details:not(:last-of-type) > summary + .expanded {
+    border-bottom: 1px solid black;
+  }
+}
+
+/* Disabled ------------------------------------- */
+
+.relapse-semantic-disabled {
+
+  > details > summary {
+
+    &.disabled {
+      opacity: .5;
+      background-color: white;
+      cursor: not-allowed;
+    }
+  }
+
+
+}
+
+
+/* -------------------------------------------- */
+/* SIBLING STRUCTURE                            */
+/* -------------------------------------------- */
+
+.relapse-sibling-base,
+.relapse-sibling-borders,
+.relapse-sibling-icon,
+.relapse-sibling-hover,
+.relapse-sibling-opened,
+.relapse-sibling-disabled,
+.relapse-sibling-expanded {
+  all: initial;
+  font-family: $font-family-base;
+  font-size: 15px;
+  display: block;
+  position: relative;
+  border: 1px solid black;
+  border-radius: 5px;
+  overflow: hidden;
+
+  > .relapse-button {
+    background: transparent;
+    border: none;
+    width: 100%;
+    padding: 5px 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  > .relapse-button + .relapse-fold {
+    padding: 0;
+    margin: 0;
+  }
+
+  > .relapse-button + .relapse-fold > * {
+    padding: 10px;
+  }
+
+}
+
+
+/* BORDERS ------------------------------------ */
+
+.relapse-sibling-borders,
+.relapse-sibling-icon,
+.relapse-sibling-hover,
+.relapse-sibling-opened,
+.relapse-sibling-disabled,
+.relapse-sibling-expanded {
+
+  > .relapse-button  {
+    border-bottom: 1px solid black;
+
+    &:last-of-type {
+      border-bottom: none;
+    }
+
+  }
+
+}
+
+/* ICONS -------------------------------------- */
+
+.relapse-sibling-icon,
+.relapse-sibling-hover,
+.relapse-sibling-opened,
+.relapse-sibling-disabled,
+.relapse-sibling-expanded {
+
+  > .relapse-button {
+
+    &[aria-expanded='true'] {
+
+      &::after {
+        content: '–';
+      }
+    }
+
+    &::after {
+      content: '+';
+    }
+  }
+}
+
+/* HOVER -------------------------------------- */
+
+.relapse-sibling-hover,
+.relapse-sibling-opened,
+.relapse-sibling-disabled,
+.relapse-sibling-expanded {
+
+  > .relapse-button:not([aria-expanded='true']) {
+    transition: background-color 200ms linear;
+
+    &:hover {
+      background-color: gainsboro;
+    }
+  }
+}
+
+
+/* OPENED ------------------------------------- */
+
+.relapse-sibling-opened,
+.relapse-sibling-disabled,
+.relapse-sibling-expanded {
+
+  > .relapse-button {
+
+    &.opened {
+      border-color: transparent;
+      background-color: #e9e9e9;
+    }
+  }
+}
+
+/* EXPANDED ------------------------------------- */
+
+.relapse-sibling-disabled,
+.relapse-sibling-expanded {
+
+  > .relapse-fold:not(:last-of-type) {
+
+    &.expanded {
+      border-bottom: 1px solid black;
+    }
+  }
+}
+
+/* Disabled ------------------------------------- */
+
+.relapse-sibling-disabled {
+
+  > .relapse-button {
+
+    &.disabled {
+      opacity: .5;
+      background-color: white;
+      cursor: not-allowed;
+    }
+  }
+
+
+}
+
+/* -------------------------------------------- */
+/* CLASSES                                      */
+/* -------------------------------------------- */
+
+.relapse-classes {
+  all: initial;
+  font-family: $font-family-base;
+  font-size: $font-size-sm;
+  color: $black;
+
+  > details > summary + * {
+    padding: 10px;
+  }
+
+  > details > summary {
+    font-size: $font-size-md;
+    padding: 5px;
+
+    &.disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  }
+}
+
+.relapse-classes-opened {
+  all: initial;
+  font-family: $font-family-base;
+  font-size: $font-size-sm;
+  color: $black;
+
+  > details > summary + * {
+    padding: 10px;
+  }
+
+  > details > summary {
+    font-size: $font-size-md;
+    padding: 5px;
+    border-bottom: 1px solid transparent;
+
+    &.opened {
+      color: green;
+      border-bottom: 1px solid #000;
+    }
+  }
+}
+
+.relapse-classes-focused {
+  all: initial;
+  font-family: $font-family-base;
+  font-size: $font-size-sm;
+  color: $black;
+
+  > details > summary + * {
+    padding: 10px;
+  }
+
+  > details > summary {
+    font-size: $font-size-md;
+    padding: 5px;
+    border: 1px solid transparent;
+
+    &.focused {
+      outline: auto lightskyblue;
+    }
+  }
+}
+
+.relapse-classes-expanded {
+  all: initial;
+  font-family: $font-family-base;
+  font-size: $font-size-sm;
+  color: $black;
+
+  > details > summary + * {
+    padding: 10px;
+  }
+
+  > details > summary {
+    font-size: $font-size-md;
+    padding: 5px;
+    border: 1px solid transparent;
+
+    &.focused {
+      outline: auto lightskyblue;
+    }
+  }
+
+  > details > summary + .expanded {
+    font-size: $font-size-md;
+    border-bottom: 1px solid transparent;
+    background-color: $gray-200;
+  }
+}
