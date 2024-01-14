@@ -1,5 +1,6 @@
 ---
 title: 'Relapse | Markup'
+description: Relapse provides support for two distinct markup structures, semantic and sibling. Your choice of structure depends on your preferences and the specific requirements of your project or integration.
 layout: base
 permalink: '/usage/markup.html'
 prev:

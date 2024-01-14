@@ -1,26 +1,22 @@
-import { Controller } from '@hotwired/stimulus';
 import relapse, { Fold, Relapse } from 'relapse';
+import spx, { SPX } from 'spx';
 
-export class Events extends Controller<HTMLElement> {
+export class Events extends spx.Component {
 
   relapse: Relapse;
   colors = [ 'fc-cyan', 'fc-pink', 'fc-purple', 'fc-green' ];
 
-  static targets: string[] = [
-    'relapse',
-    'log'
-  ];
-
-  static values = {
+  public state: SPX.Attrs<typeof Events.attrs>;
+  static attrs = {
     count: {
       default: 0,
-      type: Number
+      typeof: Number
     }
   };
 
-  connect (): void {
+  onInit (): void {
 
-    this.relapse = relapse(this.relapseTarget);
+    this.relapse = relapse(this.relapseNode);
     this.relapse.on('focus', this.focus, this);
     this.relapse.on('collapse', this.collapse, this);
     this.relapse.on('expand', this.expand, this);
@@ -30,15 +26,15 @@ export class Events extends Controller<HTMLElement> {
 
   insert (message: string, fold: number) {
 
-    this.countValue += 1;
+    this.state.count += 1;
 
     const element = document.createElement('div');
     element.className = `d-block pb-1 message ${this.colors[fold]}`;
-    element.ariaLabel = `${this.countValue}`;
+    element.ariaLabel = `${this.state.count}`;
     element.innerText = message;
 
-    this.logTarget.appendChild(element);
-    this.logTarget.scrollTop = this.logTarget.scrollHeight;
+    this.logNode.appendChild(element);
+    this.logNode.scrollTop = this.logNode.scrollHeight;
 
   }
 
@@ -78,8 +74,7 @@ export class Events extends Controller<HTMLElement> {
 
   }
 
-  relapseTarget: HTMLElement;
-  logTarget: HTMLElement;
-  countValue: number;
+  relapseNode: HTMLElement;
+  logNode: HTMLElement;
 
 }

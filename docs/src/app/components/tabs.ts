@@ -1,40 +1,40 @@
-import { Controller } from '@hotwired/stimulus';
+import spx, { SPX } from 'spx';
 
-export class Tabs extends Controller {
+export class Tabs extends spx.Component {
 
   static targets: string[] = [
     'tab',
     'btn'
   ];
 
-  static values = {
+  public state: SPX.Attrs<typeof Tabs.attrs>;
+  static attrs = {
     open: {
       default: 0,
-      type: Number
+      typeof: Number
     }
   };
 
   toggle ({ target }: { target: HTMLElement }) {
 
-    this.openValue = +target.getAttribute('data-index');
+    this.state.open = +target.getAttribute('data-index');
 
-    for (const btn of this.btnTargets) {
+    for (const btn of this.btnNodes) {
       btn.classList.remove('active');
     }
 
-    for (const tab of this.tabTargets) {
+    for (const tab of this.tabNodes) {
       tab.classList.remove('d-block');
       tab.classList.add('d-none');
     }
 
-    this.btnTargets[this.openValue].classList.add('active');
-    this.tabTargets[this.openValue].classList.remove('d-none');
-    this.tabTargets[this.openValue].classList.add('d-block');
+    this.btnNodes[this.state.open].classList.add('active');
+    this.tabNodes[this.state.open].classList.remove('d-none');
+    this.tabNodes[this.state.open].classList.add('d-block');
 
   }
 
-  openValue: number;
-  tabTargets: HTMLElement[];
-  btnTargets: HTMLElement[];
+  tabNodes: HTMLElement[];
+  btnNodes: HTMLElement[];
 
 }

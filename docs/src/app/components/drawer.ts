@@ -1,12 +1,11 @@
-import { Controller } from './controller';
-import spx from 'spx';
+import spx, { SPX } from 'spx';
 import qvp from 'qvp';
 
 /* -------------------------------------------- */
 /* CLASS                                        */
 /* -------------------------------------------- */
 
-export class Drawer extends Controller {
+export class Drawer extends spx.Component {
 
   /**
    * The backdrop element
@@ -16,7 +15,7 @@ export class Drawer extends Controller {
   /**
    * Stimulus: values
    */
-  static values = {
+  static attrs = {
     outsideClick: Boolean,
     height: String,
     width: String,
@@ -25,40 +24,28 @@ export class Drawer extends Controller {
     shift: String,
     redraw: String,
     useParent: {
-      type: Boolean,
+      typeof: Boolean,
       default: false
     },
     isOpen: {
-      type: Boolean,
+      typeof: Boolean,
       default: false
     },
     bodyScroll: {
-      type: Boolean,
+      typeof: Boolean,
       default: false
     },
     backdrop: {
-      type: Boolean,
+      typeof: Boolean,
       default: true
     },
     mode: {
-      type: String,
+      typeof: String,
       default: 'overlay'
     }
   };
 
-  /**
-   * Stimulus: values
-   */
-  static targets = [
-    'mount'
-  ];
-
-  /**
-   * Stimulus: values
-   */
-  static classes = [
-    'backdrop'
-  ];
+  public state: SPX.Attrs<typeof Drawer.attrs>;
 
   /**
    * Returns the backdrop element
@@ -71,34 +58,34 @@ export class Drawer extends Controller {
    * Returns the drawer direction class name
    */
   get directionClass () {
-    return `drawer-${this.directionValue}`;
+    return `drawer-${this.state.direction}`;
   }
 
   /**
    * Returns the drawer shift class name
    */
   get shiftClass () {
-    return `drawer-${this.modeValue}`;
+    return `drawer-${this.state.mode}`;
   }
 
   /**
    * Returns the shifts transition class name
    */
   get shifts () {
-    return document.documentElement.querySelectorAll<HTMLElement>(this.shiftValue);
+    return this.html.querySelectorAll<HTMLElement>(this.state.shift);
   }
 
   /**
    * Returns all button toggles in the dom
    */
   get buttons () {
-    return document.documentElement.querySelectorAll(`[data-drawer="${this.target.id}"]`);
+    return this.html.querySelectorAll(`[data-drawer="${this.target.id}"]`);
   }
 
   /**
    * Stimulus: Initialize
    */
-  initialize () {
+  onInit () {
 
     if (!Drawer.backdrop) {
       Drawer.backdrop = document.createElement('div');
@@ -106,51 +93,38 @@ export class Drawer extends Controller {
       Drawer.backdrop.setAttribute('spx-morph', 'false');
     }
 
-    if (this.useParentValue) {
-      this.target = this.element.parentElement;
+    if (this.state.useParent) {
+      this.target = this.dom.parentElement;
       this.target.ariaHidden = 'true';
     } else {
-      this.target = this.element;
+      this.target = this.dom;
     }
 
     if (this.target.classList.contains('d-none')) {
       this.target.classList.remove('d-none');
     }
 
-    if (this.modeValue !== 'overlay' && this.hasShiftValue === false) {
+    if (this.state.mode !== 'overlay' && this.state.hasShift === false) {
       console.error('Missing "data-drawer-shift-value" defintions on:', this.target);
     }
 
-    spx.on('load', this.onLoad, this);
-
-  }
-
-  /**
-   * Stimulus: Connect
-   */
-  connect () {
-
-    for (const button of this.buttons) {
-      button.addEventListener('click', this.toggle);
+    if (this.html.contains(Drawer.backdrop) === false) {
+      this.html.appendChild(Drawer.backdrop);
     }
 
-    if (document.documentElement.contains(Drawer.backdrop) === false) {
-      document.documentElement.appendChild(Drawer.backdrop);
+    if (this.state.hasWidth) {
+      //   this.target.style.setProperty('width', this.state.width);
     }
 
-    if (this.hasWidthValue) {
-      this.target.style.setProperty('width', this.widthValue);
+    if (this.state.hasHeight) {
+      this.target.style.setProperty('height', this.state.height);
     }
 
-    if (this.hasHeightValue) {
-      this.target.style.setProperty('height', this.heightValue);
+    if (this.state.hasDirection && this.target.classList.contains('backdrop') === false) {
+      this.target.classList.add('backdrop');
     }
 
-    if (this.hasDirectionValue && this.target.classList.contains(this.directionClass) === false) {
-      this.target.classList.add(this.directionClass);
-    }
-
-    if (this.modeValue === 'pull') {
+    if (this.state.mode === 'pull') {
       this.target.style.setProperty('transform', 'translateX(0)');
       this.target.style.setProperty('z-index', '0');
     }
@@ -172,11 +146,11 @@ export class Drawer extends Controller {
 
   onLoad () {
 
-    if (this.isOpenValue) {
+    if (this.state.isOpen) {
       if (qvp.test([ 'lg', 'xl', 'xxl' ])) {
         this.close();
       } else {
-        setTimeout(this.close.bind(this), 250);
+        setTimeout(() => this.close(), 250);
       }
     }
   }
@@ -190,23 +164,23 @@ export class Drawer extends Controller {
       this.target.classList.add('drawer-active');
     }
 
-    if (this.hasBackdropClass && !this.backdrop.classList.contains(this.backdropClass)) {
-      this.backdrop.classList.add(this.backdropClass);
+    if (!this.backdrop.classList.contains('backdrop')) {
+      this.backdrop.classList.add('backdrop');
     }
 
-    if (this.bodyScrollValue === false) {
-      document.documentElement.style.setProperty('overflow', 'hidden');
+    if (this.state.bodyScroll === false) {
+      this.html.style.setProperty('overflow', 'hidden');
     }
 
-    if (this.hasShiftValue) {
+    if (this.state.hasShift) {
       this.shiftNodes();
     }
 
-    if (this.hasWidthValue) {
-      if (this.directionValue === 'top') {
-        this.backdrop.style.setProperty('transform', `translateY(-${this.offsetValue})`);
+    if (this.state.width) {
+      if (this.state.direction === 'top') {
+        this.backdrop.style.setProperty('transform', `translateY(-${this.state.offset})`);
       } else {
-        this.backdrop.style.setProperty('transform', `translateX(${this.widthValue})`);
+        this.backdrop.style.setProperty('transform', `translateX(${this.state.width})`);
       }
     }
 
@@ -218,19 +192,19 @@ export class Drawer extends Controller {
 
   close () {
 
-    if (this.isOpenValue) {
-      this.isOpenValue = false;
+    if (this.state.isOpen) {
+      this.state.isOpen = false;
     }
 
-    if (this.hasWidthValue) {
+    if (this.state.width) {
       this.backdrop.style.removeProperty('transform');
     }
 
-    if (this.bodyScrollValue === false) {
-      document.documentElement.style.removeProperty('overflow');
+    if (this.state.bodyScroll === false) {
+      this.html.style.removeProperty('overflow');
     }
 
-    if (this.hasShiftValue) {
+    if (this.state.hasShift) {
       this.shiftNodes();
     } else {
       this.target.addEventListener('transitionend', this.transition);
@@ -248,7 +222,7 @@ export class Drawer extends Controller {
 
     if (event.propertyName !== 'transform') return;
 
-    if (this.hasShiftValue) {
+    if (this.state.hasShift) {
       for (const shift of this.shifts) {
         if (shift.classList.contains(this.shiftClass)) {
           shift.classList.remove(this.shiftClass);
@@ -257,11 +231,11 @@ export class Drawer extends Controller {
       }
     }
 
-    if (this.hasBackdropClass && this.backdrop.classList.contains(this.backdropClass)) {
-      this.backdrop.classList.remove(this.backdropClass);
+    if (this.backdrop.classList.contains('backdrop')) {
+      this.backdrop.classList.remove('backdrop');
     }
 
-    if (this.modeValue === 'pull') {
+    if (this.state.mode === 'pull') {
       this.shifts.item(0).removeEventListener(event.type, this.transition);
     } else {
       this.target.removeEventListener(event.type, this.transition);
@@ -274,40 +248,40 @@ export class Drawer extends Controller {
    */
   shiftNodes () {
 
-    if (this.modeValue === 'pull') {
+    if (this.state.mode === 'pull') {
 
       this.target.style.setProperty('transform', 'translateX(0)');
       this.target.style.setProperty('z-index', '0');
 
-      if (this.isOpenValue === false) {
+      if (this.state.isOpen === false) {
         this.shifts.item(0).addEventListener('transitionend', this.transition);
       }
 
     } else {
 
-      if (this.isOpenValue === false) {
+      if (this.state.isOpen === false) {
         this.target.addEventListener('transitionend', this.transition);
       }
     }
 
     for (const shift of this.shifts) {
 
-      if (this.isOpenValue) {
+      if (this.state.isOpen) {
 
         if (!shift.classList.contains(this.shiftClass)) {
           shift.classList.add(this.shiftClass);
         }
 
-        if (this.hasWidthValue && (this.directionValue === 'left' || this.directionValue === 'right')) {
-          shift.style.setProperty('transform', `translateX(${this.widthValue})`);
-        } else if (this.hasHeightValue && (this.directionValue === 'top' || this.directionValue === 'bottom')) {
-          shift.style.setProperty('transform', `translateY(${this.heightValue})`);
+        if (this.state.width && (this.state.direction === 'left' || this.state.direction === 'right')) {
+          shift.style.setProperty('transform', `translateX(${this.state.width})`);
+        } else if (this.state.hasHeight && (this.state.direction === 'top' || this.state.direction === 'bottom')) {
+          shift.style.setProperty('transform', `translateY(${this.state.height})`);
         }
 
       } else {
-        if (this.hasWidthValue && (this.directionValue === 'left' || this.directionValue === 'right')) {
+        if (this.state.width && (this.state.direction === 'left' || this.state.direction === 'right')) {
           shift.style.setProperty('transform', 'translateX(0)');
-        } else if (this.hasHeightValue && (this.directionValue === 'top' || this.directionValue === 'bottom')) {
+        } else if (this.state.hasHeight && (this.state.direction === 'top' || this.state.direction === 'bottom')) {
 
           shift.style.setProperty('transform', 'translateY(0)');
 
@@ -341,7 +315,7 @@ export class Drawer extends Controller {
 
     if (event.target !== this.target) {
       this.close();
-      document.documentElement.removeEventListener('click', this.outsideClick, false);
+      this.html.removeEventListener('click', this.outsideClick, false);
     }
 
   };
@@ -353,15 +327,15 @@ export class Drawer extends Controller {
 
     if (event) event.preventDefault();
 
-    this.isOpenValue = !this.isOpenValue;
+    this.state.isOpen = !this.state.isOpen;
 
-    if (this.isOpenValue) {
+    if (this.state.isOpen) {
       this.open();
     } else {
       this.close();
     }
 
-    return this.isOpenValue ? this.open() : this.close();
+    return this.state.isOpen ? this.open() : this.close();
 
   };
 
@@ -370,7 +344,7 @@ export class Drawer extends Controller {
    */
   touchMove = (event: TouchEvent) => {
 
-    if (this.isOpenValue) {
+    if (this.state.isOpen) {
       if (this.target.scrollHeight <= this.target.clientHeight) {
         event.preventDefault();
       }
@@ -399,100 +373,5 @@ export class Drawer extends Controller {
    * the use parent is set to `true` - In such cases the parent element will used instead.
    */
   target: HTMLElement;
-
-  /**
-   * Stimulus: Whether or not the drawer is opened
-   */
-  isOpenValue: boolean;
-
-  /**
-   * Stimulus: The drawer effect
-   */
-  modeValue: 'pull' | 'push' | 'overlay';
-
-  /**
-   * Stimulus: The offset values, eg: top, right, bottom and left (in that order)
-   */
-  bodyScrollValue: boolean;
-
-  /**
-   * Stimulus: Whether or not open events should fire on toggle clicks
-   */
-  eventsValue: boolean;
-
-  /**
-   * Stimulus: The offset values, eg: top, right, bottom and left (in that order)
-   */
-  offsetValue: string;
-
-  /**
-   * Stimulus: Whether or not an offset value was provided
-   */
-  hasOffsetValue: string;
-
-  /**
-   * Stimulus: The height of the drawer
-   */
-  heightValue: string;
-
-  /**
-   * Stimulus: Whether or not an height value was provided
-   */
-  hasHeightValue: string;
-
-  /**
-   * Stimulus: The width of the drawer
-   */
-  widthValue: string;
-
-  /**
-   * Stimulus: Whether or not a width value was provided
-   */
-  hasWidthValue: string;
-
-  /**
-   * Stimulus: The drawer direction
-   */
-  directionValue: 'left' | 'right' | 'top' | 'bottom';
-
-  /**
-   * Stimulus: Whether or not a direction value was provided
-   */
-  hasDirectionValue: string;
-
-  /**
-   * Stimulus: A list of selectors that will shift
-   */
-  shiftValue: string;
-
-  /**
-   * Stimulus: Whether or not a shift value was provided
-   */
-  hasShiftValue: boolean;
-
-  /**
-   * Stimulus: Whether or not a backdrop class was provided
-   */
-  hasBackdropClass: boolean;
-
-  /**
-   * Stimulus: The backdrop class value
-   */
-  backdropClass: string;
-
-  /**
-   * Stimulus: Whether or not the drawer should use the parent element
-   */
-  useParentValue: boolean;
-
-  /**
-   * Stimulus: Whether or not the drawer has a redraw value
-   */
-  hasRedrawValue: boolean;
-
-  /**
-   * Stimulus: Execute a mithril redraw at this point of operation
-   */
-  redrawValue: 'open' | 'close';
 
 }

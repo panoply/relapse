@@ -47,7 +47,8 @@
     ],
     "extends": "@sissel/eslint-config",
     "rules": {
-      "multiline-ternary": "off"
+      "multiline-ternary": "off",
+      "no-use-before-define": "off"
     }
   },
   "scripts": {

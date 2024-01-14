@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-
   <head>
+    <meta charset="UTF-8">
     <title>
       Relapse
     </title>
-    <meta
-      name="description"
-      content="A lightweight ESM (vanilla) toggle utility for creating dynamic collapsible components">
-    <meta charset="UTF-8">
+    {%- if page.description -%}
+      <meta
+        name="description"
+        content="{{ page.description }}">
+    {%- else -%}
+      <meta
+        name="description"
+        content="A lightweight ESM (vanilla) toggle utility for creating dynamic collapsible components">
+    {%- endif -%}
     <meta
       http-equiv="X-UA-Compatible"
       content="IE=edge">
@@ -36,32 +41,8 @@
   <body>
     <div class="container-fluid container-xxl py-md-4">
 
-      <div
-        id="navbar"
-        class="row ai-center jc-between d-flex d-md-none navbar">
-        <div class="col">
-          <input
-            type="button"
-            class="col btn drawer-toggle ml-2 mt-2"
-            data-drawer="sidebar">
-        </div>
-        <div class="col-auto pr-4">
-          {%- svg 'logo', 'icon-logo' -%}
-        </div>
-      </div>
-
-      <aside
-        id="sidebar"
-        class="drawer-panel drawer-left {{ drawer }} sidebar br"
-        data-controller="drawer"
-        data-drawer-direction-value="left"
-        data-drawer-width-value="250px"
-        data-drawer-mode-value="push"
-        data-drawer-shift-value="#content,#navbar">
-        {%- render 'sidebar', menu: menu, url: page.url -%}
-
-      </aside>
-
+      {%- render 'navbar' -%}
+      {%- render 'sidebar', menu: menu, url: page.url -%}
 
       <div
         id="content"

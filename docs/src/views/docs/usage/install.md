@@ -1,5 +1,6 @@
 ---
 title: 'Relapse | Installation'
+description: 'Relapse is is accessible through the NPM registry, allowing you to install the module in your project using your preferred package manager.'
 layout: base
 permalink: '/usage/install.html'
 prev:

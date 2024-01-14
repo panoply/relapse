@@ -1,5 +1,6 @@
 ---
 title: 'Relapse | Styling'
+description: By design, Relapse refrains from styling any elements. Its primary role is to facilitate smooth transitions during the expansion and collapse of folds. This page provides a foundational starting point.
 layout: base
 permalink: '/usage/styling.html'
 prev:

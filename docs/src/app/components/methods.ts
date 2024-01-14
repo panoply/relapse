@@ -1,26 +1,20 @@
-import { Controller } from '@hotwired/stimulus';
 import relapse, { Relapse } from 'relapse';
+import spx, { SPX } from 'spx';
 
-export class Methods extends Controller<HTMLElement> {
+export class Methods extends spx.Component {
 
-  methods: Relapse;
+  public state: SPX.Attrs<typeof Methods.attrs>;
 
-  static targets: string[] = [
-    'relapse',
-    'opener',
-    'closer'
-  ];
-
-  static values = {
+  static attrs = {
     open: {
       default: 0,
-      type: Number
+      typeof: Number
     }
   };
 
-  connect (): void {
+  onInit (): void {
 
-    this.methods = relapse(this.relapseTarget, {
+    this.methods = relapse(this.relapseNode, {
       multiple: true,
       persist: false
     });
@@ -28,33 +22,31 @@ export class Methods extends Controller<HTMLElement> {
     this.methods.on('toggle', (fold) => {
 
       if (fold.expanded) {
-        this.collapse({ params: { fold: fold.index } });
+        this.collapse({ attrs: { fold: fold.index } });
       } else {
-        this.expand({ params: { fold: fold.index } });
+        this.expand({ attrs: { fold: fold.index } });
       }
 
     });
   }
 
-  expand ({ params }: { params: { fold: number } }) {
+  expand ({ attrs }: { attrs: { fold: number } }) {
 
-    this.methods.expand(params.fold);
+    this.methods.expand(attrs.fold);
 
-    this.openerTargets[params.fold].classList.add('disabled');
-    this.openerTargets[params.fold].classList.remove('active');
-
-    this.closerTargets[params.fold].classList.remove('disabled');
-    this.closerTargets[params.fold].classList.add('active');
+    this.openerNodes[attrs.fold].classList.add('disabled');
+    this.openerNodes[attrs.fold].classList.remove('active');
+    this.closerNodes[attrs.fold].classList.remove('disabled');
+    this.closerNodes[attrs.fold].classList.add('active');
   }
 
-  collapse ({ params }: { params: { fold: number } }) {
+  collapse ({ attrs }: { attrs: { fold: number } }) {
 
-    this.methods.collapse(params.fold);
+    this.methods.collapse(attrs.fold);
 
-    this.openerTargets[params.fold].classList.remove('disabled');
-
-    this.closerTargets[params.fold].classList.remove('active');
-    this.closerTargets[params.fold].classList.add('disabled');
+    this.openerNodes[attrs.fold].classList.remove('disabled');
+    this.closerNodes[attrs.fold].classList.remove('active');
+    this.closerNodes[attrs.fold].classList.add('disabled');
   }
 
   disable ({ params }: { params: { fold: number } }) {
@@ -63,8 +55,10 @@ export class Methods extends Controller<HTMLElement> {
 
   }
 
-  relapseTarget: HTMLElement;
-  openerTargets: HTMLElement[];
-  closerTargets: HTMLElement[];
+  methods: Relapse;
+
+  relapseNode: HTMLElement;
+  openerNodes: HTMLElement[];
+  closerNodes: HTMLElement[];
 
 }

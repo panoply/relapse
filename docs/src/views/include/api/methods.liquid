@@ -1,4 +1,4 @@
-<div data-controller="methods">
+<div spx-component="methods">
   <div class="row gx-2 gx-sm-3 jc-center jc-sm-start mt-4 mb-2">
     {%- assign folds = ' Foo, Bar, Baz' | split: ',' -%}
     {%- for item in folds -%}
@@ -6,17 +6,17 @@
         <button
           type="button"
           class="btn btn-method bd opener my-3 d-block"
-          data-action="methods#expand"
-          data-methods-target="opener"
-          data-methods-fold-param="{{ forloop.index0 }}">
+          spx@click="methods.expand"
+          spx-methods:fold="{{ forloop.index0 }}"
+          spx-node="methods.opener">
           Open {{- item -}}
         </button>
         <button
           type="button"
           class="btn btn-method bd d-block disabled"
-          data-action="methods#collapse"
-          data-methods-target="closer"
-          data-methods-fold-param="{{ forloop.index0 }}">
+          spx@click="methods.collapse"
+          spx-methods:fold="{{ forloop.index0 }}"
+          spx-node="methods.closer">
           Close {{- item -}}
         </button>
       </div>
@@ -26,7 +26,7 @@
     <div class="col-12">
       <section
         class="relapse"
-        data-methods-target="relapse">
+        spx-node="methods.relapse">
         <details>
           <summary>
             Foo
