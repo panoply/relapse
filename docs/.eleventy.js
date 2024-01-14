@@ -107,7 +107,7 @@ function tabs(md, tokens, idx) {
       // opening tag
       return col[1] === 'example' ? string([
         /* html */`
-        <div data-controller="tabs">
+        <div spx-component="tabs">
           <div class="row gx-0 bd tabs py-2 px-2">
             <div class="col-auto mr-2">
               <button
@@ -116,8 +116,8 @@ function tabs(md, tokens, idx) {
                 data-index="0"
                 aria-label="Preview Example"
                 data-tooltip="top"
-                data-tabs-target="btn"
-                data-action="tabs#toggle">
+                spx-node="tabs.btn"
+                spx@click="tabs.toggle">
                 DEMO
               </button>
             </div>
@@ -126,10 +126,10 @@ function tabs(md, tokens, idx) {
                 type="button"
                 class="btn upcase tab"
                 data-index="1"
-                data-tabs-target="btn"
+                spx-node="tabs.btn"
                 aria-label="Markup Structure"
                 data-tooltip="top"
-                data-action="tabs#toggle">
+                spx@click="tabs.toggle">
                 HTML
               </button>
             </div>
@@ -159,19 +159,19 @@ function tabs(md, tokens, idx) {
               </a>
             </div>
           </div>
-          <div class="col-12 tab-content p-4" data-tabs-target="tab">
+          <div class="col-12 tab-content p-4" spx-node="tabs.tab">
         `,
       ]) : col[1] ==='markup' ? string([
         /* html */`
-        <div data-controller="tabs">
+        <div spx-component="tabs">
           <div class="row gx-0 bd tabs py-2 px-2">
             <div class="col-auto mr-2">
               <button
                 type="button"
                 class="btn upcase tab active"
                 data-index="0"
-                data-tabs-target="btn"
-                data-action="tabs#toggle">
+                spx-node="tabs.btn"
+                spx@click="tabs.toggle">
                 SEMANTIC
               </button>
             </div>
@@ -180,17 +180,17 @@ function tabs(md, tokens, idx) {
                 type="button"
                 class="btn upcase tab"
                 data-index="1"
-                data-tabs-target="btn"
-                data-action="tabs#toggle">
+                spx-node="tabs.btn"
+                spx@click="tabs.toggle">
                 SIBLING
               </button>
             </div>
           </div>
-          <div class="col-12 tab-content" data-tabs-target="tab">
+          <div class="col-12 tab-content" spx-node="tabs.tab">
         `,
       ]) : string([
         /* html */`
-          <div class="col-12 tab-content d-none" data-tabs-target="tab">
+          <div class="col-12 tab-content d-none" spx-node="tabs.tab">
         `
       ])
     }

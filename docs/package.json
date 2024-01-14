@@ -72,6 +72,7 @@
     "markdown-it": "^14.0.0",
     "markdown-it-anchor": "^8.6.7",
     "markdown-it-container": "^4.0.0",
+    "netlify-cli": "^17.10.2",
     "papyrus": "link:../../../liquify/packages/papyrus",
     "postcss": "^8.4.32",
     "postcss-cli": "^11.0.0",

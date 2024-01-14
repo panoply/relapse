@@ -1,119 +1,145 @@
-<div class="sidebar-inner pl-4 pr-3 d-block w-100">
-  <div class="sidebar-logo pt-4 pb-3">
-    <div class="row gx-0 jc-between d-none d-sm-flex">
-      <div class="col-auto">
-        {%- svg 'logo', 'icon-logo' -%}
-      </div>
-      <div class="col-auto">
-        <dropdown
-          class="dropdown dropdown-versions bc-gray rd"
-          data-controller="dropdown">
-          <button
-            type="button"
-            class="btn fc-white"
-            data-action="dropdown#toggle"
-            data-dropdown-target="button">
-            {%- version -%}
-          </button>
-          <ul data-dropdown-target="collapse">
-            {%- versions -%}
-          </ul>
-        </dropdown>
+<aside
+  id="sidebar"
+  class="drawer-panel drawer-left {{ drawer }} sidebar br"
+  spx-morph="false"
+  spx-component="drawer"
+  spx-drawer:direction="left"
+  spx-drawer:width="250px"
+  spx-drawer:mode="push"
+  spx-drawer:shift="#content,#navbar">
+
+  <div class="sidebar-inner pl-4 pr-3 d-block w-100">
+
+    <div class="sidebar-logo pt-4 pb-3">
+      <div class="row gx-0 jc-between d-none d-sm-flex">
+        <div class="col-auto">
+          {% svg 'logo', 'icon-logo' %}
+        </div>
+        <div class="col-auto">
+          <dropdown
+            class="dropdown dropdown-versions bc-gray rd"
+            spx-component="dropdown">
+            <button
+              type="button"
+              class="btn fc-white"
+              spx@click="dropdown.toggle"
+              spx-node="dropdown.button">
+              {% version %}
+            </button>
+            <ul spx-node="dropdown.collapse">
+              {% versions %}
+            </ul>
+          </dropdown>
+        </div>
       </div>
     </div>
-  </div>
 
-  <ul class="list tl">
+    <ul class="list tl">
 
-    {%- for item in menu -%}
-      {%- if item.type == 'href' -%}
-        <li class="mb-2">
-          <a
-            spx-position="y:0"
-            href="{{ item.url | url }}"
-            {%- if item.target -%}
-            target="{{ item.target }}"
-            {%- endif -%}
-            class="{% if url contains child.url or url == '/' and item.target == blank %}active{% endif %} spx">
-            {{- item.title -}}
-          </a>
-        </li>
-      {%- elsif item.type == 'button' -%}
+      {%- for item in menu -%}
+        {% if item.type == 'href' %}
 
-        {%- capture open -%}
-          {% if url contains item.group %}
-            open
-          {% endif %}
-        {% endcapture %}
-        <li
-          class="mb-2"
-          data-relapse="{{ item.group | url }}"
-          data-relapse-unique="false">
-          <details {{- open -}}>
-            <summary>
+          {% liquid
+            capture active
+              if url contains child.url or url == '/' and item.target == blank
+                echo 'active'
+              endif
+            endcapture
+          %}
+
+          <li class="mb-2">
+            <a
+              spx-scroll="0"
+              spx-target="true"
+              href="{{ item.url | url }}"
+              {% if item.target %}
+                target="{{ item.target }}"
+              {% endif %}
+              class="{{ active }}">
               {{- item.title -}}
-            </summary>
-            <ul class="sub-list mt-2 pl-2">
-              {%- for link in item.links -%}
-                {%- if link.links -%}
+            </a>
+          </li>
 
-                  {%- capture open_sub -%}
-                    {% unless url contains link.url %}
-                      hidden
-                    {% endunless %}
-                  {% endcapture %}
-                  <li
-                    class="p-1"
-                    data-relapse="{{ link.url }}"
-                    data-relapse-unique="false"
-                    data-relapse-fold-duration="150"
-                    data-relapse-fade-duration="50">
-                    <a
-                      spx-position="y:0"
-                      href="{{ link.url | url }}"
-                      class="{% if url contains link.url %}active{% endif %} spx"
-                      {%- if url contains link.group -%}
-                      aria-disabled="true"
-                      aria-expanded="true"
-                      {%- else -%}
-                      aria-expanded="false"
-                      {%- endif -%}>
-                      {{- link.title -}}
-                    </a>
-                    <ul
-                      class="child-list pl-2"
-                      {%- unless url contains link.group -%}
-                      hidden
-                      {%- endunless -%}>
-                      {%- for child in link.links -%}
-                        <li class="pl-1">
-                          <a
-                            spx-position="y:0"
-                            href="{{ child.url | url }}"
-                            class="
-                              {%- if url contains child.url %}active{% endif -%}
-                              {% if forloop.last %} mb-0 {% endif %} spx">
-                            {{- child.title -}}
-                          </a>
-                        </li>
-                      {%- endfor -%}
-                    </ul>
-                  </li>
-                {%- else -%}
-                  <li class="pl-1">
-                    <a
-                      spx-position="y:0"
-                      href="{{ link.url | url }}"
-                      class="{% if url contains link.url %}active{% endif %} spx">
-                      {{- link.title -}}
-                    </a>
-                  </li>
-                {%- endif -%}
-              {%- endfor -%}
-            </ul>
-          </details>
-        </li>
-      {%- endif -%}
-    {%- endfor -%}
-  </ul>
-</div>
+        {%- elsif item.type == 'button' -%}
+
+          <li
+            class="mb-2"
+            data-relapse="{{ item.group | url }}"
+            data-relapse-unique="false">
+            <details
+              {% if url contains item.group %}
+                open="true"
+              {% endif %}>
+              <summary>
+                {{ item.title }}
+              </summary>
+              <ul class="sub-list mt-2 pl-2">
+                {% for link in item.links %}
+
+                  {% unless link.links %}
+
+                    <li class="pl-1">
+                      <a
+                        spx-scroll="0"
+                        spx-target="true"
+                        href="{{ link.url | url }}"
+                        class="{% if url contains link.url %}active{% endif %}">
+                        {{ link.title }}
+                      </a>
+                    </li>
+
+                  {% else %}
+
+                    <li
+                      class="p-1"
+                      data-relapse="{{ link.url | url }}"
+                      data-relapse-unique="false"
+                      data-relapse-fold-duration="150"
+                      data-relapse-fade-duration="50">
+                      <a
+                        spx-scroll="0"
+                        spx-target="true"
+                        href="{{ link.url | url }}"
+                        {% if url contains link.url %}
+                          class="active spx"
+                        {% else %}
+                          class="spx"
+                        {% endif %}
+                        {% if url contains link.group %}
+                          aria-disabled="true"
+                          aria-expanded="true"
+                        {% else %}
+                          aria-expanded="false"
+                        {% endif %}>
+                        {{ link.title }}
+                      </a>
+                      <ul
+                        class="child-list pl-2"
+                        {% unless url contains link.group %}
+                          hidden="true"
+                        {% endunless %}>
+                        {% for child in link.links %}
+                          <li class="pl-1">
+                            <a
+                              spx-scroll="0"
+                              spx-target="true"
+                              href="{{ child.url | url }}"
+                              {% if url contains child.url %}
+                                class="active"
+                              {% endif %}>
+                              {{ child.title }}
+                            </a>
+                          </li>
+                        {% endfor %}
+                      </ul>
+                    </li>
+                  {% endunless %}
+                {% endfor %}
+              </ul>
+            </details>
+          </li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </div>
+</aside>
