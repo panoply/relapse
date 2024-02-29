@@ -15,7 +15,7 @@ next:
 A collapsible accordion example using the [semantic](https://en.wikipedia.org/wiki/Semantic_HTML) markup structure. The accordion leverages `<details>` and `<summary>` tags. Using semantic elements requires you adhere the markup to expected hierarch and which incur additional nodes in the tree.
 
 :::: grid col-12
-::: tabs example
+::: tabs example:semantic
 
 {% render 'examples/semantic' %}
 
@@ -53,58 +53,6 @@ A collapsible accordion example using the [semantic](https://en.wikipedia.org/wi
   </details>
 </section>
 ```
-
-:::
-::: tabs css
-
-<!-- ```css
-.semantic {
-  position: relative;
-  display: block;
-  border: 0.01rem solid gray;
-  background-color: #16181c;
-}
-.semantic details:first-of-type > summary {
-  border-top: none;
-}
-.semantic details:last-of-type > summary {
-  border-bottom: none;
-}
-.semantic details > summary.initial,
-.semantic details > summary.opened,
-.semantic details[open] > summary {
-  background-color: #16181c;
-}
-.semantic details > summary {
-  list-style-type: none;
-  width: 100%;
-  padding: 10px;
-  background-color: transparent;
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  background-size: 15px;
-  border-bottom: 0.01rem solid gray;
-  cursor: pointer;
-  user-select: none;
-}
-.semantic details > summary + * {
-  background-color: #0f1215;
-  padding: 20px;
-  margin: 0 !important;
-}
-.semantic details > summary.focused {
-  outline: none;
-}
-.semantic details > summary:hover {
-  background-color: #222c38;
-}
-.semantic details > summary::before {
-  content: '';
-}
-.semantic details > summary::-webkit-details-marker {
-  display: none;
-}
-``` -->
 
 :::
 ::::

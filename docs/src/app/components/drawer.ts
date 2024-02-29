@@ -5,7 +5,7 @@ import qvp from 'qvp';
 /* CLASS                                        */
 /* -------------------------------------------- */
 
-export class Drawer extends spx.Component {
+export class Drawer extends spx.Component<typeof Drawer.connect> {
 
   /**
    * The backdrop element
@@ -15,37 +15,37 @@ export class Drawer extends spx.Component {
   /**
    * Stimulus: values
    */
-  static attrs = {
-    outsideClick: Boolean,
-    height: String,
-    width: String,
-    offset: String,
-    direction: String,
-    shift: String,
-    redraw: String,
-    useParent: {
-      typeof: Boolean,
-      default: false
-    },
-    isOpen: {
-      typeof: Boolean,
-      default: false
-    },
-    bodyScroll: {
-      typeof: Boolean,
-      default: false
-    },
-    backdrop: {
-      typeof: Boolean,
-      default: true
-    },
-    mode: {
-      typeof: String,
-      default: 'overlay'
+  static connect = {
+    state: {
+      outsideClick: Boolean,
+      height: String,
+      width: String,
+      offset: String,
+      direction: String,
+      shift: String,
+      redraw: String,
+      useParent: {
+        typeof: Boolean,
+        default: false
+      },
+      isOpen: {
+        typeof: Boolean,
+        default: false
+      },
+      bodyScroll: {
+        typeof: Boolean,
+        default: false
+      },
+      backdrop: {
+        typeof: Boolean,
+        default: true
+      },
+      mode: {
+        typeof: String,
+        default: 'overlay'
+      }
     }
   };
-
-  public state: SPX.Attrs<typeof Drawer.attrs>;
 
   /**
    * Returns the backdrop element
@@ -85,7 +85,7 @@ export class Drawer extends spx.Component {
   /**
    * Stimulus: Initialize
    */
-  onInit () {
+  oninit () {
 
     if (!Drawer.backdrop) {
       Drawer.backdrop = document.createElement('div');
@@ -135,16 +135,7 @@ export class Drawer extends spx.Component {
 
   }
 
-  /**
-   * Stimulus: Disconnect
-   */
-  disconnect () {
-
-    //  this.buttons.forEach(button => button.removeEventListener('click', this.toggle, false));
-
-  }
-
-  onLoad () {
+  onload () {
 
     if (this.state.isOpen) {
       if (qvp.test([ 'lg', 'xl', 'xxl' ])) {
@@ -173,7 +164,7 @@ export class Drawer extends spx.Component {
     }
 
     if (this.state.hasShift) {
-      this.shiftNodes();
+      this.shiftElements();
     }
 
     if (this.state.width) {
@@ -205,7 +196,7 @@ export class Drawer extends spx.Component {
     }
 
     if (this.state.hasShift) {
-      this.shiftNodes();
+      this.shiftElements();
     } else {
       this.target.addEventListener('transitionend', this.transition);
     }
@@ -246,7 +237,7 @@ export class Drawer extends spx.Component {
   /**
    * Set attribute requirements for the elements which apply transform shifting
    */
-  shiftNodes () {
+  shiftElements () {
 
     if (this.state.mode === 'pull') {
 
@@ -323,7 +314,7 @@ export class Drawer extends spx.Component {
   /**
    * Toggle Drawer
    */
-  toggle = (event?: MouseEvent) => {
+  toggle = (event?: SPX.Event) => {
 
     if (event) event.preventDefault();
 

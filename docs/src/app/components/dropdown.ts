@@ -6,26 +6,26 @@ import spx, { SPX } from 'spx';
  *
  * Facilitates Dropdown/Collapsible functionality.
  */
-export class Dropdown extends spx.Component {
+export class Dropdown extends spx.Component<typeof Dropdown.connect> {
 
-  public state: SPX.Attrs<typeof Dropdown.attrs>;
-
-  static attrs = {
-    selected: String,
-    form: String,
-    accordion: String,
-    kind: String,
-    required: {
-      typeof: Boolean,
-      default: false
-    },
-    collapse: {
-      typeof: String,
-      default: 'closed'
-    },
-    type: {
-      typeof: String,
-      default: 'dropdown'
+  static connect = {
+    state: {
+      selected: String,
+      form: String,
+      accordion: String,
+      kind: String,
+      required: {
+        typeof: Boolean,
+        default: false
+      },
+      collapse: {
+        typeof: String,
+        default: 'closed'
+      },
+      type: {
+        typeof: String,
+        default: 'dropdown'
+      }
     }
   };
 
@@ -37,7 +37,7 @@ export class Dropdown extends spx.Component {
     const rect = this.collapseNode.getBoundingClientRect();
 
     for (const { element, folds } of relapse.get()) {
-      if (element.id === this.accordionValue) {
+      if (element.id === this.state.accordion) {
 
         if (!(
           rect.top >= 0 &&
@@ -57,7 +57,7 @@ export class Dropdown extends spx.Component {
   /**
    * Toggle - Open/Close
    */
-  toggle (event: Event) {
+  toggle (event: SPX.Event) {
 
     event.stopPropagation();
 
@@ -67,7 +67,7 @@ export class Dropdown extends spx.Component {
     this.dom.classList.add('is-open');
     this.buttonNode.classList.remove('selected');
 
-    if (this.hasAccordionValue) this.inViewport();
+    if (this.state.hasAccordion) this.inViewport();
 
     // listen for outside clicks
     addEventListener('click', this.outsideClick.bind(this));
@@ -110,7 +110,7 @@ export class Dropdown extends spx.Component {
    *
    * Used for Dropdown Forms
    */
-  select ({ target }: { target: HTMLInputElement }) {
+  select ({ target }: SPX.InputEvent<{}, HTMLInputElement>) {
 
     target.checked = true;
     this.state.selected = target.value;
@@ -138,7 +138,7 @@ export class Dropdown extends spx.Component {
   /**
    * Items in dropdown - An ul > li <select> element equivelent
    */
-  option (event: MouseEvent) {
+  option (event: SPX.Event) {
 
     if (event.target instanceof HTMLElement) {
 
@@ -150,17 +150,17 @@ export class Dropdown extends spx.Component {
         // console.log(event.currentTarget);
       }
 
-      if (this.hasRequiredValue) {
+      if (this.state.hasRequired) {
 
         if (this.buttonNode.classList.contains('is-invalid')) {
           this.buttonNode.classList.remove('is-invalid');
         }
 
-        this.requiredValue = false;
+        this.state.required = false;
         this.buttonNode.classList.add('selected');
       }
 
-      if (this.kindValue === 'preset') {
+      if (this.state.kind === 'preset') {
 
         this.state.selected = `Preset (${event.target.textContent.trim()})`;
         this.buttonNode.innerHTML = `Preset (${event.target.textContent.trim()})<span class="icon"></span>`;

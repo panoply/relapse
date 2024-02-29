@@ -12,7 +12,7 @@
     color: inherit;
     font-size: inherit;
     text-align: left;
-    background-color: transparent;
+    background-color: #16181c;
     background-image: url(icon-plus('#fff'));
     background-repeat: no-repeat;
     background-position: right 10px center;
@@ -22,13 +22,16 @@
     cursor: pointer;
     user-select: none;
 
+    &:hover {
+      background-color: #222c38;
+    }
+
     &:last-of-type:not(.opened) {
       border-bottom: none;
     }
 
     &.opened {
       color: inherit;
-      background-color: #16181c;
       background-image: url(icon-minus('#fff'));
     }
 
@@ -42,7 +45,7 @@
 
     + .sibling-fold {
       max-height: 0;
-      background-color: $code-bg;
+      background-color: #0f1215;
       overflow: hidden;
 
       > :first-child {
@@ -53,7 +56,7 @@
       &.expanded {
         max-height: inherit;
         border-bottom: $border-width solid $border-color;
-
+        background-color: #0f1215;
         &:last-of-type {
           border-bottom: none;
         }

@@ -1,20 +1,18 @@
 import relapse, { Fold, Relapse } from 'relapse';
-import spx, { SPX } from 'spx';
+import spx from 'spx';
 
-export class Events extends spx.Component {
+export class Events extends spx.Component<typeof Events.connect> {
 
   relapse: Relapse;
   colors = [ 'fc-cyan', 'fc-pink', 'fc-purple', 'fc-green' ];
 
-  public state: SPX.Attrs<typeof Events.attrs>;
-  static attrs = {
-    count: {
-      default: 0,
-      typeof: Number
+  static connect = {
+    state: {
+      count: Number
     }
   };
 
-  onInit (): void {
+  onload (): void {
 
     this.relapse = relapse(this.relapseNode);
     this.relapse.on('focus', this.focus, this);
@@ -26,7 +24,7 @@ export class Events extends spx.Component {
 
   insert (message: string, fold: number) {
 
-    this.state.count += 1;
+    ++this.state.count;
 
     const element = document.createElement('div');
     element.className = `d-block pb-1 message ${this.colors[fold]}`;

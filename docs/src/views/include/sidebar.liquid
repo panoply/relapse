@@ -34,7 +34,9 @@
       </div>
     </div>
 
-    <ul class="list tl">
+    <ul
+      class="list tl"
+      id="menu">
 
       {%- for item in menu -%}
         {% if item.type == 'href' %}
@@ -50,7 +52,6 @@
           <li class="mb-2">
             <a
               spx-scroll="0"
-              spx-target="true"
               href="{{ item.url | url }}"
               {% if item.target %}
                 target="{{ item.target }}"
@@ -81,7 +82,6 @@
                     <li class="pl-1">
                       <a
                         spx-scroll="0"
-                        spx-target="true"
                         href="{{ link.url | url }}"
                         class="{% if url contains link.url %}active{% endif %}">
                         {{ link.title }}
@@ -91,14 +91,13 @@
                   {% else %}
 
                     <li
-                      class="p-1"
+                      class="px-1"
                       data-relapse="{{ link.url | url }}"
                       data-relapse-unique="false"
                       data-relapse-fold-duration="150"
                       data-relapse-fade-duration="50">
                       <a
                         spx-scroll="0"
-                        spx-target="true"
                         href="{{ link.url | url }}"
                         {% if url contains link.url %}
                           class="active spx"
@@ -122,7 +121,6 @@
                           <li class="pl-1">
                             <a
                               spx-scroll="0"
-                              spx-target="true"
                               href="{{ child.url | url }}"
                               {% if url contains child.url %}
                                 class="active"

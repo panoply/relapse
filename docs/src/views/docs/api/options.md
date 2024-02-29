@@ -6,8 +6,8 @@ prev:
   label: 'Instance'
   uri: '/api/instance'
 next:
-  label: 'Methods'
-  uri: '/api/methods'
+  label: 'Folds'
+  uri: '/api/folds'
 ---
 
 ## Options

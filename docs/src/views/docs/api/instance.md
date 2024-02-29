@@ -177,6 +177,38 @@ relapse.get('baz'); // => Relapse
 
 ---
 
+## Global Methods
+
+The default `relapse` export provides a couple of methods that you can interface with. Typically, you'll use relapse on a per-element basis, but in cases where you need to query the global store, you can reach for the global methods.
+
+<br>
+
+<!--prettier-ignore-->
+```js
+import relapse from 'relapse';
+
+relapse.get();                     // Returns all instances
+relapse.get('foo');                // Returns instance using id of foo
+relapse.get(['foo', 'bar'])        // Returns instances using ids foo and bar
+
+relapse.has('foo');                // Whether or not instance of foo exists
+relapse.has(['foo', 'bar'])        // Whether or not instances foo and bar exist
+
+relapse.destroy();                 // Teardown and destroy all instances
+relapse.destroy('foo');            // Teardown and destroy the foo instance
+relapse.destroy(['foo', 'bar'])    // Teardown and destroy foo and bar instances
+
+
+relapse.reinit();                   // Reinitialize all instances
+relapse.reinit('foo');              // Reinitialize instance using id of foo
+relapse.reinit(['foo', 'bar'])      // Reinitialize instances using ids foo and bar
+
+relapse.each(instance => {})       // Iterate through all instances, return false the break
+
+```
+
+---
+
 ## Instance Object
 
 The returning `Relapse` instance is comprised of references, events and methods that you can reach for when additional control is required. The instance lifespan is persisted and updates are reflective where necessary.
@@ -185,38 +217,39 @@ The returning `Relapse` instance is comprised of references, events and methods 
 
 <!--prettier-ignore-->
 ```js
-import Relapse from 'relapse';
+import relapse from 'relapse';
 
-const relapse = Relapse('#accordion');
+const example = relapse('#accordion');
 
 // REFERENCES
 
-relapse.id                                   // The Relapse key identifier
-relapse.options                              // Configuration options
-relapse.element                              // Selector HTMLElement;
-relapse.semantic                             // Whether or not semantic;
-relapse.active                               // Last active fold index;
-relapse.openCount                            // Number of opened folds;
-relapse.folds                                // An array list of Folds;
+example.id                                   // The Relapse key identifier
+example.options                              // Configuration options
+example.element                              // Selector HTMLElement;
+example.semantic                             // Whether or not semantic;
+example.active                               // Last active fold index;
+example.openCount                            // Number of opened folds;
+example.folds                                // An array list of Folds;
 
 // EVENTS
 
-relapse.events.toggle                        // List of toggle events
-relapse.events.expand                        // List of expand events
-relapse.events.collapse                      // List of collapse events
-relapse.events.focus                         // List of focus events
-relapse.events.destroy                       // List of destroy events
+example.events.toggle                        // List of toggle events
+example.events.expand                        // List of expand events
+example.events.collapse                      // List of collapse events
+example.events.focus                         // List of focus events
+example.events.destroy                       // List of destroy events
 
-relapse.event.on('focus', (fold) => {})      // Listen for focus button events
-relapse.event.on('toggle', (fold) => {})     // Listen for open/close events
-relapse.event.on('expand', (fold) => {})     // Listen for expanded events
-relapse.event.on('collapse', (fold) => {})   // Listen for collapsed events
-relapse.event.on('destroy', (fold) => {})    // Listen for destroy events
+example.event.on('focus', (fold) => {})      // Listen for focus button events
+example.event.on('toggle', (fold) => {})     // Listen for open/close events
+example.event.on('expand', (fold) => {})     // Listen for expanded events
+example.event.on('collapse', (fold) => {})   // Listen for collapsed events
+example.event.on('destroy', (fold) => {})    // Listen for destroy events
 
 // METHODS
 
-relapse.expand()                            // Expand a fold by index or id
-relapse.collapse()                          // Collapse a fold by index or id
-relapse.destroy()                           // Destroy a the relapse instance
+example.expand()                            // Expand a fold by index or id
+example.collapse()                          // Collapse a fold by index or id
+example.destroy()                           // Destroy a the relapse instance
+example.reinit()                            // Reinitialize the instance
 
 ```
