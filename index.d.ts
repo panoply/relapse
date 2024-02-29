@@ -304,28 +304,25 @@ export declare interface Fold {
   /**
    * **Relapse Fold ID**
    *
-   * The fold id. This value will be used as the `key`
-   * reference for the fold. If the fold button or content element has an `id="*"`
-   * attribute then that value will be used.
+   * The fold id. This value will be used as the `key` reference for the fold.
+   * If the fold button or content element has an `id="*"` attribute then that
+   * value will be used.
    *
-   * If both the button and fold element contain an `id` attribute
-   * then the `id` defined on the fold will be used.
+   * If both the button and fold element contain an `id` attribute then the `id`
+   * defined on the fold will be used.
    */
   id: string;
   /**
-   * **Relapse Button Element**
+   * #### Relapse Button Element
    *
-   * The button element which toggles this fold.
-   *
-   * The comments in below examples inform on the elements this value
-   * will hold depending on markup structure.
+   * The button element which toggles this fold. The comments in below examples
+   * inform on the elements this value will hold depending on markup structure.
    *
    * ---
    *
    * **Example 1**
    *
-   * Using a semantic structure with `<details>` markup. The
-   * button value will `<summary>`
+   * Using a semantic structure with `<details>` markup. The button value will `<summary>`
    *
    * ```html
    * <div data-relapse="id">
@@ -565,7 +562,7 @@ export declare interface Relapse {
   /**
    * **Relapse Status**
    *
-   * The current status indicates the state of of operation executing
+   * The current status indicates the state of operation executing
    *
    * - `1` Relapse is static, no expand or collapse taking place
    * - `2` Relapse is either expanding or collapsing a fold.
@@ -585,7 +582,7 @@ export declare interface Relapse {
   /**
    * **Relapse Semantic**
    *
-   * Whether or not the accordion us using semantic markup.
+   * Whether or not the accordion is using semantic markup.
    *
    * > **NOTE**
    * >
@@ -673,6 +670,15 @@ export declare interface Relapse {
    */
   collapse: (fold?: string | number) => void;
   /**
+   * **Relapse Re~initialize**
+   *
+   * Re-initializes relapse occurances
+   *
+   * In some cases, you may require relapse to re-invoke itself.
+   * You can use this method and have Relapse re-evaluate.
+   */
+  reinit: () => void;
+  /**
    * **Relapse Destriy**
    *
    * Destroy the relapse instance.
@@ -704,12 +710,18 @@ export declare class Methods {
   /**
    * Iterates over all existing instances of Relapse.
    */
-  static each(callback: (scope?: Relapse, id?: string) => void): boolean;
+  static each(callback: (scope?: Relapse, id?: string) => void | false): void;
 
   /**
    * Whether or not an instance exists for the provided identifier/s.
    */
   static has(id: string | string[]): boolean;
+
+  /**
+   * In some cases, you may require relapse to re-invoke itself.
+   * You can use this method and have Relapse re-evaluate.
+   */
+  static reinit(id?: string | string[]): void;
 
   /**
    * Destory and teardown all active instances or those which match the
@@ -755,7 +767,7 @@ interface IRelapse extends Identity<typeof Methods> {
  (options?: Options): Relapse[];
 }
 
-declare const Relapsed: IRelapse;
+declare const relapse: IRelapse;
 
 declare global {
   export interface Window {
@@ -780,4 +792,4 @@ declare global {
 
 }
 
-export default Relapsed;
+export default relapse;
