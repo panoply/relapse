@@ -1,7 +1,7 @@
 {
   "name": "relapse",
   "description": "An A11y compliant, modern, lightweight (2kb gzip) dependency free utility for collapsible toggle components.",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "homepage": "https://panoply.github.io/relapse/",
   "author": {
     "name": "Nik Savvidis",
