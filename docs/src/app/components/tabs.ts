@@ -4,6 +4,7 @@ export class Tabs extends spx.Component<typeof Tabs.connect> {
 
   static connect = {
     state: {
+      size: Number,
       open: {
         default: 0,
         typeof: Number
@@ -11,26 +12,30 @@ export class Tabs extends spx.Component<typeof Tabs.connect> {
     }
   };
 
-  toggle ({ target }: SPX.Event) {
+  oninit () {
 
-    this.state.open = +target.getAttribute('data-index');
-
-    for (const btn of this.btnNodes) {
-      btn.classList.remove('active');
-    }
-
-    for (const tab of this.tabNodes) {
-      tab.classList.remove('d-block');
-      tab.classList.add('d-none');
-    }
-
-    this.btnNodes[this.state.open].classList.add('active');
-    this.tabNodes[this.state.open].classList.remove('d-none');
-    this.tabNodes[this.state.open].classList.add('d-block');
+    this.state.size = this.tabNodes.length;
 
   }
 
+  toggle ({ attrs }: SPX.Event<{ index: number }>) {
+
+    if (this.state.open === attrs.index) return;
+
+    for (let i = 0, s = this.state.size; i < s; i++) {
+      if (i === attrs.index) {
+        this.buttonNodes[i].classList.add('active');
+        this.tabNodes[i].classList.remove('d-none');
+      } else {
+        this.buttonNodes[i].classList.remove('active');
+        this.tabNodes[i].classList.toggle('d-none', true);
+      }
+    }
+
+    this.state.open = attrs.index;
+  }
+
   public tabNodes: HTMLElement[];
-  public btnNodes: HTMLElement[];
+  public buttonNodes: HTMLElement[];
 
 }
