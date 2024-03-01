@@ -191,13 +191,13 @@ relapse.get();                     // Returns all instances
 relapse.get('foo');                // Returns instance using id of foo
 relapse.get(['foo', 'bar'])        // Returns instances using ids foo and bar
 
+relapse.has();                     // Whether or not instances exist
 relapse.has('foo');                // Whether or not instance of foo exists
 relapse.has(['foo', 'bar'])        // Whether or not instances foo and bar exist
 
 relapse.destroy();                 // Teardown and destroy all instances
 relapse.destroy('foo');            // Teardown and destroy the foo instance
 relapse.destroy(['foo', 'bar'])    // Teardown and destroy foo and bar instances
-
 
 relapse.reinit();                   // Reinitialize all instances
 relapse.reinit('foo');              // Reinitialize instance using id of foo

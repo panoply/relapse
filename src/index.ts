@@ -861,11 +861,19 @@ relapse.reinit = (id?: string | string[]) => {
 
 };
 
-relapse.has = (id: string | string[]) => (
+relapse.has = (id?: string | string[]) => (
 
-  isArray(id) ? id : [ id ].every($r.has)
+  id ? (isArray(id) ? id : [ id ]).every($r.has) : $r.size > 0
 
 );
+
+relapse.destroy = (id?: string | string[]) => {
+
+  const get = relapse.get(id);
+  const instances = isArray(get) ? get : [ get ];
+  for (const instance of instances) instance.destroy();
+
+};
 
 relapse.get = (id?: string | string[]) => (
 

@@ -68,11 +68,11 @@ function tabs(md, tokens, idx) {
               <button
                 type="button"
                 class="btn upcase tab active"
-                data-index="0"
                 aria-label="Preview Example"
                 data-tooltip="top"
-                spx-node="tabs.btn"
-                spx@click="tabs.toggle">
+                spx-node="tabs.button"
+                spx@click="tabs.toggle"
+                spx-tabs:index="0">
                 DEMO
               </button>
             </div>
@@ -80,11 +80,11 @@ function tabs(md, tokens, idx) {
               <button
                 type="button"
                 class="btn upcase tab"
-                data-index="1"
-                spx-node="tabs.btn"
                 aria-label="Markup Structure"
                 data-tooltip="top"
-                spx@click="tabs.toggle">
+                spx-node="tabs.button"
+                spx@click="tabs.toggle"
+                spx-tabs:index="1">
                 HTML
               </button>
             </div>
@@ -112,9 +112,9 @@ function tabs(md, tokens, idx) {
               <button
                 type="button"
                 class="btn upcase tab active"
-                data-index="0"
-                spx-node="tabs.btn"
-                spx@click="tabs.toggle">
+                spx-node="tabs.button"
+                spx@click="tabs.toggle"
+                spx-tabs:index="0">
                 SEMANTIC
               </button>
             </div>
@@ -122,9 +122,9 @@ function tabs(md, tokens, idx) {
               <button
                 type="button"
                 class="btn upcase tab"
-                data-index="1"
-                spx-node="tabs.btn"
-                spx@click="tabs.toggle">
+                spx-node="tabs.button"
+                spx@click="tabs.toggle"
+                spx-tabs:index="1">
                 SIBLING
               </button>
             </div>
