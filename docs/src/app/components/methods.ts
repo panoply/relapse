@@ -1,18 +1,18 @@
 import relapse, { Relapse } from 'relapse';
 import spx, { SPX } from 'spx';
 
-export class Methods extends spx.Component {
+export class Methods extends spx.Component<typeof Methods.connect> {
 
-  public state: SPX.Attrs<typeof Methods.attrs>;
-
-  static attrs = {
-    open: {
-      default: 0,
-      typeof: Number
+  static connect = {
+    state: {
+      open: {
+        default: 0,
+        typeof: Number
+      }
     }
   };
 
-  onInit (): void {
+  onload (): void {
 
     this.methods = relapse(this.relapseNode, {
       multiple: true,
@@ -49,9 +49,9 @@ export class Methods extends spx.Component {
     this.closerNodes[attrs.fold].classList.add('disabled');
   }
 
-  disable ({ params }: { params: { fold: number } }) {
+  disable ({ attrs }: SPX.Event<{ fold: number }>) {
 
-    this.methods.expand(params.fold);
+    this.methods.expand(attrs.fold);
 
   }
 

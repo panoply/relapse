@@ -15,6 +15,7 @@ export default defineConfig({
   minifyIdentifiers: true,
   minifySyntax: true,
   platform: 'browser',
+
   define: {
     VERSION: `"${pkg.version}"`
   },

@@ -1,21 +1,17 @@
 import spx, { SPX } from 'spx';
 
-export class Tabs extends spx.Component {
+export class Tabs extends spx.Component<typeof Tabs.connect> {
 
-  static targets: string[] = [
-    'tab',
-    'btn'
-  ];
-
-  public state: SPX.Attrs<typeof Tabs.attrs>;
-  static attrs = {
-    open: {
-      default: 0,
-      typeof: Number
+  static connect = {
+    state: {
+      open: {
+        default: 0,
+        typeof: Number
+      }
     }
   };
 
-  toggle ({ target }: { target: HTMLElement }) {
+  toggle ({ target }: SPX.Event) {
 
     this.state.open = +target.getAttribute('data-index');
 
@@ -34,7 +30,7 @@ export class Tabs extends spx.Component {
 
   }
 
-  tabNodes: HTMLElement[];
-  btnNodes: HTMLElement[];
+  public tabNodes: HTMLElement[];
+  public btnNodes: HTMLElement[];
 
 }

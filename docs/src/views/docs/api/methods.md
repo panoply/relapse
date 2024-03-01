@@ -25,6 +25,7 @@ method.expand('foo');       // Expands fold with id value of "foo"
 method.collapse(1);         // Collapse fold at index 1
 method.collapse('bar');     // Collapse fold with id value of "bar"
 method.destroy();           // Destroy the relapse instance
+method.reinit();            // Destroy and reinitialize instance
 ```
 
 <br>

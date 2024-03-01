@@ -9,14 +9,14 @@ const { isArray, from } = Array;
  * This is a global store, Map reference which will maintain all
  * relapse instances
  */
-const $R: Map<string, Relapse> = new Map();
+const $r: Map<string, Relapse> = new Map();
 
 /**
  * Objects (Utility)
  *
  * Utility for generating an object without Prototype.
  */
-const $O = <T> (object?: Partial<T>, o = Object.create(null)): T => object ? Object.assign(o, object) : o;
+const $o = <T> (object?: Partial<T>, o = Object.create(null)): T => object ? Object.assign(o, object) : o;
 
 /**
  * Folds
@@ -25,7 +25,7 @@ const $O = <T> (object?: Partial<T>, o = Object.create(null)): T => object ? Obj
  */
 class Folds extends Array<Fold> {
 
-  ref: { [id: string]: number } = $O();
+  ref: { [id: string]: number } = $o();
 
   get = (id?: string | number) => {
 
@@ -43,11 +43,38 @@ class Folds extends Array<Fold> {
 
 }
 
+const enum AriaKey {
+  TRUE = 1,
+  FALSE
+}
+
+/* -------------------------------------------- */
+/* SUGARS FOR SMALLER DIST SIZE                 */
+/* -------------------------------------------- */
+
+const setAriaDisabled = (el: HTMLElement, value = AriaKey.TRUE) => {
+  el.ariaDisabled = value === AriaKey.TRUE ? 'true' : 'false';
+};
+const setProperty = (el: HTMLElement, key: string, value: string) => (
+  el.style.setProperty(key, value)
+);
+const addClass = (el: HTMLElement, value: string) => (
+  el.classList.add(value)
+);
+const removeClass = (el: HTMLElement, value: string) => (
+  el.classList.remove(value)
+);
+const setAriaExpanded = (el: HTMLElement, value = AriaKey.TRUE) => {
+  el.ariaExpanded = value === AriaKey.TRUE ? 'true' : 'false';
+};
+
 /* -------------------------------------------- */
 /* API                                          */
 /* -------------------------------------------- */
 
-function setInstance (el: HTMLElement, config: Options) {
+function setInstance (element: HTMLElement, config: Options) {
+
+  let el: HTMLElement = element;
 
   /**
    * Key Identifier
@@ -57,14 +84,14 @@ function setInstance (el: HTMLElement, config: Options) {
   let id: string = el.getAttribute(config.schema);
 
   if (id === null || id === '') {
-    id = el.hasAttribute('id') ? el.id : `R${$R.size}`;
+    id = el.hasAttribute('id') ? el.id : `R${$r.size}`;
     el.setAttribute(config.schema, id);
   };
 
   // Lets ensure that the identifier provided is not already in use
   // We will throw, if identifier is not unique, unless unique is false
-  if ($R.has(id)) {
-    if ($R.get(id).options.unique === false) return;
+  if ($r.has(id)) {
+    if ($r.get(id).options.unique === false) return;
     throw new Error(`Relapse: Instance already exists with id: ${id} `);
   }
 
@@ -81,16 +108,20 @@ function setInstance (el: HTMLElement, config: Options) {
   /**
    * Create the accordion "scope" which describes each instances of a relapse collapse in the DOM.
    */
-  const scope: Relapse = $R.set(id, <Relapse>{
+  const scope: Relapse = $r.set(id, <Relapse>{
     id,
     semantic: el.firstElementChild.nodeName === 'DETAILS',
     openCount: 0,
     status: 1,
     active: NaN,
-    events: $O(),
+    events: $o(),
     get folds () { return folds; },
     get options () { return options; },
-    get element () { return el; }
+    get element () { return el; },
+    set element (e) {
+      el = e;
+      id = el.getAttribute(config.schema);
+    }
   }).get(id);
 
   // Set aria multi-selectable attribute
@@ -114,7 +145,7 @@ function setInstance (el: HTMLElement, config: Options) {
   /**
    * Deconstructed classes for quicker lookip, micro-op
    */
-  const { classes } = scope.options;
+  const cls = scope.options.classes;
 
   /* -------------------------------------------- */
   /* FOLDS                                        */
@@ -134,7 +165,7 @@ function setInstance (el: HTMLElement, config: Options) {
     /**
      * Fold Instance
      */
-    const fold: Fold = $O<Fold>({
+    const fold: Fold = $o<Fold>({
       index: scope.folds.length,
       locked: false
     });
@@ -194,18 +225,18 @@ function setInstance (el: HTMLElement, config: Options) {
 
     wrapper.setAttribute('role', 'region');
 
-    const isDisabled = button.classList.contains(classes.disabled);
-    const isOpened = button.classList.contains(classes.opened);
-    const isExpanded = element.classList.contains(classes.expanded);
+    const isDisabled = button.classList.contains(cls.disabled);
+    const isOpened = button.classList.contains(cls.opened);
+    const isExpanded = element.classList.contains(cls.expanded);
 
     if (button.ariaExpanded === 'true' || isOpen || isOpened) {
 
-      if (button.ariaExpanded !== 'true') button.ariaExpanded = 'true';
-      if (!isOpened && !isDisabled) button.classList.add(classes.opened);
-      if (!isExpanded) element.classList.add(classes.expanded);
+      if (button.ariaExpanded !== 'true') setAriaExpanded(button);
+      if (!isOpened && !isDisabled) addClass(button, cls.opened);
+      if (!isExpanded) addClass(element, cls.expanded);
       if (isDisabled || button.ariaDisabled === 'true') {
-        button.classList.add(classes.disabled);
-        button.ariaDisabled = 'true';
+        addClass(button, cls.disabled);
+        setAriaDisabled(button);
         fold.disabled = true;
         fold.locked = true;
       }
@@ -214,23 +245,23 @@ function setInstance (el: HTMLElement, config: Options) {
 
     } else if (button.ariaDisabled === 'true' || isDisabled) {
 
-      if (button.ariaDisabled !== 'true') button.ariaDisabled = 'true';
-      if (!isDisabled) button.classList.add(classes.disabled);
-      if (isOpened) button.classList.remove(classes.opened);
+      if (button.ariaDisabled !== 'true') setAriaDisabled(button);
+      if (!isDisabled) addClass(button, cls.disabled);
+      if (isOpened) removeClass(button, cls.opened);
 
       fold.expanded = (isExpanded || isOpen) === true;
       fold.disabled = true;
       fold.locked = true;
 
-      button.ariaExpanded = String(fold.expanded);
+      setAriaExpanded(button, fold.expanded ? AriaKey.TRUE : AriaKey.FALSE);
 
     } else {
 
       fold.expanded = false;
       fold.disabled = false;
 
-      button.ariaExpanded = 'false';
-      button.ariaDisabled = 'false';
+      setAriaExpanded(button, AriaKey.FALSE);
+      setAriaDisabled(button, AriaKey.FALSE);
 
     }
 
@@ -253,21 +284,21 @@ function setInstance (el: HTMLElement, config: Options) {
 
       if (scope.semantic) {
         fold.height = button.offsetHeight + element.offsetHeight;
-        wrapper.style.setProperty('height', 'auto');
+        setProperty(wrapper, 'height', 'auto');
       } else {
         fold.height = element.scrollHeight;
-        wrapper.style.setProperty('max-height', 'inherit');
+        setProperty(wrapper, 'max-height', 'inherit');
       }
 
     } else {
 
       if (scope.semantic) {
         fold.height = button.offsetHeight;
-        wrapper.style.setProperty('height', 'auto');
+        setProperty(wrapper, 'height', 'auto');
       } else {
         fold.height = 0;
-        element.style.setProperty('max-height', '0');
-        element.style.setProperty('overflow', 'hidden');
+        setProperty(element, 'max-height', '0');
+        setProperty(element, 'overflow', 'hidden');
       }
     }
 
@@ -287,6 +318,7 @@ function setInstance (el: HTMLElement, config: Options) {
 
   scope.on = event.on as Events<Readonly<Relapse>, Fold, number>;
   scope.off = event.off as Events<Readonly<Relapse>, Fold, void>;
+
   scope.collapse = (fold: string | number = scope.active) => {
     if (isNaN(fold as number)) return;
     folds.get(fold).close(fold);
@@ -300,27 +332,27 @@ function setInstance (el: HTMLElement, config: Options) {
   scope.destroy = () => {
     folds.forEach(fold => fold.destroy());
     event.emit('destroy', scope);
-    $R.delete(id);
+    $r.delete(id);
+  };
+
+  scope.reinit = () => {
+    folds.forEach(fold => fold.destroy());
+    setInstance(element, config);
   };
 
 }
 
 function setEvents (events: { [K in EventNames]?: Events<Readonly<Relapse>, Fold>[] }) {
 
-  const event = $O<any>();
+  const event = $o<any>();
 
   event.on = (name: EventNames, cb: Events<Readonly<Relapse>, Fold>, binding?: any) => {
-
     if (!events[name]) events[name] = [];
     return events[name].push(binding ? cb.bind(binding) : cb) - 1;
-
   };
 
   event.off = (name: EventNames, cb: Events<Readonly<Relapse>, Fold> | number) => {
 
-    /**
-     * Select the event/s to emit
-     */
     const event = events[name];
     const warn = `Relapse: Removed ${name} event listener`;
 
@@ -355,14 +387,8 @@ function setEvents (events: { [K in EventNames]?: Events<Readonly<Relapse>, Fold
 
   event.emit = (name: EventNames, scope: Relapse, fold?: Fold): boolean => {
 
-    /**
-     * Select the event/s to emit
-     */
     const event = events[name] || [];
 
-    /**
-     * Whether or not to `preventDefault`
-     */
     let prevent: boolean = null;
 
     for (let i = 0, s = event.length; i < s; i++) {
@@ -382,10 +408,7 @@ function setFold (fold: Fold, scope: Relapse, event: ReturnType<typeof setEvents
 
   const cl = scope.options.classes;
   const fe = scope.options.fade;
-  const fc = $O({
-    easing: fe.easing,
-    duration: fe.duration * 2
-  });
+  const fc = $o({ easing: fe.easing, duration: fe.duration * 2 });
 
   /* -------------------------------------------- */
   /* PRIVATES                                     */
@@ -413,30 +436,19 @@ function setFold (fold: Fold, scope: Relapse, event: ReturnType<typeof setEvents
   /**
    * Active Count
    */
-  const getCount = () => (
-
-    scope.folds.filter(({ expanded }) => expanded).length
-
-  );
+  const getCount = () => scope.folds.filter(({ expanded }) => expanded).length;
 
   /**
    * Fading Animation
    */
   const onFading = (el: HTMLElement, opacity: [string, string], visibility: [string, string]) => {
 
-    el.style.setProperty('will-change', 'opacity,visibility');
-
-    const animate = el.animate(
-      { opacity, visibility },
-      opacity[0] === '1' ? fc : fe
-    );
-
+    setProperty(el, 'will-change', 'opacity,visibility');
+    const animate = el.animate({ opacity, visibility }, opacity[0] === '1' ? fc : fe);
     animate.onfinish = () => {
-
-      el.style.setProperty('opacity', opacity[1]);
-      el.style.setProperty('visibility', visibility[1]);
+      setProperty(el, 'opacity', opacity[1]);
+      setProperty(el, 'visibility', visibility[1]);
       el.style.removeProperty('will-change');
-
     };
 
   };
@@ -444,19 +456,10 @@ function setFold (fold: Fold, scope: Relapse, event: ReturnType<typeof setEvents
   /**
    * Folding Animation
    */
-  const onFolding = (el: HTMLElement, height: [string, string], callback: () => void) => {
-
+  const onFolding = (el: HTMLElement, height: [string, string], fn: () => void) => {
     scope.status = 2;
-
-    const animate = el.animate(
-      scope.semantic
-        ? { height }
-        : { maxHeight: height },
-      scope.options.fold
-    );
-
-    animate.onfinish = callback;
-
+    const animate = el.animate(scope.semantic ? { height } : { maxHeight: height }, scope.options.fold);
+    animate.onfinish = fn;
   };
 
   /**
@@ -470,32 +473,35 @@ function setFold (fold: Fold, scope: Relapse, event: ReturnType<typeof setEvents
     const w = focus.wrapper;
     const e = focus.element;
 
-    w.style.setProperty('overflow', 'hidden');
+    setProperty(w, 'overflow', 'hidden');
 
     if (scope.semantic) {
       focus.height = b.offsetHeight;
-      w.style.setProperty('will-change', 'height');
+      setProperty(w, 'will-change', 'height');
     } else {
       focus.height = 0;
-      w.style.setProperty('will-change', 'max-height');
+      setProperty(w, 'will-change', 'max-height');
     }
 
+    const h = `${focus.height}px`;
+
     onFading(e, [ '1', '0' ], [ 'visible', 'hidden' ]);
-    onFolding(w, [ `${w.offsetHeight}px`, `${focus.height}px` ], () => {
+    onFolding(w, [ `${w.offsetHeight}px`, h ], () => {
 
       if (scope.semantic) {
-        w.style.setProperty('height', `${focus.height}px`);
+        setProperty(w, 'height', h);
         w.removeAttribute('open');
       } else {
-        e.style.setProperty('max-height', '0');
+        setProperty(e, 'max-height', '0');
       }
 
       focus.expanded = false;
 
-      b.ariaDisabled = 'false';
-      b.ariaExpanded = 'false';
-      b.classList.remove(cl.opened);
-      w.classList.remove(cl.expanded);
+      setAriaDisabled(b, AriaKey.FALSE);
+      setAriaExpanded(b, AriaKey.FALSE);
+      removeClass(b, cl.opened);
+      removeClass(w, cl.expanded);
+
       w.style.removeProperty('will-change');
 
       scope.openCount = getCount();
@@ -518,38 +524,37 @@ function setFold (fold: Fold, scope: Relapse, event: ReturnType<typeof setEvents
     const w = focus.wrapper;
     const e = focus.element;
 
-    b.ariaDisabled = 'true';
-    b.ariaExpanded = 'true';
+    setAriaDisabled(b);
+    setAriaExpanded(b);
 
     let start: string;
 
     if (scope.semantic) {
       w.setAttribute('open', '');
-      w.style.setProperty('will-change', 'height');
-      w.style.setProperty('overflow', 'hidden');
+      setProperty(w, 'will-change', 'height');
+      setProperty(w, 'overflow', 'hidden');
       focus.height = b.offsetHeight + e.offsetHeight;
       start = `${b.offsetHeight}px`;
     } else {
-      w.style.setProperty('will-change', 'max-height');
+      setProperty(w, 'will-change', 'max-height');
       focus.height = e.scrollHeight;
       start = '0px';
     }
 
-    b.classList.add(cl.opened);
-
+    addClass(b, cl.opened);
     onFading(e, [ '0', '1' ], [ 'hidden', 'visible' ]);
     onFolding(w, [ start, `${focus.height}px` ], () => {
 
       if (scope.semantic) {
-        w.style.setProperty('height', 'auto');
+        setProperty(w, 'height', 'auto');
       } else {
-        e.style.setProperty('max-height', 'inherit');
+        setProperty(w, 'max-height', 'inherit');
       }
 
       w.style.removeProperty('overflow');
       w.style.removeProperty('will-change');
 
-      e.classList.add(cl.expanded);
+      addClass(e, cl.expanded);
 
       focus.expanded = true;
       scope.openCount = getCount();
@@ -566,9 +571,6 @@ function setFold (fold: Fold, scope: Relapse, event: ReturnType<typeof setEvents
   /* PUBLIC                                       */
   /* -------------------------------------------- */
 
-  /**
-   * Fold Close
-   */
   fold.close = (index: number) => {
 
     let focus = getFold(index);
@@ -596,9 +598,6 @@ function setFold (fold: Fold, scope: Relapse, event: ReturnType<typeof setEvents
 
   };
 
-  /**
-   * Button Focus
-   */
   fold.focus = () => {
 
     scope.active = fold.index;
@@ -608,23 +607,17 @@ function setFold (fold: Fold, scope: Relapse, event: ReturnType<typeof setEvents
 
   };
 
-  /**
-   * Button Enable
-   */
   fold.enable = (index?: number) => {
 
     const focus = getFold(index);
 
     if (focus.disabled && focus.locked === false) {
       focus.disabled = false;
-      focus.button.ariaDisabled = 'false';
-      focus.button.classList.remove(cl.disabled);
+      setAriaDisabled(focus.button, AriaKey.FALSE);
+      removeClass(focus.button, cl.disabled);
     }
   };
 
-  /**
-   * Button Disable
-   */
   fold.disable = (index?: number) => {
 
     const focus = getFold(index);
@@ -633,32 +626,27 @@ function setFold (fold: Fold, scope: Relapse, event: ReturnType<typeof setEvents
       if (focus.expanded) {
         if (scope.options.persist) {
           focus.disabled = true;
-          focus.button.ariaDisabled = 'true';
+          setAriaDisabled(focus.button);
         }
       } else {
         focus.close();
         focus.disabled = true;
-        focus.button.ariaDisabled = 'true';
-        focus.button.classList.add(cl.disabled);
+        setAriaDisabled(focus.button);
+        addClass(focus.button, cl.disabled);
       }
     }
   };
 
-  /**
-   * Open Fold
-   */
   fold.open = (index?: number) => {
 
     const focus = getFold(index);
+
     if (scope.status === 2 || focus.expanded) return;
 
     requestAnimationFrame(doExpand(focus));
 
   };
 
-  /**
-   * Fold Toggle
-   */
   fold.toggle = (e) => {
 
     if (scope.semantic) e.preventDefault();
@@ -668,9 +656,6 @@ function setFold (fold: Fold, scope: Relapse, event: ReturnType<typeof setEvents
 
   };
 
-  /**
-   * Fold Destory
-   */
   fold.destroy = () => {
     fold.button.removeEventListener('click', fold.toggle);
     fold.button.removeEventListener('focus', fold.focus);
@@ -695,20 +680,20 @@ function setSchema (options: Options | string) {
 
 function setDefaults (options: Options | string): Options {
 
-  const config: Options = $O({
+  const config: Options = $o({
     persist: false,
     unique: false,
     multiple: false,
     schema: 'data-relapse',
-    fold: $O({
+    fold: $o({
       duration: 200,
       easing: 'ease-in-out'
     }),
-    fade: $O({
+    fade: $o({
       duration: 200 - (200 / 2.5),
       easing: 'linear'
     }),
-    classes: $O({
+    classes: $o({
       opened: 'opened',
       disabled: 'disabled',
       expanded: 'expanded'
@@ -745,11 +730,7 @@ function setDefaults (options: Options | string): Options {
 function setAttrs (config: Options, attrs: NamedNodeMap) {
 
   const slice = config.schema.length + 1;
-  const clone = $O<Options>({
-    fold: $O(),
-    fade: $O(),
-    classes: $O()
-  });
+  const clone = $o<Options>({ fold: $o(), fade: $o(), classes: $o() });
 
   // Lets loop over all the attributes contained on the element
   // and apply configuration to ones using valid annotations.
@@ -851,36 +832,48 @@ const relapse = function relapse (selector?: string | HTMLElement | Options, opt
 
   }
 
-  const instances = from($R.values());
+  const instances = from($r.values());
 
-  return single
-    ? instances[instances.length - 1]
-    : instances;
+  return single ? instances[instances.length - 1] : instances;
 
 };
 
 // @ts-expect-error
 relapse.version = VERSION;
 
-relapse.each = (cb: (scope: Relapse, id: string) => void) => (
+relapse.each = (cb: (scope: Relapse, id: string) => void | false) => {
 
-  $R.forEach(cb)
+  for (const [ id, instance ] of $r) {
+    if (cb(instance, id) === false) break;
+  }
 
-);
+};
+relapse.reinit = (id?: string | string[]) => {
+
+  const get = relapse.get(id);
+  const instances = isArray(get) ? get : [ get ];
+
+  for (const instance of instances) {
+    const { id, options } = instance;
+    instance.destroy();
+    relapse(`#${id}`, options);
+  }
+
+};
 
 relapse.has = (id: string | string[]) => (
 
-  isArray(id) ? id : [ id ].every($R.has)
+  isArray(id) ? id : [ id ].every($r.has)
 
 );
 
 relapse.get = (id?: string | string[]) => (
 
   typeof id === 'string'
-    ? $R.has(id) ? $R.get(id) : null
+    ? $r.has(id) ? $r.get(id) : null
     : isArray(id)
-      ? id.filter(x => $R.has(x)).map(x => $R.get(x))
-      : from($R.values())
+      ? id.filter(x => $r.has(x)).map(x => $r.get(x))
+      : from($r.values())
 
 );
 

@@ -1,29 +1,33 @@
 {
   "exclude": [
     "node_modules/**",
-    "test"
+    "test",
   ],
   "include": [
     "src/index.ts",
-    "index.d.ts",
-    "tsup.config.ts"
+    "index.d.ts"
   ],
   "typeAcquisition": {
     "enable": true,
   },
   "compilerOptions": {
-    "incremental": true,
+    "incremental": false,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "declaration": true,
-    "target": "ES6",
     "removeComments": true,
-    "resolveJsonModule": true,
+    "target": "ES6",
     "lib": [
       "es2020",
       "dom",
-      "dom.iterable",
-      "ESNext"
+      "dom.iterable"
     ],
-    "moduleResolution": "Node",
-    "module": "ES6"
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "emitDeclarationOnly": true,
+    "isolatedModules": true,
   }
 }

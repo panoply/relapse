@@ -29,13 +29,16 @@
       rel="preconnect">
     <link
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap"
-      rel="stylesheet">
+      rel="stylesheet"
+      spx-eval="false">
     <link
       href="{{'/style.css' | url }}"
-      rel="stylesheet">
+      rel="stylesheet"
+      spx-eval="false">
     <script
       src="{{'/bundle.min.js' | url }}"
-      defer></script>
+      defer
+      spx-eval="false"></script>
   </head>
 
   <body>
@@ -51,12 +54,12 @@
           id="main"
           class="col-11 col-md-8 col-lg-8 col-xl-9 col-xxl-8 pt-3 p-3 p-sm-2 content">
           {{- content -}}
-          {%- include 'navigate' -%}
+          {%- include 'navigate', navigation: menu -%}
         </div>
       </div>
 
     </div>
 
-    {%- svgsprite -%}
+    {%- sprite -%}
   </body>
 </html>

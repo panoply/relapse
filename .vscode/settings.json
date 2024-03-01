@@ -2,10 +2,16 @@
   "npm.packageManager": "pnpm",
   "stylelint.validate": [
     "scss",
-    "sass"
+    "sass",
+    "less",
+    "postcss"
   ],
   "stylelint.packageManager": "pnpm",
   "stylelint.enable": true,
+  "scss.validate": false, // important to disable vscode validation
+  "editor.codeActionsOnSave": {
+    "source.fixAll.stylelint": "explicit"
+  },
   "files.exclude": {
     "**/.git": true,
     "**/.svn": true,
@@ -16,7 +22,6 @@
     "**/node_modules": true,
     "**/pnpm-lock.yaml": true
   },
-  "scss.validate": false,
   "[liquid]": {
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "sissel.shopify-liquid"
@@ -166,6 +171,8 @@
   },
   "cSpell.words": [
     "bezier",
+    "Flems",
+    "reinit",
     "WAAPI"
   ]
 }
