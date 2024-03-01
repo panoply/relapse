@@ -15,21 +15,8 @@
         <div class="col-auto">
           {% svg 'logo', 'icon-logo' %}
         </div>
-        <div class="col-auto">
-          <dropdown
-            class="dropdown dropdown-versions bc-gray rd"
-            spx-component="dropdown">
-            <button
-              type="button"
-              class="btn fc-white"
-              spx@click="dropdown.toggle"
-              spx-node="dropdown.button">
-              {% version %}
-            </button>
-            <ul spx-node="dropdown.collapse">
-              {% versions %}
-            </ul>
-          </dropdown>
+        <div class="col-auto fs-xs fc-gray py-2">
+          v{% version %}
         </div>
       </div>
     </div>

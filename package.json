@@ -70,14 +70,15 @@
     "not dead"
   ],
   "devDependencies": {
-    "@sissel/eslint-config": "^1.1.0",
-    "@sissel/prettier-config": "^1.1.0",
-    "browserslist": "^4.22.2",
-    "eslint": "^8.56.0",
+    "@sissel/eslint-config": "^1.2.1",
+    "@sissel/prettier-config": "^1.2.5",
+    "@types/node": "^20.11.24",
+    "browserslist": "^4.23.0",
+    "eslint": "^8.57.0",
     "gzip-size-cli": "^5.1.0",
-    "prettier": "^3.1.1",
-    "terser": "^5.26.0",
-    "tsup": "^8.0.1",
+    "prettier": "^3.2.5",
+    "terser": "^5.28.1",
+    "tsup": "^8.0.2",
     "typescript": "^5.3.3"
   }
 }

@@ -25,11 +25,11 @@
   ],
   "scripts": {
     "dev": "pnpm run scss:build && concurrently \"pnpm run tsup:watch\" \"pnpm run scss:watch\" \"pnpm run 11ty:watch\"",
-    "build": "rm -rf public && pnpm run tsup:build && pnpm run scss:build && pnpm run 11ty:build",
+    "build": "rm -rf public && pnpm run 11ty:build && pnpm run scss:build && pnpm run tsup:build",
     "11ty:watch": "eleventy --config=.eleventy.cjs --serve --watch",
-    "11ty:build": "ENV=prod eleventy --config=.eleventy.cjs",
-    "tsup:build": "tsup --minify --env.NODE_ENV production",
+    "11ty:build": "ENV=prod eleventy --config=.eleventy.cjs ",
     "tsup:watch": "tsup --watch",
+    "tsup:build": "tsup --minify --env.NODE_ENV production",
     "scss:build": "sass --load-path=node_modules ./src/sass/stylesheet.scss public/style.css --no-source-map",
     "scss:watch": "sass --watch ./src/sass/stylesheet.scss public/style.css --no-source-map --poll"
   },
