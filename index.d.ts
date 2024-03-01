@@ -714,8 +714,10 @@ export declare class Methods {
 
   /**
    * Whether or not an instance exists for the provided identifier/s.
+   * When no `id` parameter is provided, Relapse will check for the existence
+   * of any instance.
    */
-  static has(id: string | string[]): boolean;
+  static has(id?: string | string[]): boolean;
 
   /**
    * In some cases, you may require relapse to re-invoke itself.
