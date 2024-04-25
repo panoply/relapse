@@ -7,7 +7,10 @@ export default defineConfig({
     './src/index.ts'
   ],
   clean: false,
-  format: [ 'esm', 'iife' ],
+  format: [
+    'esm',
+    'iife'
+  ],
   treeshake: 'smallest',
   globalName: 'relapse',
   target: 'es6',
@@ -15,7 +18,6 @@ export default defineConfig({
   minifyIdentifiers: true,
   minifySyntax: true,
   platform: 'browser',
-
   define: {
     VERSION: `"${pkg.version}"`
   },
