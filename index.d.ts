@@ -163,8 +163,7 @@ export declare interface Options {
    * {
    *   fold: {
    *    duration: 220,
-   *    easing: 'ease-in-out',
-   *    hint: true
+   *    easing: 'ease-in-out'
    * }
    * ```
    */
@@ -182,8 +181,7 @@ export declare interface Options {
    * {
    *   fade: {
    *    duration: 120,
-   *    easing: 'linear',
-   *    hint: true
+   *    easing: 'linear'
    * }
    * ```
    */

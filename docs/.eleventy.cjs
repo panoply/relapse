@@ -1,60 +1,13 @@
 /* eslint-disable array-bracket-spacing */
 
-const eleventy = require('@panoply/11ty');
-const papyrus = require('papyrus');
+const { eleventy, terser, markdown, sprite } = require('e11ty');
 const container = require('markdown-it-container');
-const { terser, sprite, versions, markdown } = require('@sissel/11ty');
 const flems = require('./src/data/flems.json');
 
-/**
- * Papyrus Syntax
- *
- * Highlighting code blocks of markdown annotated regions of input.
- */
-function syntax ({ raw, language }) {
-
-  if (language === 'bash') {
-
-    return papyrus.static(raw, {
-      language,
-      editor: false,
-      showSpace: false,
-      showTab: false,
-      showCR: false,
-      showLF: false,
-      showCRLF: false,
-      lineNumbers: false
-    })
-
-  } else if (language === 'treeview') {
-
-    return papyrus.static(raw, {
-      language,
-      editor: false,
-      showSpace: false,
-      trimEnd: false,
-      trimStart: false
-    });
-
-  }
-
-  return papyrus.static(raw, {
-    language,
-    editor: false,
-    showSpace: false,
-    trimEnd: true,
-    trimStart: true
-  });
-
-};
-
-
-function tabs(md, tokens, idx) {
+function tabs(tokens, idx) {
 
   if(tokens[idx].nesting === 1) {
-
     const col = tokens[idx].info.trim().match(/^tabs\s+(.*)$/);
-
     if (col !== null) {
 
       const [ type, id ] = col[1].split(':')
@@ -139,19 +92,39 @@ function tabs(md, tokens, idx) {
     }
    }
 
-
-
   return '</div>'
-
 
 }
 
 
 module.exports = eleventy (function(config){
 
-
   markdown(config, {
-    syntax,
+    papyrus: {
+      default: {
+        editor: false,
+        showSpace: false,
+        trimEnd: true,
+        trimStart: true
+      },
+      language: {
+        bash: {
+          editor: false,
+          showSpace: false,
+          showTab: false,
+          showCR: false,
+          showLF: false,
+          showCRLF: false,
+          lineNumbers: false
+        },
+        treeview: {
+          editor: false,
+          showSpace: false,
+          trimEnd: false,
+          trimStart: false
+        }
+      }
+    },
     options: {
       html: true,
       linkify: true,
@@ -159,13 +132,12 @@ module.exports = eleventy (function(config){
       breaks: false,
     }
    })
-  .use(container, 'tabs', { render: (tokens, idx) => tabs(markdown, tokens, idx) })
+  .use(container, 'tabs', { render: (tokens, idx) => tabs(tokens, idx) })
   .disable("code");
 
-
-  config.addPlugin(versions, { version: require('../package.json').version });
   config.addPlugin(sprite, { inputPath: './src/svg', spriteShortCode: 'sprite' });
   config.addPlugin(terser)
+  config.addShortcode('version', () => require('../package.json').version)
   config.setDynamicPermalinks(false);
 
 
@@ -173,7 +145,14 @@ module.exports = eleventy (function(config){
     htmlTemplateEngine: 'liquid',
     passthroughFileCopy: false,
     pathPrefix: '/relapse',
-    templateFormats: ['liquid', 'json', 'md', 'css', 'html', 'yaml'],
+    templateFormats: [
+      'liquid',
+      'json',
+      'md',
+      'css',
+      'html',
+      'yaml'
+    ],
     dir: {
       input: 'src',
       output: 'public',

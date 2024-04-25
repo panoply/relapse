@@ -66,12 +66,13 @@
     "autoprefixer": "^10.4.17",
     "concurrently": "^8.2.2",
     "cssnano": "^6.0.5",
+    "e11ty": "^0.0.1",
     "esbuild": "^0.20.1",
     "eslint": "^8.57.0",
     "language-literals": "^0.0.2",
     "markdown-it-container": "^4.0.0",
     "netlify-cli": "^17.17.1",
-    "papyrus": "link:../../../liquify/packages/papyrus",
+    "papyrus": "^0.5.9",
     "postcss": "^8.4.35",
     "postcss-cli": "^11.0.0",
     "sass": "^1.71.1",
@@ -80,6 +81,6 @@
   "dependencies": {
     "qvp": "^0.3.2",
     "relapse": "link:..",
-    "spx": "link:../../../brixtol/packages/spx"
+    "spx": "link:../../spx"
   }
 }
