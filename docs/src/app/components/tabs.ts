@@ -1,8 +1,8 @@
 import spx, { SPX } from 'spx';
 
-export class Tabs extends spx.Component<typeof Tabs.connect> {
+export class Tabs extends spx.Component<typeof Tabs.define> {
 
-  static connect = {
+  static define = {
     state: {
       size: Number,
       open: {
@@ -12,7 +12,7 @@ export class Tabs extends spx.Component<typeof Tabs.connect> {
     }
   };
 
-  oninit () {
+  connect () {
 
     this.state.size = this.tabNodes.length;
 

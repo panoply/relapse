@@ -45,7 +45,10 @@
     <div class="container-fluid container-xxl py-md-4">
 
       {%- render 'navbar' -%}
-      {%- render 'sidebar', menu: menu, url: page.url -%}
+
+      {% unless test == true %}
+        {%- render 'sidebar', menu: menu, url: page.url -%}
+      {% endunless %}
 
       <div
         id="content"
@@ -53,8 +56,13 @@
         <div
           id="main"
           class="col-11 col-md-8 col-lg-8 col-xl-9 col-xxl-8 pt-3 p-3 p-sm-2 content">
+
           {{- content -}}
-          {%- include 'navigate', navigation: menu -%}
+
+          {% unless test == true %}
+            {%- include 'navigate', navigation: menu -%}
+          {% endunless %}
+
         </div>
       </div>
 

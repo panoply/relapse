@@ -1,9 +1,9 @@
 import relapse, { Relapse } from 'relapse';
 import spx, { SPX } from 'spx';
 
-export class Methods extends spx.Component<typeof Methods.connect> {
+export class Methods extends spx.Component<typeof Methods.define> {
 
-  static connect = {
+  static define = {
     state: {
       open: {
         default: 0,
@@ -12,7 +12,7 @@ export class Methods extends spx.Component<typeof Methods.connect> {
     }
   };
 
-  onload (): void {
+  onmount (): void {
 
     this.methods = relapse(this.relapseNode, {
       multiple: true,

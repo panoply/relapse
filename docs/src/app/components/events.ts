@@ -1,18 +1,18 @@
 import relapse, { Fold, Relapse } from 'relapse';
 import spx from 'spx';
 
-export class Events extends spx.Component<typeof Events.connect> {
+export class Events extends spx.Component<typeof Events.define> {
 
   relapse: Relapse;
   colors = [ 'fc-cyan', 'fc-pink', 'fc-purple', 'fc-green' ];
 
-  static connect = {
+  static define = {
     state: {
       count: Number
     }
   };
 
-  onload (): void {
+  onmount (): void {
 
     this.relapse = relapse(this.relapseNode);
     this.relapse.on('focus', this.focus, this);
