@@ -52,9 +52,6 @@ const enum AriaKey {
 /* SUGARS FOR SMALLER DIST SIZE                 */
 /* -------------------------------------------- */
 
-const setAriaDisabled = (el: HTMLElement, value = AriaKey.TRUE) => {
-  el.ariaDisabled = value === AriaKey.TRUE ? 'true' : 'false';
-};
 const setProperty = (el: HTMLElement, key: string, value: string) => (
   el.style.setProperty(key, value)
 );
@@ -66,6 +63,19 @@ const removeClass = (el: HTMLElement, value: string) => (
 );
 const setAriaExpanded = (el: HTMLElement, value = AriaKey.TRUE) => {
   el.ariaExpanded = value === AriaKey.TRUE ? 'true' : 'false';
+};
+const setAriaDisabled = (el: HTMLElement, value = AriaKey.TRUE) => {
+  const v = value === AriaKey.TRUE ? 'true' : 'false';
+  if (el.tagName === 'BUTTON') {
+    if (el.hasAttribute('aria-disabled')) el.removeAttribute('aria-disabled');
+    if (value === AriaKey.TRUE) {
+      el.setAttribute('disabled', v);
+    } else if (el.hasAttribute('disabled')) {
+      el.removeAttribute('disabled');
+    }
+  } else {
+    el.ariaDisabled = v;
+  }
 };
 
 /* -------------------------------------------- */
@@ -124,9 +134,6 @@ function setInstance (element: HTMLElement, config: Options) {
     }
   }).get(id);
 
-  // Set aria multi-selectable attribute
-  el.ariaMultiSelectable = `${scope.options.multiple}`;
-
   /**
    * Generate event emitted to call on inner elements
    */
@@ -165,10 +172,7 @@ function setInstance (element: HTMLElement, config: Options) {
     /**
      * Fold Instance
      */
-    const fold: Fold = $o<Fold>({
-      index: scope.folds.length,
-      locked: false
-    });
+    const fold: Fold = $o<Fold>({ index: scope.folds.length, locked: false });
 
     /* -------------------------------------------- */
     /* SCOPES                                       */
@@ -198,7 +202,9 @@ function setInstance (element: HTMLElement, config: Options) {
     /* BEGIN                                        */
     /* -------------------------------------------- */
 
-    if (scope.semantic) {
+    const isSemantic = scope.semantic;
+
+    if (isSemantic) {
 
       wrapper = el.children[i] as HTMLElement;
 
@@ -223,20 +229,25 @@ function setInstance (element: HTMLElement, config: Options) {
 
     }
 
-    wrapper.setAttribute('role', 'region');
-
-    const isDisabled = button.classList.contains(cls.disabled);
     const isOpened = button.classList.contains(cls.opened);
     const isExpanded = element.classList.contains(cls.expanded);
 
+    let isDisabled = button.classList.contains(cls.disabled);
+
     if (button.ariaExpanded === 'true' || isOpen || isOpened) {
 
-      if (button.ariaExpanded !== 'true') setAriaExpanded(button);
       if (!isOpened && !isDisabled) addClass(button, cls.opened);
       if (!isExpanded) addClass(element, cls.expanded);
-      if (isDisabled || button.ariaDisabled === 'true') {
+      if (!isSemantic) {
+        if (button.ariaExpanded !== 'true') setAriaExpanded(button);
+        if (button.ariaDisabled === 'true') {
+          setAriaDisabled(button);
+          isDisabled = true;
+        }
+      }
+
+      if (isDisabled) {
         addClass(button, cls.disabled);
-        setAriaDisabled(button);
         fold.disabled = true;
         fold.locked = true;
       }
@@ -245,7 +256,6 @@ function setInstance (element: HTMLElement, config: Options) {
 
     } else if (button.ariaDisabled === 'true' || isDisabled) {
 
-      if (button.ariaDisabled !== 'true') setAriaDisabled(button);
       if (!isDisabled) addClass(button, cls.disabled);
       if (isOpened) removeClass(button, cls.opened);
 
@@ -253,15 +263,20 @@ function setInstance (element: HTMLElement, config: Options) {
       fold.disabled = true;
       fold.locked = true;
 
-      setAriaExpanded(button, fold.expanded ? AriaKey.TRUE : AriaKey.FALSE);
+      if (!isSemantic) {
+        if (button.ariaDisabled !== 'true') setAriaDisabled(button);
+        setAriaExpanded(button, fold.expanded ? AriaKey.TRUE : AriaKey.FALSE);
+      }
 
     } else {
 
       fold.expanded = false;
       fold.disabled = false;
 
-      setAriaExpanded(button, AriaKey.FALSE);
-      setAriaDisabled(button, AriaKey.FALSE);
+      if (!isSemantic) {
+        setAriaExpanded(button, AriaKey.FALSE);
+        setAriaDisabled(button, AriaKey.FALSE);
+      }
 
     }
 
@@ -270,19 +285,19 @@ function setInstance (element: HTMLElement, config: Options) {
     if (!button.hasAttribute('id')) button.id = `${scope.id}-button-${fold.index}`;
     if (!element.hasAttribute('id')) element.id = `${scope.id}-content-${fold.index}`;
 
-    button.tabIndex = fold.index;
     button.setAttribute('aria-controls', element.id);
     element.setAttribute('aria-labelledby', button.id);
 
     if (fold.expanded) {
 
+      button.tabIndex = -1;
       scope.openCount = scope.openCount + 1;
 
       if (scope.options.multiple === false && scope.openCount === 2) {
         console.warn(`Relapse: More than 1 fold is expanded but "multiple" is set to false on: ${scope.id}`);
       }
 
-      if (scope.semantic) {
+      if (isSemantic) {
         fold.height = button.offsetHeight + element.offsetHeight;
         setProperty(wrapper, 'height', 'auto');
       } else {
@@ -292,7 +307,9 @@ function setInstance (element: HTMLElement, config: Options) {
 
     } else {
 
-      if (scope.semantic) {
+      button.tabIndex = 0;
+
+      if (isSemantic) {
         fold.height = button.offsetHeight;
         setProperty(wrapper, 'height', 'auto');
       } else {
@@ -497,7 +514,7 @@ function setFold (fold: Fold, scope: Relapse, event: ReturnType<typeof setEvents
 
       focus.expanded = false;
 
-      setAriaDisabled(b, AriaKey.FALSE);
+      // setAriaDisabled(b, AriaKey.FALSE);
       setAriaExpanded(b, AriaKey.FALSE);
       removeClass(b, cl.opened);
       removeClass(w, cl.expanded);
@@ -524,7 +541,7 @@ function setFold (fold: Fold, scope: Relapse, event: ReturnType<typeof setEvents
     const w = focus.wrapper;
     const e = focus.element;
 
-    setAriaDisabled(b);
+    // setAriaDisabled(b);
     setAriaExpanded(b);
 
     let start: string;
@@ -648,18 +665,17 @@ function setFold (fold: Fold, scope: Relapse, event: ReturnType<typeof setEvents
   };
 
   fold.toggle = (e) => {
-
     if (scope.semantic) e.preventDefault();
     if (scope.status === 2 || event.emit('toggle', scope, fold) === false) return;
-
     return fold.expanded ? fold.close() : fold.open();
-
   };
 
   fold.destroy = () => {
+
     fold.button.removeEventListener('click', fold.toggle);
     fold.button.removeEventListener('focus', fold.focus);
     fold.button.removeEventListener('blur', fold.blur);
+
   };
 
   fold.button.addEventListener('click', fold.toggle);
@@ -823,12 +839,14 @@ const relapse = function relapse (selector?: string | HTMLElement | Options, opt
 
   } else {
 
-    document.body.querySelectorAll<HTMLElement>(setSchema(selector)).forEach(element => (
-      setInstance(
-        element,
-        setDefaults(selector)
-      )
-    ));
+    document.body
+      .querySelectorAll<HTMLElement>(setSchema(selector))
+      .forEach(element => (
+        setInstance(
+          element,
+          setDefaults(selector)
+        )
+      ));
 
   }
 
@@ -848,6 +866,7 @@ relapse.each = (cb: (scope: Relapse, id: string) => void | false) => {
   }
 
 };
+
 relapse.reinit = (id?: string | string[]) => {
 
   const get = relapse.get(id);
