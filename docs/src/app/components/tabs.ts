@@ -16,7 +16,7 @@ export class Tabs extends spx.Component<typeof Tabs.define> {
     ]
   };
 
-  onmount () {
+  connect () {
 
     this.state.size = this.dom.tabNodes.length;
 
@@ -32,7 +32,7 @@ export class Tabs extends spx.Component<typeof Tabs.define> {
         this.dom.tabNodes[i].classList.remove('d-none');
       } else {
         this.dom.buttonNodes[i].classList.remove('active');
-        this.dom.tabNodes[i].classList.toggle('d-none', true);
+        this.dom.tabNodes[i].classList.add('d-none');
       }
     }
 

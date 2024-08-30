@@ -1,0 +1,24 @@
+<div spx-component="tabs">
+<div class="row gx-0 bd tabs py-2 px-2">
+  <div class="col-auto mr-2">
+    <button
+      type="button"
+      class="btn upcase tab active"
+      spx-node="tabs.button"
+      spx@click="tabs.toggle"
+      spx-tabs:index="0">
+      SEMANTIC
+    </button>
+  </div>
+  <div class="col-auto">
+    <button
+      type="button"
+      class="btn upcase tab"
+      spx-node="tabs.button"
+      spx@click="tabs.toggle"
+      spx-tabs:index="1">
+      SIBLING
+    </button>
+  </div>
+</div>
+<div class="col-12 tab-content" spx-node="tabs.tab">

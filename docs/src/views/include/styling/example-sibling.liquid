@@ -6,7 +6,7 @@
 {%- capture fold_1 -%}
   <button type="button" class="relapse-button">
     Collapse 1
-  </button type="button">
+  </button>
   <section class="relapse-fold">
     <div hidden>
     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Tincidunt nunc pulvinar sapien et ligula ullamcorper malesuada proin.
@@ -29,6 +29,7 @@
   {{ fold_1 }}
   {{ fold_2 }}
 {%- endcapture -%}
+{% render 'styling/tab-column' %}
 <div class="bg-ivory py-5 px-5">
   {%- if type == 'base' or type == 'borders' or type == 'icon' or type == 'focused' or type == 'hover' -%}
     <div

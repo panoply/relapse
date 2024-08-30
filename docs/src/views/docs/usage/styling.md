@@ -27,8 +27,6 @@ The below example showcases Relapse initialized on a **sibling** structure with 
 
 {% render 'styling/unstyled-sibling' %}
 
-<br>
-
 By design, Relapse refrains from styling any elements. Its primary role is to facilitate smooth transitions during the expansion and collapse of folds. Leveraging `requestAnimationFrame` in conjunction with the [Web Animations API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API) (WAAPI), Relapse applies animations using JavaScript, granting you control over the visual aspects.
 
 ---
@@ -36,8 +34,6 @@ By design, Relapse refrains from styling any elements. Its primary role is to fa
 ## Base
 
 First thing we want to do is provide some basic styling foundations for our collapsible component. The applied classes will be different between the **semantic** and **sibling** structures. The **sibling** structure will require additional styling compared to the **semantic** structure because we are working against the browser defaults.
-
-::: tabs markup
 
 {% render 'styling/example-semantic', type: 'base' %}
 
@@ -61,9 +57,6 @@ First thing we want to do is provide some basic styling foundations for our coll
   background-color: ivory;
 }
 ```
-
-:::
-::: tabs sibling
 
 {% render 'styling/example-sibling', type: 'base' %}
 
@@ -96,15 +89,13 @@ First thing we want to do is provide some basic styling foundations for our coll
 }
 ```
 
-:::
+{% render 'styling/tab-ender' %}
 
 ---
 
 ## Borders
 
 Our collapsible looks a little better, but how about we add in some borders. You will notice that we've include a `last-of-type` reference, this is to ensure that we don't have double borders applied on the the very last button.
-
-::: tabs markup
 
 {% render 'styling/example-semantic', type: 'borders' %}
 
@@ -118,9 +109,6 @@ Our collapsible looks a little better, but how about we add in some borders. You
 }
 ```
 
-:::
-::: tabs sibling
-
 {% render 'styling/example-sibling', type: 'borders' %}
 
 ```css
@@ -133,15 +121,13 @@ Our collapsible looks a little better, but how about we add in some borders. You
 }
 ```
 
-:::
+{% render 'styling/tab-ender' %}
 
 ---
 
 ## Icon
 
 By default, semantic structures render a disclosure triangle in the shadow DOM slot and this can sometimes be undesirable. The triangle itself can be customized, although this is not as broadly supported. We will hide and replace the disclosure triangle in our **semantic** structure. In our **sibling** structure, we will simply just replicate the styling.
-
-::: tabs markup
 
 {% render 'styling/example-semantic', type: 'icon' %}
 
@@ -172,9 +158,6 @@ By default, semantic structures render a disclosure triangle in the shadow DOM s
 }
 ````
 
-:::
-::: tabs sibling
-
 {% render 'styling/example-sibling', type: 'icon' %}
 
 ```css
@@ -188,15 +171,13 @@ By default, semantic structures render a disclosure triangle in the shadow DOM s
 }
 ```
 
-:::
+{% render 'styling/tab-ender' %}
 
 ---
 
 ## Enhancements
 
 Let's now add some minor UX enhancements to our collapsible component. We will add in `hover` effects for button toggles and apply a small hover transition for the sake of aesthetics.
-
-::: tabs markup
 
 {% render 'styling/example-semantic', type: 'hover' %}
 
@@ -213,9 +194,6 @@ Let's now add some minor UX enhancements to our collapsible component. We will a
 
 ````
 
-:::
-::: tabs sibling
-
 {% render 'styling/example-sibling', type: 'hover' %}
 
 ```css
@@ -230,7 +208,7 @@ Let's now add some minor UX enhancements to our collapsible component. We will a
 }
 ```
 
-:::
+{% render 'styling/tab-ender' %}
 
 ---
 
@@ -238,7 +216,7 @@ Let's now add some minor UX enhancements to our collapsible component. We will a
 
 Below is the final result for our custom CSS styling. Next up, have a look at the [classes](/relapse/usage/styling/classes) section to see how we can leverage the Relapse's dynamically inserted class names.
 
-::: tabs markup
+{% render 'styling/tab-begin' %}
 
 ```css
 .relapse {
@@ -279,8 +257,7 @@ Below is the final result for our custom CSS styling. Next up, have a look at th
 }
 ```
 
-:::
-::: tabs sibling
+{% render 'styling/tab-column' %}
 
 ```css
 .relapse {
@@ -321,7 +298,7 @@ Below is the final result for our custom CSS styling. Next up, have a look at th
 }
 ```
 
-:::
+{% render 'styling/tab-ender' %}
 
 ---
 

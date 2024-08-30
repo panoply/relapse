@@ -108,8 +108,8 @@ export class Drawer extends spx.Component<typeof Drawer.define> {
       console.error('Missing "data-drawer-shift-value" defintions on:', this.target);
     }
 
-    if (this.html.contains(Drawer.backdrop) === false) {
-      this.html.appendChild(Drawer.backdrop);
+    if (document.body.contains(Drawer.backdrop) === false) {
+      document.body.appendChild(Drawer.backdrop);
     }
 
     if (this.state.hasWidth) {

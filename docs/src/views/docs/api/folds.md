@@ -16,8 +16,7 @@ Folds are the elements which will be expanded and collapsed within toggle groups
 
 Take the following code sample, we have are 3 different relapse toggle groups. There are **2** relapse components using the `data-relapse` attribute (`foo` and `bar`) and **1** relapse component using a `selector` reference (`baz`).
 
-:::: grid col-12
-::: tabs markup
+{% render 'styling/tab-begin' %}
 
 ```html
 <section data-relapse="foo">
@@ -65,8 +64,7 @@ Take the following code sample, we have are 3 different relapse toggle groups. T
 </section>
 ```
 
-:::
-::: tabs sibling
+{% render 'styling/tab-column' %}
 
 ```html
 <section data-relapse="foo">
@@ -100,8 +98,7 @@ Take the following code sample, we have are 3 different relapse toggle groups. T
 </section>
 ```
 
-:::
-::::
+{% render 'styling/tab-ender' %}
 
 <br>
 
