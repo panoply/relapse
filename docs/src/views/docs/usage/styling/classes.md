@@ -22,8 +22,6 @@ Relapse automatically adds classes to folds in various states, providing a conve
 
 The `opened` class is automatically added to **buttons** within collapsible groups that are in an **expanded** state (i.e: **opened**). In **semantic** structures, the toggle button corresponds to the `<summary>` tag, while in **sibling** structures, the button can be any HTML tag adhering to the specified [markup structures](/relapse/usage/markup).
 
-::: tabs markup
-
 {% render 'styling/example-semantic', type: 'opened' %}
 
 <!--prettier-ignore-->
@@ -33,9 +31,6 @@ The `opened` class is automatically added to **buttons** within collapsible grou
   background:#e9e9e9;
 }
 ````
-
-:::
-::: tabs sibling
 
 {% render 'styling/example-sibling', type: 'opened' %}
 
@@ -47,7 +42,7 @@ The `opened` class is automatically added to **buttons** within collapsible grou
 }
 ```
 
-:::
+{% render 'styling/tab-ender' %}
 
 <br>
 
@@ -71,8 +66,6 @@ The `expanded` class is automatically added to **folds** within collapsible grou
 
 > The `expanded` class is not necessarily important and merely provided for convenience sake. Developers can style collapsible groups without needed to reference this dynamically inserted class name.
 
-::: tabs markup
-
 {% render 'styling/example-semantic', type: 'expanded' %}
 
 <!--prettier-ignore-->
@@ -87,9 +80,6 @@ The `expanded` class is automatically added to **folds** within collapsible grou
 }
 ````
 
-:::
-::: tabs sibling
-
 {% render 'styling/example-sibling', type: 'expanded' %}
 
 ```css
@@ -103,7 +93,7 @@ The `expanded` class is automatically added to **folds** within collapsible grou
 }
 ```
 
-:::
+{% render 'styling/tab-ender' %}
 
 ---
 
@@ -112,8 +102,6 @@ The `expanded` class is automatically added to **folds** within collapsible grou
 The `disabled` class serves as both an annotation and an initializer in both **sibling** and **semantic** structures. The class name will be used to signal that a fold should not be expanded or collapsed and will be applied to the toggle **buttons** of collapsible components.
 
 When a collapsible components fold contains a `disabled` class the fold will be marked as `locked` which will result in neither expanding or collapsing. When a fold is initialized in an opened (expanded) state and included a `disabled` annotation then the fold will remain expanded.
-
-::: tabs markup
 
 {% render 'styling/example-semantic', type: 'disabled' %}
 
@@ -125,9 +113,6 @@ When a collapsible components fold contains a `disabled` class the fold will be 
 }
 ```
 
-:::
-::: tabs sibling
-
 {% render 'styling/example-sibling', type: 'disabled' %}
 
 ```css
@@ -138,7 +123,7 @@ When a collapsible components fold contains a `disabled` class the fold will be 
 }
 ```
 
-:::
+{% render 'styling/tab-ender' %}
 
 <br>
 
@@ -146,7 +131,7 @@ When a collapsible components fold contains a `disabled` class the fold will be 
 
 The `disabled` class serves as both an annotation and an initializer for both **semantic** and **sibling** structures. In **semantic** structures, when the `<summary>` button contains the class `disabled` then fold will be initialized disabled. You may also annotate the details element`<details disabled>` to initialize locked. In **sibling** structures when the **toggle** button element possess the `disabled` class the fold will be initialized disabled.
 
-::: tabs markup
+{% render 'styling/tab-begin' %}
 
 ```html
 <div class="relapse" data-relapse="xxx">
@@ -171,8 +156,7 @@ The `disabled` class serves as both an annotation and an initializer for both **
 </div>
 ```
 
-:::
-::: tabs sibling
+{% render 'styling/tab-column' %}
 
 ```html
 <div class="relapse" data-relapse="xxx">
@@ -197,4 +181,4 @@ The `disabled` class serves as both an annotation and an initializer for both **
 </div>
 ```
 
-:::
+{% render 'styling/tab-ender' %}

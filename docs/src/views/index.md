@@ -22,8 +22,7 @@ An [A11y](https://www.a11yproject.com/) compliant, full-featured lightweight (**
 
 Relapse supports **semantic** and **sibling** markup (HTML) structures. The choice between them depends on your preference and the type of collapsible component you are creating.
 
-:::: grid col-12
-::: tabs markup
+{% render 'styling/tab-begin' %}
 
 ```html
 <section id="example">
@@ -45,8 +44,7 @@ Relapse supports **semantic** and **sibling** markup (HTML) structures. The choi
 </section>
 ```
 
-:::
-::: tabs sibling
+{% render 'styling/tab-column' %}
 
 ```html
 <div id="example">
@@ -68,8 +66,7 @@ Relapse supports **semantic** and **sibling** markup (HTML) structures. The choi
 </div>
 ```
 
-:::
-::::
+{% render 'styling/tab-ender' %}
 
 <br>
 
@@ -94,8 +91,7 @@ const relapse = Relapse(element, {
 
 Relapse manages animations and transitions, this allows you to customize the appearance of your components according to your preferences. The below CSS styles serves as a starting point for tailoring the visual aspects of Relapse components. For a more comprehensive example and detailed guidance on styling, refer to the [styling](/relapse/usage/styling) section.
 
-:::: grid col-12
-::: tabs markup
+{% render 'styling/tab-begin' %}
 
 <!--prettier-ignore-->
 ```css
@@ -113,8 +109,7 @@ Relapse manages animations and transitions, this allows you to customize the app
 .relapse > details > summary + div.expanded {}
 ```
 
-:::
-::: tabs sibling
+{% render 'styling/tab-column' %}
 
 <!--prettier-ignore-->
 ```css
@@ -131,5 +126,4 @@ Relapse manages animations and transitions, this allows you to customize the app
 .relapse > button + div.expanded {}
 ```
 
-:::
-::::
+{% render 'styling/tab-ender' %}

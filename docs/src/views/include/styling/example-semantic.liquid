@@ -5,12 +5,12 @@
 {% # ADDITIONAL FOLD TO BE RENDERED %}
 {%- capture fold_1 -%}
   <details>
-  <summary>
-    Collapse 1
-  </summary>
-  <div>
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Tincidunt nunc pulvinar sapien et ligula ullamcorper malesuada proin.
-  </div>
+    <summary>
+      Collapse 1
+    </summary>
+    <div>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Tincidunt nunc pulvinar sapien et ligula ullamcorper malesuada proin.
+    </div>
   </details>
 {%- endcapture -%}
 {% # ADDITIONAL FOLD TO BE RENDERED %}
@@ -29,6 +29,8 @@
   {{ fold_1 }}
   {{ fold_2 }}
 {%- endcapture -%}
+{% render 'styling/tab-begin' %}
+{% # BEGIN RELAPSE %}
 <div class="bg-ivory py-5 px-5">
   {%- if type == 'base' or type == 'borders' or type == 'icon' or type == 'focused' or type == 'hover' -%}
     <section

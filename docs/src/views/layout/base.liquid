@@ -42,30 +42,20 @@
   </head>
 
   <body>
+
     <div class="container-fluid container-xxl py-md-4">
-
       {%- render 'navbar' -%}
-
-      {% unless test == true %}
-        {%- render 'sidebar', menu: menu, url: page.url -%}
-      {% endunless %}
-
+      {%- render 'sidebar', menu: menu, url: page.url -%}
       <div
         id="content"
         class="row jc-center jc-md-start">
         <div
           id="main"
           class="col-11 col-md-8 col-lg-8 col-xl-9 col-xxl-8 pt-3 p-3 p-sm-2 content">
-
           {{- content -}}
-
-          {% unless test == true %}
-            {%- include 'navigate', navigation: menu -%}
-          {% endunless %}
-
+          {%- include 'navigate', navigation: menu -%}
         </div>
       </div>
-
     </div>
 
     {%- sprite -%}

@@ -4,7 +4,7 @@
       <div class="col-auto">
         <a
           href="{{ link.data.prev.uri | url }}"
-          spx-position="y:0"
+          spx-scroll="0"
           class="btn prev">
           <span class="mr-2">
             {%- svg 'chevron-left', 'icon icon-left' -%}
@@ -15,7 +15,7 @@
       <div class="col-auto">
         <a
           href="{{ link.data.next.uri | url }}"
-          spx-position="y:0"
+          spx-scroll="0"
           class="btn next">
           {{- link.data.next.label -}}
           <span class="ml-2">
