@@ -120,7 +120,7 @@ const foo = relapse.get('foo');
 // Return the fold in relapse foo component using id="qux"
 const fold = foo.folds.get('qux');
 
-fold.id              // The fold id (foo) defaults to custom identifier if undefined
+fold.id              // The fold id (foo) defaults to custom identifier when undefined
 fold.button          // The <summary> element in semantic structures or <button> in sibling
 fold.wrapper         // The <details> element in semantic structures or <div> in sibling
 fold.element         // The <p> element in semantic structures of <div> in sibling
@@ -128,7 +128,7 @@ fold.index           // The zero based index of the fold in the toggle group, i.
 fold.expanded        // Boolean value informing whether fold is expanded
 fold.height          // The current height value of the fold, offsetHeight or scrollHeight
 fold.disabled        // Boolean value indicating whether fold is in disable/enabled state
-fold.locked          // Whether the fold is locked, fold will lock if initialized as disabled.
+fold.locked          // Whether the fold is locked. Folds will lock if initialized as disabled.
 fold.open();         // Open the fold in the toggle group
 fold.close();        // Close the fold in the toggle group.
 fold.blur();         // Apply blur to the button in toggle group

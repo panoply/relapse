@@ -1,0 +1,75 @@
+<div class="row gx-2 gx-sm-3 jc-center jc-sm-start mt-4 mb-2">
+  <div class="col-12 mb-4">
+    <div class="fm-switch fm-options rd">
+      <input
+        class="fm-checkbox"
+        id="multiple"
+        spx@input="methods.options"
+        spx-methods:type="multiple"
+        name="multiple"
+        checked
+        type="checkbox">
+      <label
+        class="fm-label fs-sm"
+        for="multiple">
+        Multiple
+      </label>
+    </div>
+  </div>
+  <div class="col-12 mb-5">
+    <div class="fm-switch  fm-options rd">
+      <input
+        class="fm-checkbox"
+        id="persist"
+        spx@input="methods.options"
+        spx-methods:type="persist"
+        name="multiple"
+        type="checkbox">
+      <label
+        class="fm-label fs-sm"
+        for="persist">Persist
+      </label>
+    </div>
+  </div>
+  <div class="col-12 col-md-11 fm-options mb-2">
+    <input
+      class="fm-range"
+      id="fold-duration"
+      spx@input="methods.options"
+      spx-methods:type="fold"
+      name="fold-duration"
+      value="200"
+      min="100"
+      max="2000"
+      type="range">
+    <label
+      class="fm-label fs-sm"
+      for="fold-duration">
+      Fold Duration:
+      <span spx-node="methods.foldDuration">200
+      </span>
+      ms
+    </label>
+  </div>
+  <div class="col-12 col-md-11 fm-options">
+    <input
+      class="fm-range"
+      id="fade-duration"
+      spx@input="methods.options"
+      spx-methods:type="fade"
+      name="fade-duration"
+      value="120"
+      min="100"
+      max="2000"
+      type="range">
+    <label
+      class="fm-label fs-sm"
+      for="fade-duration">
+      Fade Duration:
+      <span spx-node="methods.fadeDuration">
+        120
+      </span>
+      ms
+    </label>
+  </div>
+</div>

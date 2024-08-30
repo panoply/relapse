@@ -253,6 +253,33 @@ pre.papyrus[data-papyrus='static']
 /* METHODS                                      */
 /* -------------------------------------------- */
 
+.fm-options {
+  border-radius: $border-radius;
+
+
+
+  .fm-checkbox {
+    border-radius: $border-radius !important;
+    border-color: $border-color;
+    background-color: transparent;
+    background-image: url(icon-square($border-color));
+
+    &:focus {
+      background-image: url(icon-square($border-color)) !important;
+    }
+
+    &:active,
+    &:focus:not(.fm-switch .fm-checkbox:checked) {
+      border-color: $border-color;
+    }
+
+    &:checked {
+      border-color: $border-color;
+      background-image: url(icon-square($white)) !important;
+    }
+  }
+}
+
 .btn-method {
   border-radius: $border-radius;
   color: $link-color;

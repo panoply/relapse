@@ -99,6 +99,29 @@ $tooltip-padding-x: 0.5rem;
 $tooltip-arrow-size: 5px;
 $tooltip-radius: 3px;
 
+$form-range-track-width:                   100%;
+$form-range-track-height:                  .10rem;
+$form-range-track-cursor:                  pointer;
+$form-range-track-bg:                      $border-color;
+$form-range-track-border-radius:           0;
+$form-range-track-box-shadow:              $box-shadow-inset;
+$form-range-thumb-size:                    1rem;
+$form-range-thumb-width:                   $form-range-thumb-size;
+$form-range-thumb-height:                  $form-range-thumb-size;
+$form-range-thumb-bg:                      $border-color;
+$form-range-thumb-border:                  0;
+$form-range-thumb-border-radius:           0;
+$form-range-thumb-box-shadow:              0 .1rem .25rem rgba($white, .1);
+$form-range-thumb-focus-box-shadow:        0 0 0 1px $body-bg, $input-focus-box-shadow;
+$form-range-thumb-focus-box-shadow-width:  $input-focus-width;
+$form-range-thumb-active-bg:               tint-color($black, 40%);
+$form-range-thumb-disabled-bg:             $gray-500;
+$form-range-thumb-transition: (
+  background-color .10s ease-in-out,
+  border-color .10s ease-in-out,
+  box-shadow .10s ease-in-out
+);
+
 /* -------------------------------------------- */
 /* HEADINGS                                     */
 /* -------------------------------------------- */
