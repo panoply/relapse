@@ -14,7 +14,7 @@ export default defineConfig({
   treeshake: 'smallest',
   globalName: 'relapse',
   target: 'es6',
-  minify: process.env.production ? 'terser' : false,
+  minify: process.env.production ? true : false,
   minifyIdentifiers: true,
   minifySyntax: true,
   platform: 'browser',
