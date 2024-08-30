@@ -26,7 +26,11 @@ export class Dropdown extends spx.Component<typeof Dropdown.define> {
         typeof: String,
         default: 'dropdown'
       }
-    }
+    },
+    nodes: <const>[
+      'collapse',
+      'button'
+    ]
   };
 
   /**
@@ -34,7 +38,7 @@ export class Dropdown extends spx.Component<typeof Dropdown.define> {
    */
   inViewport () {
 
-    const rect = this.collapseNode.getBoundingClientRect();
+    const rect = this.dom.collapseNode.getBoundingClientRect();
 
     for (const { element, folds } of relapse.get()) {
       if (element.id === this.state.accordion) {
@@ -61,11 +65,11 @@ export class Dropdown extends spx.Component<typeof Dropdown.define> {
 
     event.stopPropagation();
 
-    if (this.dom.classList.contains('is-open')) return this.close();
+    if (this.root.classList.contains('is-open')) return this.close();
 
     this.state.collapse = 'opened';
-    this.dom.classList.add('is-open');
-    this.buttonNode.classList.remove('selected');
+    this.root.classList.add('is-open');
+    this.dom.buttonNode.classList.remove('selected');
 
     if (this.state.hasAccordion) this.inViewport();
 
@@ -79,8 +83,8 @@ export class Dropdown extends spx.Component<typeof Dropdown.define> {
    */
   outsideClick (event: Event) {
 
-    if (this.buttonNode !== event.target && this.collapseNode !== event.target) {
-      if (this.dom.classList.contains('is-open')) {
+    if (this.dom.buttonNode !== event.target && this.dom.collapseNode !== event.target) {
+      if (this.root.classList.contains('is-open')) {
         this.close();
       }
     }
@@ -92,17 +96,17 @@ export class Dropdown extends spx.Component<typeof Dropdown.define> {
    */
   close () {
 
-    this.dom.classList.remove('is-open');
+    this.root.classList.remove('is-open');
 
     if (this.state.collapse === 'selected' || this.state.hasSelected) {
-      this.dom.classList.add('selected');
+      this.root.classList.add('selected');
       this.state.collapse = 'selected';
     } else {
       this.state.collapse = 'closed';
     }
 
     removeEventListener('click', this.outsideClick);
-    this.buttonNode.focus();
+    this.dom.buttonNode.focus();
   }
 
   /**
@@ -114,10 +118,10 @@ export class Dropdown extends spx.Component<typeof Dropdown.define> {
 
     target.checked = true;
     this.state.selected = target.value;
-    this.buttonNode.innerText = target.getAttribute('aria-label');
+    this.dom.buttonNode.innerText = target.getAttribute('aria-label');
     this.state.collapse = 'selected';
 
-    for (const label of this.dom.getElementsByTagName('label')) {
+    for (const label of this.root.getElementsByTagName('label')) {
 
       if (label.getAttribute('for') === target.id) {
         if (!label.classList.contains('selected')) {
@@ -152,25 +156,25 @@ export class Dropdown extends spx.Component<typeof Dropdown.define> {
 
       if (this.state.hasRequired) {
 
-        if (this.buttonNode.classList.contains('is-invalid')) {
-          this.buttonNode.classList.remove('is-invalid');
+        if (this.dom.buttonNode.classList.contains('is-invalid')) {
+          this.dom.buttonNode.classList.remove('is-invalid');
         }
 
         this.state.required = false;
-        this.buttonNode.classList.add('selected');
+        this.dom.buttonNode.classList.add('selected');
       }
 
       if (this.state.kind === 'preset') {
 
         this.state.selected = `Preset (${event.target.textContent.trim()})`;
-        this.buttonNode.innerHTML = `Preset (${event.target.textContent.trim()})<span class="icon"></span>`;
+        this.dom.buttonNode.innerHTML = `Preset (${event.target.textContent.trim()})<span class="icon"></span>`;
 
       } else {
         this.state.selected = event.target.textContent;
-        this.buttonNode.textContent = event.target.textContent;
+        this.dom.buttonNode.textContent = event.target.textContent;
       }
 
-      for (const node of this.collapseNode.children) {
+      for (const node of this.dom.collapseNode.children) {
         if (node.id !== event.target.id) {
           node.classList.remove('selected');
         } else {
@@ -188,11 +192,5 @@ export class Dropdown extends spx.Component<typeof Dropdown.define> {
   /* -------------------------------------------- */
   /* TYPES                                        */
   /* -------------------------------------------- */
-
-  collapseNode: HTMLElement;
-  buttonNode: HTMLElement;
-  placeholderNode: HTMLElement;
-  inputNode: HTMLElement;
-  viewportNode: HTMLElement;
 
 }

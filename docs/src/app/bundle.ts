@@ -6,7 +6,7 @@ import { Methods } from './components/methods';
 import { Events } from './components/events';
 import { Dropdown } from './components/dropdown';
 
-spx.connect(
+spx(
   {
     fragments: [
       'main',

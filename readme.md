@@ -1,6 +1,6 @@
 # Relapse
 
-An [A11y](https://www.a11yproject.com/) compliant, lightweight (2.7kb gzip) dependency free toggle utility for collapsible accordions. Written in TypeScript and distributed in ES6 this tiny little module flaunts an extensive API for usage in modern web projects,
+An [A11y](https://www.a11yproject.com/) compliant, full featured, lightweight (3kb gzip) and dependency free toggle utility for collapsible accordions. Written in TypeScript and distributed in ES6 this tiny little module flaunts an extensive API for usage in modern web projects.
 
 Visit Documentation: https://panoply.github.io/relapse
 
@@ -36,7 +36,7 @@ const toggle = relapse('.selector', {
   schema: 'data-relapse',    // Custom data attribute reference
   fold: {
     easing: 'ease-in-out',   // The animation easing to apply
-    duration: 120,           // Duration of the fold content transition
+    duration: 200,           // Duration of the fold content transition
   },
   fade: {
     duration: 120,           // Duration of the fold content transition

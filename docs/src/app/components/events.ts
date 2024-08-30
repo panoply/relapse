@@ -9,12 +9,16 @@ export class Events extends spx.Component<typeof Events.define> {
   static define = {
     state: {
       count: Number
-    }
+    },
+    nodes: <const>[
+      'relapse',
+      'log'
+    ]
   };
 
   onmount (): void {
 
-    this.relapse = relapse(this.relapseNode);
+    this.relapse = relapse(this.dom.relapseNode);
     this.relapse.on('focus', this.focus, this);
     this.relapse.on('collapse', this.collapse, this);
     this.relapse.on('expand', this.expand, this);
@@ -31,8 +35,8 @@ export class Events extends spx.Component<typeof Events.define> {
     element.ariaLabel = `${this.state.count}`;
     element.innerText = message;
 
-    this.logNode.appendChild(element);
-    this.logNode.scrollTop = this.logNode.scrollHeight;
+    this.dom.logNode.appendChild(element);
+    this.dom.logNode.scrollTop = this.dom.logNode.scrollHeight;
 
   }
 
@@ -71,8 +75,5 @@ export class Events extends spx.Component<typeof Events.define> {
     );
 
   }
-
-  relapseNode: HTMLElement;
-  logNode: HTMLElement;
 
 }

@@ -219,37 +219,38 @@ The returning `Relapse` instance is comprised of references, events and methods 
 ```js
 import relapse from 'relapse';
 
-const example = relapse('#accordion');
+const instance = relapse('#example');
 
 // REFERENCES
 
-example.id                                   // The Relapse key identifier
-example.options                              // Configuration options
-example.element                              // Selector HTMLElement;
-example.semantic                             // Whether or not semantic;
-example.active                               // Last active fold index;
-example.openCount                            // Number of opened folds;
-example.folds                                // An array list of Folds;
+instance.id                                   // The relapse key identifier
+instance.element                              // Selector HTMLElement
+instance.semantic                             // Whether or not semantic
+instance.active                               // Last active fold index
+instance.opened                               // Number of opened folds
+instance.folds                                // An array list of folds
+instance.options                              // Returns the current options
 
 // EVENTS
 
-example.events.toggle                        // List of toggle events
-example.events.expand                        // List of expand events
-example.events.collapse                      // List of collapse events
-example.events.focus                         // List of focus events
-example.events.destroy                       // List of destroy events
+instance.events.toggle                        // List of toggle events
+instance.events.expand                        // List of expand events
+instance.events.collapse                      // List of collapse events
+instance.events.focus                         // List of focus events
+instance.events.destroy                       // List of destroy events
 
-example.event.on('focus', (fold) => {})      // Listen for focus button events
-example.event.on('toggle', (fold) => {})     // Listen for open/close events
-example.event.on('expand', (fold) => {})     // Listen for expanded events
-example.event.on('collapse', (fold) => {})   // Listen for collapsed events
-example.event.on('destroy', (fold) => {})    // Listen for destroy events
+instance.event.on('focus', (fold) => {})      // Listen for focus button events
+instance.event.on('toggle', (fold) => {})     // Listen for open/close events
+instance.event.on('expand', (fold) => {})     // Listen for expanded events
+instance.event.on('collapse', (fold) => {})   // Listen for collapsed events
+instance.event.on('destroy', (fold) => {})    // Listen for destroy events
 
 // METHODS
 
-example.expand()                            // Expand a fold by index or id
-example.collapse()                          // Collapse a fold by index or id
-example.destroy()                           // Destroy a the relapse instance
-example.reinit()                            // Reinitialize the instance
+instance.config()                            // Update the options of the instance
+instance.expand()                            // Expand a fold by index or id
+instance.collapse()                          // Collapse a fold by index or id
+instance.destroy()                           // Destroy a the relapse instance
+instance.reinit()                            // Reinitialize the instance
 
 ```

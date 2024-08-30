@@ -94,10 +94,10 @@ export class Drawer extends spx.Component<typeof Drawer.define> {
     }
 
     if (this.state.useParent) {
-      this.target = this.dom.parentElement;
+      this.target = this.root.parentElement;
       this.target.ariaHidden = 'true';
     } else {
-      this.target = this.dom;
+      this.target = this.root;
     }
 
     if (this.target.classList.contains('d-none')) {
@@ -132,6 +132,8 @@ export class Drawer extends spx.Component<typeof Drawer.define> {
     if (this.html.classList.contains('drawer-open')) {
       this.html.classList.remove('drawer-open');
     }
+
+    spx.on('load', () => this.close());
 
   }
 

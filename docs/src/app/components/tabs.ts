@@ -9,12 +9,16 @@ export class Tabs extends spx.Component<typeof Tabs.define> {
         default: 0,
         typeof: Number
       }
-    }
+    },
+    nodes: <const>[
+      'button',
+      'tab'
+    ]
   };
 
-  connect () {
+  onmount () {
 
-    this.state.size = this.tabNodes.length;
+    this.state.size = this.dom.tabNodes.length;
 
   }
 
@@ -24,18 +28,15 @@ export class Tabs extends spx.Component<typeof Tabs.define> {
 
     for (let i = 0, s = this.state.size; i < s; i++) {
       if (i === attrs.index) {
-        this.buttonNodes[i].classList.add('active');
-        this.tabNodes[i].classList.remove('d-none');
+        this.dom.buttonNodes[i].classList.add('active');
+        this.dom.tabNodes[i].classList.remove('d-none');
       } else {
-        this.buttonNodes[i].classList.remove('active');
-        this.tabNodes[i].classList.toggle('d-none', true);
+        this.dom.buttonNodes[i].classList.remove('active');
+        this.dom.tabNodes[i].classList.toggle('d-none', true);
       }
     }
 
     this.state.open = attrs.index;
   }
-
-  public tabNodes: HTMLElement[];
-  public buttonNodes: HTMLElement[];
 
 }

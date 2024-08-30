@@ -12,7 +12,7 @@ next:
 
 ## Intro
 
-An [A11y](https://www.a11yproject.com/) compliant, lightweight (**2.7**kb gzip) dependency free toggle utility. Create dynamic collapsible accordions, menu lists, content blocks, and expanded folds with custom styling choices. Relapse supports various markup structures, ensures silky smooth transitions and flaunts an extensive user-friendly API with refined programmatic control.
+An [A11y](https://www.a11yproject.com/) compliant, full-featured lightweight (**3**kb gzip) dependency free toggle utility. Create dynamic collapsible accordions, menu lists, content blocks, and expanded folds with custom styling choices. Relapse supports various markup structures, ensures silky smooth transitions and flaunts an extensive user-friendly API with refined programmatic control.
 
 {% render 'showcase' %}
 

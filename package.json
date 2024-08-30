@@ -1,7 +1,7 @@
 {
   "name": "relapse",
-  "description": "An A11y compliant, modern, lightweight (2kb gzip) dependency free utility for collapsible toggle components.",
-  "version": "0.9.0",
+  "description": "An A11y compliant, modern, lightweight (3kb gzip) dependency free utility for collapsible toggle components.",
+  "version": "0.9.1",
   "homepage": "https://panoply.github.io/relapse/",
   "author": {
     "name": "Nik Savvidis",
@@ -77,8 +77,7 @@
     "eslint": "^8.57.0",
     "gzip-size-cli": "^5.1.0",
     "prettier": "^3.2.5",
-    "terser": "^5.28.1",
-    "tsup": "^8.0.2",
+    "tsup": "^8.2.4",
     "typescript": "^5.3.3"
   }
 }
