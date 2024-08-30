@@ -20,7 +20,7 @@ import relapse from 'relapse';
 
 const method = relapse('.selector');
 
-method.options({})          // Update and resets the options
+method.config({})          // Update and resets the options
 method.expand(0);           // Expands fold at index 0
 method.expand('foo');       // Expands fold with id value of "foo"
 method.collapse(1);         // Collapse fold at index 1
@@ -45,7 +45,7 @@ Click the buttons to open and close folds. This example is using the `expand()` 
 
 Below we are taking advantage of the `options()` method which will update the configuration settings of a specific Relapse instance. The example has omitted some option settings for the sake of the example.
 
-> It's important to note that options such as `schema`, `unique` are not available in post-instance states. This means you cannot augment these settings via the `options()` method.
+> It's important to note that options such as `schema`, `unique` and `classes` are not available in post-instance states. This means you cannot augment these settings via the `options()` method.
 
 <div class="row gx-2 gx-sm-3 jc-center jc-sm-start mt-4 mb-2">
 <div class="col-12 col-md-4">
