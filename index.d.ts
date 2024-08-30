@@ -4,7 +4,7 @@
 /**
  * String Literal Union
  */
-type LiteralUnion<LiteralType> = LiteralType | (string & Record<never, never>);
+type StringUnion<LiteralType> = LiteralType | (string & Record<never, never>);
 
 /**
  * Identity Utility
@@ -75,7 +75,7 @@ export declare interface FadeOptions {
    *
    * @default 'linear
    */
-  easing?: LiteralUnion<'ease' | 'ease-in' | 'ease-in-out' | 'ease-out' | 'linear'>;
+  easing?: StringUnion<'ease' | 'ease-in' | 'ease-in-out' | 'ease-out' | 'linear'>;
 }
 
 export declare interface FoldOptions {
@@ -98,7 +98,7 @@ export declare interface FoldOptions {
    *
    * @default 'ease-in-out'
    */
-  easing?: LiteralUnion<'ease' | 'ease-in' | 'ease-in-out' | 'ease-out'>;
+  easing?: StringUnion<'ease' | 'ease-in' | 'ease-in-out' | 'ease-out'>;
 }
 
 export declare interface Options {
@@ -550,14 +550,6 @@ export declare interface Relapse {
    */
   id: string;
   /**
-   * **Relapse Options**
-   *
-   * Configuration options merged with defaults
-   *
-   * @see {@link Options}
-   */
-  options: Options;
-  /**
    * **Relapse Status**
    *
    * The current status indicates the state of operation executing
@@ -599,7 +591,7 @@ export declare interface Relapse {
    *
    * The number of collapsed folds, ie: the open count
    */
-  openCount: number;
+  opened: number;
   /**
    * **Relapse Folds**
    *
@@ -621,6 +613,16 @@ export declare interface Relapse {
    * accordion.folds[1]
    */
   folds: Folds;
+  /**
+   * **Relapse Options**
+   *
+   * Configuration {@link Options} merged with defaults.
+   *
+   * > **NOTE**
+   * >
+   * > **Use the {@link Relapse.config} method of an instance to update options.**
+   */
+  readonly options: Options;
   /**
    * **Relapse Events**
    *
@@ -647,6 +649,24 @@ export declare interface Relapse {
    * Remove an event.
    */
   off: Events<Readonly<Relapse>, Fold, void>;
+  /**
+   * **Relapse Config**
+   *
+   * Update existing options by passing new configuration object
+   * as parameter.
+   *
+   * @see {@link Options}
+   * @example
+   * import relapse from 'relapse'
+   *
+   * const toggle = relapse('#accordion', {
+   *   multiple: true
+   * });
+   *
+   * // Updates option for this instance
+   * toggle.config({ multiple: false })
+   */
+  config: (options: Omit<Options, 'unique' | 'schema'>) => Options;
   /**
    * **Relapse Expand Fold**
    *
@@ -677,7 +697,7 @@ export declare interface Relapse {
    */
   reinit: () => void;
   /**
-   * **Relapse Destriy**
+   * **Relapse Destroy**
    *
    * Destroy the relapse instance.
    */
@@ -687,6 +707,8 @@ export declare interface Relapse {
 export declare class Methods {
 
   /**
+   * **Relapse Get ~ Global Method**
+   *
    * Return the current relapse instance by its `id` value. Identifiers can be
    * defined via `data-relapse=""`. If you are not using attribute annotations,
    * then relapse will use the `id=""` value.
@@ -701,16 +723,22 @@ export declare class Methods {
   };
 
   /**
-   * Current Version
+   * **Relapse Version ~ Global Method**
+   *
+   * The current version of relapse
    */
   static version: string;
 
   /**
+   * **Relapse Each ~ Global Method**
+   *
    * Iterates over all existing instances of Relapse.
    */
   static each(callback: (scope?: Relapse, id?: string) => void | false): void;
 
   /**
+   * **Relapse Has ~ Global Method**
+   *
    * Whether or not an instance exists for the provided identifier/s.
    * When no `id` parameter is provided, Relapse will check for the existence
    * of any instance.
@@ -718,12 +746,21 @@ export declare class Methods {
   static has(id?: string | string[]): boolean;
 
   /**
-   * In some cases, you may require relapse to re-invoke itself.
-   * You can use this method and have Relapse re-evaluate.
+   * **Relapse Reinit ~ Global Method**
+   *
+   * In some cases, you may require relapse to re-invoke itself. You can use this method
+   * and have Relapse re-evaluate all instances mounted in the dom. Optionally provided
+   * identifiers to cherry pick reinit instances.
+   *
+   * > **NOTE**
+   * >
+   * > **Relapse instances also expose a `reinit` method. Only use this global method for wide control**
    */
   static reinit(id?: string | string[]): void;
 
   /**
+   * **Relapse Reinit ~ Global Method**
+   *
    * Destory and teardown all active instances or those which match the
    * provided `ids`.
    */
